@@ -1,22 +1,9 @@
-// Copyright 2014 Google Inc. All rights reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-// protoc plugin which converts .proto to schema for BigQuery.
-// It is spawned by protoc and generates schema for BigQuery, encoded in JSON.
+// protoc plugin which converts .proto to JSON schema
+// It is spawned by protoc and generates JSON-schema files.
+// "Heavily influenced" by Google's "protog-gen-bq-schema"
 //
 // usage:
-//  $ bin/protoc --bq-schema_out=path/to/outdir foo.proto
+//  $ bin/protoc --jsonschema_out=path/to/outdir foo.proto
 //
 package main
 
@@ -179,9 +166,16 @@ func convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, m
 	case descriptor.FieldDescriptorProto_TYPE_ENUM:
 		jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: "string"})
 		jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: "integer"})
-		for enumType := range(desc.Type.EnumType) {
-			jsonSchemaType.Enum = append(jsonSchemaType.Enum, enumType.GetValue())
-		}
+
+		// os.Stderr.WriteString(fmt.Sprintf("Descriptor => %v\n", *desc.TypeName))
+
+		// for enumKey, enumDescriptor := range msg.GetEnumType() {
+		// 	os.Stderr.WriteString(fmt.Sprintf("%v => %v\n", enumKey, msg.GetEnumType()))
+		// 	for _, enumValue := range enumDescriptor.Value {
+		// 		jsonSchemaType.Enum = append(jsonSchemaType.Enum, enumValue.Name)
+		// 		jsonSchemaType.Enum = append(jsonSchemaType.Enum, enumValue.Number)
+		// 	}
+		// }
 
 	case descriptor.FieldDescriptorProto_TYPE_BOOL:
 		jsonSchemaType.Type = "boolean"
@@ -212,7 +206,6 @@ func convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, m
 		return nil, fmt.Errorf("unrecognized field label: %s", desc.GetLabel().String())
 	}
 
-
 	// Recurse nested objects (if necessary):
 	if jsonSchemaType.Type == "object" || jsonSchemaType.Type == "array" {
 		recordType, ok := curPkg.lookupType(desc.GetTypeName())
@@ -221,6 +214,7 @@ func convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, m
 		}
 
 		// Recurse:
+		// recursedJsonSchemaType, err := convertMessageType(curPkg.children[*desc.Name], recordType)
 		recursedJsonSchemaType, err := convertMessageType(curPkg, recordType)
 		if err != nil {
 			return nil, err
@@ -242,7 +236,7 @@ func convertMessageType(curPkg *ProtoPackage, msg *descriptor.DescriptorProto) (
 	schema := jsonschema.Type{
 		Properties: make(map[string]*jsonschema.Type),
 		Type:       "object",
-		Version:     "http://json-schema.org/draft-04/schema#",
+		Version:    jsonschema.Version,
 	}
 
 	// AllowAdditionalProperties will prevent validation where extra fields are found (outside of the schema):
@@ -261,7 +255,6 @@ func convertMessageType(curPkg *ProtoPackage, msg *descriptor.DescriptorProto) (
 			glog.Errorf("Failed to convert field %s in %s: %v", fieldDesc.GetName(), msg.GetName(), err)
 			return schema, err
 		}
-		// schema.Properties[jsonSchemaType.Title] = jsonSchemaType
 		schema.Properties[fieldDesc.GetName()] = jsonSchemaType
 	}
 	return schema, nil
