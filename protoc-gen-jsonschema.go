@@ -167,15 +167,25 @@ func convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, m
 		jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: "string"})
 		jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: "integer"})
 
-		// os.Stderr.WriteString(fmt.Sprintf("Descriptor => %v\n", *desc.TypeName))
+		// os.Stderr.WriteString(fmt.Sprintf("Descriptor => %v\n", desc.GetTypeName()))
 
-		// for enumKey, enumDescriptor := range msg.GetEnumType() {
-		// 	os.Stderr.WriteString(fmt.Sprintf("%v => %v\n", enumKey, msg.GetEnumType()))
-		// 	for _, enumValue := range enumDescriptor.Value {
-		// 		jsonSchemaType.Enum = append(jsonSchemaType.Enum, enumValue.Name)
-		// 		jsonSchemaType.Enum = append(jsonSchemaType.Enum, enumValue.Number)
-		// 	}
-		// }
+		// Go through all the enums we have, see if we can match any to this field by name:
+		for _, enumDescriptor := range msg.GetEnumType() {
+
+			// os.Stderr.WriteString(fmt.Sprintf("%v => %v.%v\n", enumKey, *msg.Name, msg.GetEnumType()))
+			for _, enumValue := range enumDescriptor.Value {
+
+				// Figure out the entire name of this field:
+				fullFieldName := fmt.Sprintf("%v.%v", *msg.Name, *enumDescriptor.Name)
+
+				// If we find ENUM values for this field then put them into the JSONSchema list of allowed ENUM values:
+				if strings.HasSuffix(desc.GetTypeName(), fullFieldName) {
+					// os.Stderr.WriteString(fmt.Sprintf("%v => %v\n", enumKey, fullFieldName))
+					jsonSchemaType.Enum = append(jsonSchemaType.Enum, enumValue.Name)
+					jsonSchemaType.Enum = append(jsonSchemaType.Enum, enumValue.Number)
+				}
+			}
+		}
 
 	case descriptor.FieldDescriptorProto_TYPE_BOOL:
 		jsonSchemaType.Type = "boolean"
