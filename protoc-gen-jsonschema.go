@@ -169,8 +169,6 @@ func convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, m
 		jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: "string"})
 		jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: "integer"})
 
-		// os.Stderr.WriteString(fmt.Sprintf("Descriptor => %v\n", desc.GetTypeName()))
-
 		// Go through all the enums we have, see if we can match any to this field by name:
 		for _, enumDescriptor := range msg.GetEnumType() {
 
@@ -178,11 +176,10 @@ func convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, m
 			for _, enumValue := range enumDescriptor.Value {
 
 				// Figure out the entire name of this field:
-				fullFieldName := fmt.Sprintf("%v.%v", *msg.Name, *enumDescriptor.Name)
+				fullFieldName := fmt.Sprintf(".%v.%v", *msg.Name, *enumDescriptor.Name)
 
 				// If we find ENUM values for this field then put them into the JSONSchema list of allowed ENUM values:
 				if strings.HasSuffix(desc.GetTypeName(), fullFieldName) {
-					// os.Stderr.WriteString(fmt.Sprintf("%v => %v\n", enumKey, fullFieldName))
 					jsonSchemaType.Enum = append(jsonSchemaType.Enum, enumValue.Name)
 					jsonSchemaType.Enum = append(jsonSchemaType.Enum, enumValue.Number)
 				}
@@ -221,6 +218,7 @@ func convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, m
 	// Recurse array of primitive types:
 	if desc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REPEATED && jsonSchemaType.Type != "object" {
 		jsonSchemaType.Items = &jsonschema.Type{
+			Enum: jsonSchemaType.Enum,
 			Type: jsonSchemaType.Type,
 		}
 		jsonSchemaType.Type = "array"
@@ -235,15 +233,16 @@ func convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, m
 		}
 
 		// Recurse:
-		// recursedJsonSchemaType, err := convertMessageType(curPkg.children[*desc.Name], recordType)
 		recursedJsonSchemaType, err := convertMessageType(curPkg, recordType)
 		if err != nil {
 			return nil, err
 		}
 
+		// The result is stored differently for arrays of objects (they become "items"):
 		if desc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REPEATED {
 			jsonSchemaType.Items = &recursedJsonSchemaType
 		} else {
+			// Nested objects are more straight-forward:
 			jsonSchemaType.Properties = recursedJsonSchemaType.Properties
 		}
 	}
