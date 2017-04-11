@@ -169,14 +169,19 @@ func convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, m
 		jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: "string"})
 		jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: "integer"})
 
+		// os.Stderr.WriteString(fmt.Sprintf("enum => %v\n", *desc.Name))
+		// os.Stderr.WriteString(fmt.Sprintf("msg => %v\n", msg))
+
 		// Go through all the enums we have, see if we can match any to this field by name:
 		for _, enumDescriptor := range msg.GetEnumType() {
+			// os.Stderr.WriteString(fmt.Sprintf("enumDescriptor => %v\n", enumDescriptor))
 
-			// os.Stderr.WriteString(fmt.Sprintf("%v => %v.%v\n", enumKey, *msg.Name, msg.GetEnumType()))
+			// Each one has several values:
 			for _, enumValue := range enumDescriptor.Value {
 
 				// Figure out the entire name of this field:
 				fullFieldName := fmt.Sprintf(".%v.%v", *msg.Name, *enumDescriptor.Name)
+				// os.Stderr.WriteString(fmt.Sprintf("%v => %v\n", fullFieldName, enumValue))
 
 				// If we find ENUM values for this field then put them into the JSONSchema list of allowed ENUM values:
 				if strings.HasSuffix(desc.GetTypeName(), fullFieldName) {
@@ -218,7 +223,6 @@ func convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, m
 	// Recurse array of primitive types:
 	if desc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REPEATED && jsonSchemaType.Type != "object" {
 		jsonSchemaType.Items = &jsonschema.Type{
-			Enum: jsonSchemaType.Enum,
 			Type: jsonSchemaType.Type,
 		}
 		jsonSchemaType.Type = "array"
@@ -241,6 +245,7 @@ func convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, m
 		// The result is stored differently for arrays of objects (they become "items"):
 		if desc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REPEATED {
 			jsonSchemaType.Items = &recursedJsonSchemaType
+			jsonSchemaType.Type = "array"
 		} else {
 			// Nested objects are more straight-forward:
 			jsonSchemaType.Properties = recursedJsonSchemaType.Properties
