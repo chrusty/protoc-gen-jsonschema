@@ -217,7 +217,8 @@ func convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, m
 	}
 
 	// Recurse nested objects (if necessary):
-	if jsonSchemaType.Type == "object" || jsonSchemaType.Type == "array" {
+	switch jsonSchemaType.Type {
+	case "object":
 		recordType, ok := curPkg.lookupType(desc.GetTypeName())
 		if !ok {
 			return nil, fmt.Errorf("no such message type named %s", desc.GetTypeName())
@@ -228,15 +229,50 @@ func convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, m
 		recursedJsonSchemaType, err := convertMessageType(curPkg, recordType)
 		if err != nil {
 			return nil, err
+		} else {
+			jsonSchemaType.Properties = recursedJsonSchemaType.Properties
+		}
+	case "array":
+		recordType, getTypeNameFound := curPkg.lookupType(desc.GetTypeName())
+		if !getTypeNameFound {
+			os.Stderr.WriteString(fmt.Sprintf("Couldn't GetTypeName() for an array\n"))
+			// recordType, getTypeFound := curPkg.lookupType(desc.GetType())
+			// if !getTypeFound {
+			// 	os.Stderr.WriteString(fmt.Sprintf("Couldn't GetType() for an array\n"))
+			// 	return nil, fmt.Errorf("no such message type named %s", desc.GetType())
+			// }
 		}
 
-		switch jsonSchemaType.Type {
-		case "object":
-			jsonSchemaType.Properties = recursedJsonSchemaType.Properties
-		case "array":
+		// Recurse:
+		recursedJsonSchemaType, err := convertMessageType(curPkg, recordType)
+		if err != nil {
+			return nil, err
+		} else {
 			jsonSchemaType.Items = &recursedJsonSchemaType
 		}
 	}
+
+	// // Recurse nested objects (if necessary):
+	// if jsonSchemaType.Type == "object" || jsonSchemaType.Type == "array" {
+	// 	recordType, ok := curPkg.lookupType(desc.GetTypeName())
+	// 	if !ok {
+	// 		return nil, fmt.Errorf("no such message type named %s", desc.GetTypeName())
+	// 	}
+
+	// 	// Recurse:
+	// 	// recursedJsonSchemaType, err := convertMessageType(curPkg.children[*desc.Name], recordType)
+	// 	recursedJsonSchemaType, err := convertMessageType(curPkg, recordType)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+
+	// 	switch jsonSchemaType.Type {
+	// 	case "object":
+	// 		jsonSchemaType.Properties = recursedJsonSchemaType.Properties
+	// 	case "array":
+	// 		jsonSchemaType.Items = &recursedJsonSchemaType
+	// 	}
+	// }
 
 	return jsonSchemaType, nil
 }

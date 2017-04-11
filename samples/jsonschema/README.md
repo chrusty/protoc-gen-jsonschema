@@ -1,0 +1,1 @@
+This is where JSON-Schema files should be written to

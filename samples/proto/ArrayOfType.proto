@@ -1,0 +1,7 @@
+syntax = "proto3";
+package samples;
+
+message ArrayOfType {
+    string description          = 1;
+    repeated int32 luckyNumbers = 2;
+}
