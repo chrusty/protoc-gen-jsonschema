@@ -1,7 +1,8 @@
 syntax = "proto3";
 package samples;
 
-message ArrayOfType {
+message ArrayOfPrimitives {
     string description          = 1;
     repeated int32 luckyNumbers = 2;
+    repeated string keyWords    = 3;
 }

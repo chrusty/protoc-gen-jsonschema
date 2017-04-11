@@ -138,10 +138,12 @@ func (pkg *ProtoPackage) relativelyLookupPackage(name string) (*ProtoPackage, bo
 }
 
 func convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, msg *descriptor.DescriptorProto) (*jsonschema.Type, error) {
+	// Prepare a new jsonschema.Type for our eventual return value:
 	jsonSchemaType := &jsonschema.Type{
 		Properties: make(map[string]*jsonschema.Type),
 	}
 
+	// Switch the types, and pick a JSONSchema equivalent:
 	switch desc.GetType() {
 	case descriptor.FieldDescriptorProto_TYPE_DOUBLE,
 		descriptor.FieldDescriptorProto_TYPE_FLOAT:
@@ -204,21 +206,29 @@ func convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, m
 		return nil, fmt.Errorf("unrecognized field type: %s", desc.GetType().String())
 	}
 
-	switch desc.GetLabel() {
-	case descriptor.FieldDescriptorProto_LABEL_OPTIONAL:
+	// // Process labels:
+	// switch desc.GetLabel() {
+	// case descriptor.FieldDescriptorProto_LABEL_OPTIONAL:
+	// 	// (Not really supported in proto v3):
+	// case descriptor.FieldDescriptorProto_LABEL_REQUIRED:
+	// 	// (Not really supported in proto v3):
+	// case descriptor.FieldDescriptorProto_LABEL_REPEATED:
+	// 	// This is an array:
+	// default:
+	// 	return nil, fmt.Errorf("unrecognized field label: %s", desc.GetLabel().String())
+	// }
 
-	case descriptor.FieldDescriptorProto_LABEL_REQUIRED:
-
-	case descriptor.FieldDescriptorProto_LABEL_REPEATED:
+	// Recurse array of primitive types:
+	if desc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REPEATED && jsonSchemaType.Type != "object" {
+		jsonSchemaType.Items = &jsonschema.Type{
+			Type: jsonSchemaType.Type,
+		}
 		jsonSchemaType.Type = "array"
-
-	default:
-		return nil, fmt.Errorf("unrecognized field label: %s", desc.GetLabel().String())
+		return jsonSchemaType, nil
 	}
 
-	// Recurse nested objects (if necessary):
-	switch jsonSchemaType.Type {
-	case "object":
+	// Recurse nested objects / arrays of objects (if necessary):
+	if jsonSchemaType.Type == "object" {
 		recordType, ok := curPkg.lookupType(desc.GetTypeName())
 		if !ok {
 			return nil, fmt.Errorf("no such message type named %s", desc.GetTypeName())
@@ -229,50 +239,14 @@ func convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, m
 		recursedJsonSchemaType, err := convertMessageType(curPkg, recordType)
 		if err != nil {
 			return nil, err
+		}
+
+		if desc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			jsonSchemaType.Items = &recursedJsonSchemaType
 		} else {
 			jsonSchemaType.Properties = recursedJsonSchemaType.Properties
 		}
-	case "array":
-		recordType, getTypeNameFound := curPkg.lookupType(desc.GetTypeName())
-		if !getTypeNameFound {
-			os.Stderr.WriteString(fmt.Sprintf("Couldn't GetTypeName() for an array\n"))
-			// recordType, getTypeFound := curPkg.lookupType(desc.GetType())
-			// if !getTypeFound {
-			// 	os.Stderr.WriteString(fmt.Sprintf("Couldn't GetType() for an array\n"))
-			// 	return nil, fmt.Errorf("no such message type named %s", desc.GetType())
-			// }
-		}
-
-		// Recurse:
-		recursedJsonSchemaType, err := convertMessageType(curPkg, recordType)
-		if err != nil {
-			return nil, err
-		} else {
-			jsonSchemaType.Items = &recursedJsonSchemaType
-		}
 	}
-
-	// // Recurse nested objects (if necessary):
-	// if jsonSchemaType.Type == "object" || jsonSchemaType.Type == "array" {
-	// 	recordType, ok := curPkg.lookupType(desc.GetTypeName())
-	// 	if !ok {
-	// 		return nil, fmt.Errorf("no such message type named %s", desc.GetTypeName())
-	// 	}
-
-	// 	// Recurse:
-	// 	// recursedJsonSchemaType, err := convertMessageType(curPkg.children[*desc.Name], recordType)
-	// 	recursedJsonSchemaType, err := convertMessageType(curPkg, recordType)
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-
-	// 	switch jsonSchemaType.Type {
-	// 	case "object":
-	// 		jsonSchemaType.Properties = recursedJsonSchemaType.Properties
-	// 	case "array":
-	// 		jsonSchemaType.Items = &recursedJsonSchemaType
-	// 	}
-	// }
 
 	return jsonSchemaType, nil
 }
