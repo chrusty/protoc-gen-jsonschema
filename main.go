@@ -300,15 +300,19 @@ func convertFile(file *descriptor.FileDescriptorProto) ([]*plugin.CodeGeneratorR
 	// Prepare a list of responses:
 	response := []*plugin.CodeGeneratorResponse_File{}
 
-	// Warn about multiple messages in files:
+	// Warn about multiple messages / enums in files:
 	if len(file.GetMessageType()) > 1 {
-		log.Warnf("protoc-gen-jsonschema expects one message per proto file (%v has %d)", protoFileName, len(file.GetMessageType()))
+		log.Warnf("protoc-gen-jsonschema is about to create multiple MESSAGE schemas (%d) from one proto file (%v)", len(file.GetMessageType()), protoFileName)
+	}
+	if len(file.GetEnumType()) > 1 {
+		log.Warnf("protoc-gen-jsonschema is about to create multiple ENUM schemas (%d) from one proto file (%v)", len(file.GetEnumType()), protoFileName)
 	}
 
 	// Generate standalone ENUMs:
 	if len(file.GetMessageType()) == 0 {
 		for _, enum := range file.GetEnumType() {
-			log.Infof("Generating schema for ENUM (stand-alone): %v", enum.GetName())
+			jsonSchemaFileName := fmt.Sprintf("%s.jsonschema", enum.GetName())
+			log.Infof("Generating JSON-schema for stand-alone ENUM (%v) in file [%v] => %v", enum.GetName(), protoFileName, jsonSchemaFileName)
 			enumJsonSchema, err := convertEnumType(enum)
 			if err != nil {
 				log.Errorf("Failed to convert %s: %v", protoFileName, err)
@@ -322,7 +326,7 @@ func convertFile(file *descriptor.FileDescriptorProto) ([]*plugin.CodeGeneratorR
 				} else {
 					// Add a response:
 					resFile := &plugin.CodeGeneratorResponse_File{
-						Name:    proto.String(fmt.Sprintf("%s.jsonschema", enum.GetName())),
+						Name:    proto.String(jsonSchemaFileName),
 						Content: proto.String(string(jsonSchemaJson)),
 					}
 					response = append(response, resFile)
@@ -336,7 +340,8 @@ func convertFile(file *descriptor.FileDescriptorProto) ([]*plugin.CodeGeneratorR
 			return nil, fmt.Errorf("no such package found: %s", file.GetPackage())
 		}
 		for _, msg := range file.GetMessageType() {
-			log.Infof("Generating schema for MESSAGE: %v ", msg.GetName())
+			jsonSchemaFileName := fmt.Sprintf("%s.jsonschema", msg.GetName())
+			log.Infof("Generating JSON-schema for MESSAGE (%v) in file [%v] => %v", msg.GetName(), protoFileName, jsonSchemaFileName)
 			messageJsonSchema, err := convertMessageType(pkg, msg)
 			if err != nil {
 				log.Errorf("Failed to convert %s: %v", protoFileName, err)
@@ -350,7 +355,7 @@ func convertFile(file *descriptor.FileDescriptorProto) ([]*plugin.CodeGeneratorR
 				} else {
 					// Add a response:
 					resFile := &plugin.CodeGeneratorResponse_File{
-						Name:    proto.String(fmt.Sprintf("%s.jsonschema", msg.GetName())),
+						Name:    proto.String(jsonSchemaFileName),
 						Content: proto.String(string(jsonSchemaJson)),
 					}
 					response = append(response, resFile)
