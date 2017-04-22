@@ -17,15 +17,16 @@ import (
 	"path"
 	"strings"
 
+	log "github.com/Sirupsen/logrus"
 	jsonschema "github.com/alecthomas/jsonschema"
-	"github.com/golang/glog"
-	"github.com/golang/protobuf/proto"
+	proto "github.com/golang/protobuf/proto"
 	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
 )
 
 const (
-	AllowAdditionalProperties = true
+	allowAdditionalProperties = true
+	loggingLevel              = log.InfoLevel
 )
 
 var (
@@ -92,7 +93,7 @@ componentLoop:
 				continue componentLoop
 			}
 		}
-		glog.Infof("no such nested message %s in %s", component, desc.GetName())
+		log.Infof("no such nested message %s in %s", component, desc.GetName())
 		return nil, false
 	}
 	return desc, true
@@ -102,13 +103,13 @@ func (pkg *ProtoPackage) relativelyLookupType(name string) (*descriptor.Descript
 	components := strings.SplitN(name, ".", 2)
 	switch len(components) {
 	case 0:
-		glog.V(1).Info("empty message name")
+		log.Debug("empty message name")
 		return nil, false
 	case 1:
 		found, ok := pkg.types[components[0]]
 		return found, ok
 	case 2:
-		glog.Infof("looking for %s in %s at %s (%v)", components[1], components[0], pkg.name, pkg)
+		log.Debugf("looking for %s in %s at %s (%v)", components[1], components[0], pkg.name, pkg)
 		if child, ok := pkg.children[components[0]]; ok {
 			found, ok := child.relativelyLookupType(components[1])
 			return found, ok
@@ -117,10 +118,10 @@ func (pkg *ProtoPackage) relativelyLookupType(name string) (*descriptor.Descript
 			found, ok := relativelyLookupNestedType(msg, components[1])
 			return found, ok
 		}
-		glog.V(1).Infof("no such package nor message %s in %s", components[0], pkg.name)
+		log.Infof("no such package nor message %s in %s", components[0], pkg.name)
 		return nil, false
 	default:
-		glog.Fatal("not reached")
+		log.Fatal("not reached")
 		return nil, false
 	}
 }
@@ -137,7 +138,9 @@ func (pkg *ProtoPackage) relativelyLookupPackage(name string) (*ProtoPackage, bo
 	return pkg, true
 }
 
+// Convert a proto "field" (essentially a type-switch with some recursion):
 func convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, msg *descriptor.DescriptorProto) (*jsonschema.Type, error) {
+
 	// Prepare a new jsonschema.Type for our eventual return value:
 	jsonSchemaType := &jsonschema.Type{
 		Properties: make(map[string]*jsonschema.Type),
@@ -238,7 +241,9 @@ func convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, m
 	return jsonSchemaType, nil
 }
 
+// Converts a proto "MESSAGE" into a JSON-Schema:
 func convertMessageType(curPkg *ProtoPackage, msg *descriptor.DescriptorProto) (jsonschema.Type, error) {
+
 	// Prepare a new jsonschema:
 	jsonSchemaType := jsonschema.Type{
 		Properties: make(map[string]*jsonschema.Type),
@@ -247,19 +252,17 @@ func convertMessageType(curPkg *ProtoPackage, msg *descriptor.DescriptorProto) (
 	}
 
 	// AllowAdditionalProperties will prevent validation where extra fields are found (outside of the schema):
-	if AllowAdditionalProperties {
+	if allowAdditionalProperties {
 		jsonSchemaType.AdditionalProperties = []byte("true")
 	} else {
 		jsonSchemaType.AdditionalProperties = []byte("false")
 	}
 
-	if glog.V(4) {
-		glog.Info("Converting message: ", proto.MarshalTextString(msg))
-	}
+	log.Debugf("Converting message: %s", proto.MarshalTextString(msg))
 	for _, fieldDesc := range msg.GetField() {
 		recursedJsonSchemaType, err := convertField(curPkg, fieldDesc, msg)
 		if err != nil {
-			glog.Errorf("Failed to convert field %s in %s: %v", fieldDesc.GetName(), msg.GetName(), err)
+			log.Errorf("Failed to convert field %s in %s: %v", fieldDesc.GetName(), msg.GetName(), err)
 			return jsonSchemaType, err
 		}
 		jsonSchemaType.Properties[fieldDesc.GetName()] = recursedJsonSchemaType
@@ -267,7 +270,9 @@ func convertMessageType(curPkg *ProtoPackage, msg *descriptor.DescriptorProto) (
 	return jsonSchemaType, nil
 }
 
+// Converts a proto "ENUM" into a JSON-Schema:
 func convertEnumType(enum *descriptor.EnumDescriptorProto) (jsonschema.Type, error) {
+
 	// Prepare a new jsonschema.Type for our eventual return value:
 	jsonSchemaType := jsonschema.Type{
 		Version: jsonschema.Version,
@@ -286,62 +291,73 @@ func convertEnumType(enum *descriptor.EnumDescriptorProto) (jsonschema.Type, err
 	return jsonSchemaType, nil
 }
 
+// Converts a proto file into a JSON-Schema:
 func convertFile(file *descriptor.FileDescriptorProto) ([]*plugin.CodeGeneratorResponse_File, error) {
+
+	// Input filename:
 	protoFileName := path.Base(file.GetName())
-	var jsonSchemaName string
 
-	// Prepare a new jsonschema:
-	jsonSchema := jsonschema.Type{
-		Properties: make(map[string]*jsonschema.Type),
-		Version:    jsonschema.Version,
-	}
-
+	// Prepare a list of responses:
 	response := []*plugin.CodeGeneratorResponse_File{}
+
+	// Warn about multiple messages in files:
+	if len(file.GetMessageType()) > 1 {
+		log.Warnf("protoc-gen-jsonschema expects one message per proto file (%v has %d)", protoFileName, len(file.GetMessageType()))
+	}
 
 	// Generate standalone ENUMs:
 	if len(file.GetMessageType()) == 0 {
 		for _, enum := range file.GetEnumType() {
-			glog.V(2).Info("Generating schema for ENUM type ", enum.GetName())
+			log.Infof("Generating schema for ENUM (stand-alone): %v", enum.GetName())
 			enumJsonSchema, err := convertEnumType(enum)
 			if err != nil {
-				glog.Errorf("Failed to convert %s: %v", protoFileName, err)
+				log.Errorf("Failed to convert %s: %v", protoFileName, err)
 				return nil, err
 			} else {
-				jsonSchema = enumJsonSchema
-				jsonSchemaName = enum.GetName()
-				break
+				// Marshal the JSON-Schema into JSON:
+				jsonSchemaJson, err := json.MarshalIndent(enumJsonSchema, "", "    ")
+				if err != nil {
+					log.Errorf("Failed to encode jsonSchema: %v", err)
+					return nil, err
+				} else {
+					// Add a response:
+					resFile := &plugin.CodeGeneratorResponse_File{
+						Name:    proto.String(fmt.Sprintf("%s.jsonschema", enum.GetName())),
+						Content: proto.String(string(jsonSchemaJson)),
+					}
+					response = append(response, resFile)
+				}
 			}
 		}
 	} else {
+		// Otherwise process MESSAGES (packages):
 		pkg, ok := globalPkg.relativelyLookupPackage(file.GetPackage())
 		if !ok {
 			return nil, fmt.Errorf("no such package found: %s", file.GetPackage())
 		}
 		for _, msg := range file.GetMessageType() {
-			glog.V(2).Info("Generating schema for MESSAGE type ", msg.GetName())
+			log.Infof("Generating schema for MESSAGE: %v ", msg.GetName())
 			messageJsonSchema, err := convertMessageType(pkg, msg)
 			if err != nil {
-				glog.Errorf("Failed to convert %s: %v", protoFileName, err)
+				log.Errorf("Failed to convert %s: %v", protoFileName, err)
 				return nil, err
 			} else {
-				jsonSchema = messageJsonSchema
-				jsonSchemaName = msg.GetName()
-				break
+				// Marshal the JSON-Schema into JSON:
+				jsonSchemaJson, err := json.MarshalIndent(messageJsonSchema, "", "    ")
+				if err != nil {
+					log.Errorf("Failed to encode jsonSchema: %v", err)
+					return nil, err
+				} else {
+					// Add a response:
+					resFile := &plugin.CodeGeneratorResponse_File{
+						Name:    proto.String(fmt.Sprintf("%s.jsonschema", msg.GetName())),
+						Content: proto.String(string(jsonSchemaJson)),
+					}
+					response = append(response, resFile)
+				}
 			}
 		}
 	}
-
-	jsonSchemaJson, err := json.MarshalIndent(jsonSchema, "", "    ")
-	if err != nil {
-		glog.Error("Failed to encode jsonSchema", err)
-		return nil, err
-	}
-
-	resFile := &plugin.CodeGeneratorResponse_File{
-		Name:    proto.String(fmt.Sprintf("%s.jsonschema", jsonSchemaName)),
-		Content: proto.String(string(jsonSchemaJson)),
-	}
-	response = append(response, resFile)
 
 	return response, nil
 }
@@ -355,13 +371,13 @@ func convert(req *plugin.CodeGeneratorRequest) (*plugin.CodeGeneratorResponse, e
 	res := &plugin.CodeGeneratorResponse{}
 	for _, file := range req.GetProtoFile() {
 		for _, msg := range file.GetMessageType() {
-			glog.V(1).Infof("Loading a message type %s from package %s", msg.GetName(), file.GetPackage())
+			log.Debugf("Loading a message type %s from package %s", msg.GetName(), file.GetPackage())
 			registerType(file.Package, msg)
 		}
 	}
 	for _, file := range req.GetProtoFile() {
 		if _, ok := generateTargets[file.GetName()]; ok {
-			glog.V(1).Info("Converting ", file.GetName())
+			log.Debugf("Converting file (%v)", file.GetName())
 			converted, err := convertFile(file)
 			if err != nil {
 				res.Error = proto.String(fmt.Sprintf("Failed to convert %s: %v", file.GetName(), err))
@@ -374,27 +390,28 @@ func convert(req *plugin.CodeGeneratorRequest) (*plugin.CodeGeneratorResponse, e
 }
 
 func convertFrom(rd io.Reader) (*plugin.CodeGeneratorResponse, error) {
-	glog.V(1).Info("Reading code generation request")
+	log.Debug("Reading code generation request")
 	input, err := ioutil.ReadAll(rd)
 	if err != nil {
-		glog.Error("Failed to read request:", err)
+		log.Errorf("Failed to read request: %v", err)
 		return nil, err
 	}
 	req := &plugin.CodeGeneratorRequest{}
 	err = proto.Unmarshal(input, req)
 	if err != nil {
-		glog.Error("Can't unmarshal input:", err)
+		log.Errorf("Can't unmarshal input: %v", err)
 		return nil, err
 	}
 
-	glog.V(1).Info("Converting input")
+	log.Debug("Converting input")
 	return convert(req)
 }
 
 func main() {
+	log.SetLevel(loggingLevel)
 	flag.Parse()
 	ok := true
-	glog.Info("Processing code generator request")
+	log.Debug("Processing code generator request")
 	res, err := convertFrom(os.Stdin)
 	if err != nil {
 		ok = false
@@ -406,20 +423,20 @@ func main() {
 		}
 	}
 
-	glog.Info("Serializing code generator response")
+	log.Debug("Serializing code generator response")
 	data, err := proto.Marshal(res)
 	if err != nil {
-		glog.Fatal("Cannot marshal response", err)
+		log.Fatalf("Cannot marshal response: %v", err)
 	}
 	_, err = os.Stdout.Write(data)
 	if err != nil {
-		glog.Fatal("Failed to write response", err)
+		log.Fatalf("Failed to write response: %v", err)
 	}
 
 	if ok {
-		glog.Info("Succeeded to process code generator request")
+		log.Debug("Succeeded to process code generator request")
 	} else {
-		glog.Info("Failed to process code generator but successfully sent the error to protoc")
+		log.Warn("Failed to process code generator but successfully sent the error to protoc")
 		os.Exit(1)
 	}
 }
