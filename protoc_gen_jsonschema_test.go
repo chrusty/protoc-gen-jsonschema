@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	log "github.com/Sirupsen/logrus"
+	testdata "github.com/chrusty/protoc-gen-jsonschema/testdata"
 	proto "github.com/golang/protobuf/proto"
 	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
@@ -36,12 +37,12 @@ func TestGenerateJsonSchema(t *testing.T) {
 	configureSampleProtos()
 
 	// Convert the protos, compare the results against the expected JSON-Schemas:
-	// testConvertSampleProtos(t, sampleProtos["ArrayOfMessages"])
+	testConvertSampleProtos(t, sampleProtos["ArrayOfMessages"])
 	testConvertSampleProtos(t, sampleProtos["ArrayOfObjects"])
 	testConvertSampleProtos(t, sampleProtos["ArrayOfPrimitives"])
-	// testConvertSampleProtos(t, sampleProtos["EnumCeption"])
+	testConvertSampleProtos(t, sampleProtos["EnumCeption"])
 	testConvertSampleProtos(t, sampleProtos["ImportedEnum"])
-	// testConvertSampleProtos(t, sampleProtos["NestedMessage"])
+	testConvertSampleProtos(t, sampleProtos["NestedMessage"])
 	testConvertSampleProtos(t, sampleProtos["NestedObject"])
 	testConvertSampleProtos(t, sampleProtos["PayloadMessage"])
 	testConvertSampleProtos(t, sampleProtos["SeveralEnums"])
@@ -73,7 +74,7 @@ func testConvertSampleProtos(t *testing.T, sampleProto SampleProto) {
 	sampleProtoFileName := fmt.Sprintf("%v/%v", sampleProtoDirectory, sampleProto.protoFileName)
 
 	// Prepare to run the "protoc" command (generates a CodeGeneratorRequest):
-	protocCommand := exec.Command(protocBinary, "--descriptor_set_out=/dev/stdout", fmt.Sprintf("--proto_path=%v", sampleProtoDirectory), sampleProtoFileName)
+	protocCommand := exec.Command(protocBinary, "--descriptor_set_out=/dev/stdout", "--include_imports", fmt.Sprintf("--proto_path=%v", sampleProtoDirectory), sampleProtoFileName)
 	var protocCommandOutput bytes.Buffer
 	protocCommand.Stdout = &protocCommandOutput
 
@@ -95,8 +96,13 @@ func testConvertSampleProtos(t *testing.T, sampleProto SampleProto) {
 	// Perform the conversion:
 	response, err := convert(&codeGeneratorRequest)
 	assert.NoError(t, err, "Unable to convert sample proto file (%v)", sampleProtoFileName)
-	for responseFileIndex, responseFile := range response.File {
-		assert.EqualValues(t, sampleProto.expectedJsonSchema[responseFileIndex], *responseFile.Content, "Incorrect JSON-Schema returned")
+	assert.EqualValues(t, len(sampleProto.expectedJsonSchema), len(response.File), "Incorrect number of JSON-Schema files returned")
+	if len(sampleProto.expectedJsonSchema) != len(response.File) {
+		t.Fail()
+	} else {
+		for responseFileIndex, responseFile := range response.File {
+			assert.EqualValues(t, sampleProto.expectedJsonSchema[responseFileIndex], *responseFile.Content, "Incorrect JSON-Schema returned")
+		}
 	}
 
 }
@@ -104,628 +110,72 @@ func testConvertSampleProtos(t *testing.T, sampleProto SampleProto) {
 func configureSampleProtos() {
 	// ArrayOfMessages:
 	sampleProtos["ArrayOfMessages"] = SampleProto{
-		protoFileName:   "ArrayOfMessages.proto",
-		filesToGenerate: []string{"ArrayOfMessages.proto", "PayloadMessage.proto"},
-		expectedJsonSchema: []string{
-			`{
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "properties": {
-        "description": {
-            "type": "string"
-        },
-        "payload": {
-            "items": {
-                "$schema": "http://json-schema.org/draft-04/schema#",
-                "properties": {
-                    "complete": {
-                        "type": "boolean"
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "rating": {
-                        "type": "number"
-                    },
-                    "timestamp": {
-                        "type": "string"
-                    },
-                    "topology": {
-                        "enum": [
-                            "FLAT",
-                            0,
-                            "NESTED_OBJECT",
-                            1,
-                            "NESTED_MESSAGE",
-                            2,
-                            "ARRAY_OF_TYPE",
-                            3,
-                            "ARRAY_OF_OBJECT",
-                            4,
-                            "ARRAY_OF_MESSAGE",
-                            5
-                        ],
-                        "oneOf": [
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "type": "integer"
-                            }
-                        ]
-                    }
-                },
-                "additionalProperties": true,
-                "type": "object"
-            },
-            "type": "array"
-        }
-    },
-    "additionalProperties": true,
-    "type": "object"
-}`,
-		},
+		protoFileName:      "ArrayOfMessages.proto",
+		filesToGenerate:    []string{"ArrayOfMessages.proto", "PayloadMessage.proto"},
+		expectedJsonSchema: []string{testdata.PayloadMessage, testdata.ArrayOfMessages},
 	}
 
 	// ArrayOfObjects:
 	sampleProtos["ArrayOfObjects"] = SampleProto{
-		protoFileName:   "ArrayOfObjects.proto",
-		filesToGenerate: []string{"ArrayOfObjects.proto"},
-		expectedJsonSchema: []string{
-			`{
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "properties": {
-        "description": {
-            "type": "string"
-        },
-        "payload": {
-            "items": {
-                "$schema": "http://json-schema.org/draft-04/schema#",
-                "properties": {
-                    "complete": {
-                        "type": "boolean"
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "rating": {
-                        "type": "number"
-                    },
-                    "timestamp": {
-                        "type": "string"
-                    },
-                    "topology": {
-                        "enum": [
-                            "FLAT",
-                            0,
-                            "NESTED_OBJECT",
-                            1,
-                            "NESTED_MESSAGE",
-                            2,
-                            "ARRAY_OF_TYPE",
-                            3,
-                            "ARRAY_OF_OBJECT",
-                            4,
-                            "ARRAY_OF_MESSAGE",
-                            5
-                        ],
-                        "oneOf": [
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "type": "integer"
-                            }
-                        ]
-                    }
-                },
-                "additionalProperties": true,
-                "type": "object"
-            },
-            "type": "array"
-        }
-    },
-    "additionalProperties": true,
-    "type": "object"
-}`,
-		},
+		protoFileName:      "ArrayOfObjects.proto",
+		filesToGenerate:    []string{"ArrayOfObjects.proto"},
+		expectedJsonSchema: []string{testdata.ArrayOfObjects},
 	}
 
 	// ArrayOfPrimitives:
 	sampleProtos["ArrayOfPrimitives"] = SampleProto{
-		protoFileName:   "ArrayOfPrimitives.proto",
-		filesToGenerate: []string{"ArrayOfPrimitives.proto"},
-		expectedJsonSchema: []string{
-			`{
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "properties": {
-        "description": {
-            "type": "string"
-        },
-        "keyWords": {
-            "items": {
-                "type": "string"
-            },
-            "type": "array"
-        },
-        "luckyNumbers": {
-            "items": {
-                "type": "integer"
-            },
-            "type": "array"
-        }
-    },
-    "additionalProperties": true,
-    "type": "object"
-}`,
-		},
+		protoFileName:      "ArrayOfPrimitives.proto",
+		filesToGenerate:    []string{"ArrayOfPrimitives.proto"},
+		expectedJsonSchema: []string{testdata.ArrayOfPrimitives},
 	}
 
 	// EnumCeption:
 	sampleProtos["EnumCeption"] = SampleProto{
-		protoFileName:   "EnumCeption.proto",
-		filesToGenerate: []string{"EnumCeption.proto", "PayloadMessage.proto", "ImportedEnum.proto"},
-		expectedJsonSchema: []string{
-			`{
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "properties": {
-        "complete": {
-            "type": "boolean"
-        },
-        "failureMode": {
-            "enum": [
-                "RECURSION_ERROR",
-                0,
-                "SYNTAX_ERROR",
-                1
-            ],
-            "oneOf": [
-                {
-                    "type": "string"
-                },
-                {
-                    "type": "integer"
-                }
-            ]
-        },
-        "id": {
-            "type": "integer"
-        },
-        "importedEnum": {
-            "oneOf": [
-                {
-                    "type": "string"
-                },
-                {
-                    "type": "integer"
-                }
-            ]
-        },
-        "name": {
-            "type": "string"
-        },
-        "payload": {
-            "properties": {
-                "complete": {
-                    "type": "boolean"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "rating": {
-                    "type": "number"
-                },
-                "timestamp": {
-                    "type": "string"
-                },
-                "topology": {
-                    "enum": [
-                        "FLAT",
-                        0,
-                        "NESTED_OBJECT",
-                        1,
-                        "NESTED_MESSAGE",
-                        2,
-                        "ARRAY_OF_TYPE",
-                        3,
-                        "ARRAY_OF_OBJECT",
-                        4,
-                        "ARRAY_OF_MESSAGE",
-                        5
-                    ],
-                    "oneOf": [
-                        {
-                            "type": "string"
-                        },
-                        {
-                            "type": "integer"
-                        }
-                    ]
-                }
-            },
-            "additionalProperties": true,
-            "type": "object"
-        },
-        "payloads": {
-            "items": {
-                "$schema": "http://json-schema.org/draft-04/schema#",
-                "properties": {
-                    "complete": {
-                        "type": "boolean"
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "rating": {
-                        "type": "number"
-                    },
-                    "timestamp": {
-                        "type": "string"
-                    },
-                    "topology": {
-                        "enum": [
-                            "FLAT",
-                            0,
-                            "NESTED_OBJECT",
-                            1,
-                            "NESTED_MESSAGE",
-                            2,
-                            "ARRAY_OF_TYPE",
-                            3,
-                            "ARRAY_OF_OBJECT",
-                            4,
-                            "ARRAY_OF_MESSAGE",
-                            5
-                        ],
-                        "oneOf": [
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "type": "integer"
-                            }
-                        ]
-                    }
-                },
-                "additionalProperties": true,
-                "type": "object"
-            },
-            "type": "array"
-        },
-        "rating": {
-            "type": "number"
-        },
-        "timestamp": {
-            "type": "string"
-        }
-    },
-    "additionalProperties": true,
-    "type": "object"
-}`,
-		},
+		protoFileName:      "EnumCeption.proto",
+		filesToGenerate:    []string{"EnumCeption.proto", "PayloadMessage.proto", "ImportedEnum.proto"},
+		expectedJsonSchema: []string{testdata.PayloadMessage, testdata.ImportedEnum, testdata.EnumCeption},
 	}
 
 	// ImportedEnum:
 	sampleProtos["ImportedEnum"] = SampleProto{
-		protoFileName:   "ImportedEnum.proto",
-		filesToGenerate: []string{"ImportedEnum.proto"},
-		expectedJsonSchema: []string{
-			`{
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "enum": [
-        "VALUE_0",
-        0,
-        "VALUE_1",
-        1,
-        "VALUE_2",
-        2,
-        "VALUE_3",
-        3
-    ],
-    "oneOf": [
-        {
-            "type": "string"
-        },
-        {
-            "type": "integer"
-        }
-    ]
-}`,
-		},
+		protoFileName:      "ImportedEnum.proto",
+		filesToGenerate:    []string{"ImportedEnum.proto"},
+		expectedJsonSchema: []string{testdata.ImportedEnum},
 	}
 
 	// NestedMessage:
 	sampleProtos["NestedMessage"] = SampleProto{
-		protoFileName:   "NestedMessage.proto",
-		filesToGenerate: []string{"NestedMessage.proto", "PayloadMessage.proto"},
-		expectedJsonSchema: []string{
-
-			`{
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "properties": {
-        "description": {
-            "type": "string"
-        },
-        "payload": {
-            "properties": {
-                "complete": {
-                    "type": "boolean"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "rating": {
-                    "type": "number"
-                },
-                "timestamp": {
-                    "type": "string"
-                },
-                "topology": {
-                    "enum": [
-                        "FLAT",
-                        0,
-                        "NESTED_OBJECT",
-                        1,
-                        "NESTED_MESSAGE",
-                        2,
-                        "ARRAY_OF_TYPE",
-                        3,
-                        "ARRAY_OF_OBJECT",
-                        4,
-                        "ARRAY_OF_MESSAGE",
-                        5
-                    ],
-                    "oneOf": [
-                        {
-                            "type": "string"
-                        },
-                        {
-                            "type": "integer"
-                        }
-                    ]
-                }
-            },
-            "additionalProperties": true,
-            "type": "object"
-        }
-    },
-    "additionalProperties": true,
-    "type": "object"
-}`,
-		},
+		protoFileName:      "NestedMessage.proto",
+		filesToGenerate:    []string{"NestedMessage.proto", "PayloadMessage.proto"},
+		expectedJsonSchema: []string{testdata.PayloadMessage, testdata.NestedMessage},
 	}
 
 	// NestedObject:
 	sampleProtos["NestedObject"] = SampleProto{
-		protoFileName:   "NestedObject.proto",
-		filesToGenerate: []string{"NestedObject.proto"},
-		expectedJsonSchema: []string{
-			`{
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "properties": {
-        "description": {
-            "type": "string"
-        },
-        "payload": {
-            "properties": {
-                "complete": {
-                    "type": "boolean"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "rating": {
-                    "type": "number"
-                },
-                "timestamp": {
-                    "type": "string"
-                },
-                "topology": {
-                    "enum": [
-                        "FLAT",
-                        0,
-                        "NESTED_OBJECT",
-                        1,
-                        "NESTED_MESSAGE",
-                        2,
-                        "ARRAY_OF_TYPE",
-                        3,
-                        "ARRAY_OF_OBJECT",
-                        4,
-                        "ARRAY_OF_MESSAGE",
-                        5
-                    ],
-                    "oneOf": [
-                        {
-                            "type": "string"
-                        },
-                        {
-                            "type": "integer"
-                        }
-                    ]
-                }
-            },
-            "additionalProperties": true,
-            "type": "object"
-        }
-    },
-    "additionalProperties": true,
-    "type": "object"
-}`,
-		},
+		protoFileName:      "NestedObject.proto",
+		filesToGenerate:    []string{"NestedObject.proto"},
+		expectedJsonSchema: []string{testdata.NestedObject},
 	}
 
 	// PayloadMessage:
 	sampleProtos["PayloadMessage"] = SampleProto{
-		protoFileName:   "PayloadMessage.proto",
-		filesToGenerate: []string{"PayloadMessage.proto"},
-		expectedJsonSchema: []string{
-			`{
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "properties": {
-        "complete": {
-            "type": "boolean"
-        },
-        "id": {
-            "type": "integer"
-        },
-        "name": {
-            "type": "string"
-        },
-        "rating": {
-            "type": "number"
-        },
-        "timestamp": {
-            "type": "string"
-        },
-        "topology": {
-            "enum": [
-                "FLAT",
-                0,
-                "NESTED_OBJECT",
-                1,
-                "NESTED_MESSAGE",
-                2,
-                "ARRAY_OF_TYPE",
-                3,
-                "ARRAY_OF_OBJECT",
-                4,
-                "ARRAY_OF_MESSAGE",
-                5
-            ],
-            "oneOf": [
-                {
-                    "type": "string"
-                },
-                {
-                    "type": "integer"
-                }
-            ]
-        }
-    },
-    "additionalProperties": true,
-    "type": "object"
-}`,
-		},
+		protoFileName:      "PayloadMessage.proto",
+		filesToGenerate:    []string{"PayloadMessage.proto"},
+		expectedJsonSchema: []string{testdata.PayloadMessage},
 	}
 
 	// SeveralEnums:
 	sampleProtos["SeveralEnums"] = SampleProto{
-		protoFileName:   "SeveralEnums.proto",
-		filesToGenerate: []string{"SeveralEnums.proto"},
-		expectedJsonSchema: []string{
-			`{
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "enum": [
-        "VALUE_0",
-        0,
-        "VALUE_1",
-        1,
-        "VALUE_2",
-        2,
-        "VALUE_3",
-        3
-    ],
-    "oneOf": [
-        {
-            "type": "string"
-        },
-        {
-            "type": "integer"
-        }
-    ]
-}`,
-			`{
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "enum": [
-        "VALUE_4",
-        0,
-        "VALUE_5",
-        1,
-        "VALUE_6",
-        2,
-        "VALUE_7",
-        3
-    ],
-    "oneOf": [
-        {
-            "type": "string"
-        },
-        {
-            "type": "integer"
-        }
-    ]
-}`,
-		},
+		protoFileName:      "SeveralEnums.proto",
+		filesToGenerate:    []string{"SeveralEnums.proto"},
+		expectedJsonSchema: []string{testdata.FirstEnum, testdata.SecondEnum},
 	}
 
 	// SeveralMessages:
 	sampleProtos["SeveralMessages"] = SampleProto{
-		protoFileName:   "SeveralMessages.proto",
-		filesToGenerate: []string{"SeveralMessages.proto"},
-		expectedJsonSchema: []string{
-			`{
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "properties": {
-        "complete1": {
-            "type": "boolean"
-        },
-        "id1": {
-            "type": "integer"
-        },
-        "name1": {
-            "type": "string"
-        },
-        "rating1": {
-            "type": "number"
-        },
-        "timestamp1": {
-            "type": "string"
-        }
-    },
-    "additionalProperties": true,
-    "type": "object"
-}`,
-			`{
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "properties": {
-        "complete2": {
-            "type": "boolean"
-        },
-        "id2": {
-            "type": "integer"
-        },
-        "name2": {
-            "type": "string"
-        },
-        "rating2": {
-            "type": "number"
-        },
-        "timestamp2": {
-            "type": "string"
-        }
-    },
-    "additionalProperties": true,
-    "type": "object"
-}`,
-		},
+		protoFileName:      "SeveralMessages.proto",
+		filesToGenerate:    []string{"SeveralMessages.proto"},
+		expectedJsonSchema: []string{testdata.FirstMessage, testdata.SecondMessage},
 	}
 
 }
