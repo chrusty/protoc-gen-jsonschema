@@ -302,10 +302,10 @@ func convertFile(file *descriptor.FileDescriptorProto) ([]*plugin.CodeGeneratorR
 
 	// Warn about multiple messages / enums in files:
 	if len(file.GetMessageType()) > 1 {
-		log.Warnf("protoc-gen-jsonschema is about to create multiple MESSAGE schemas (%d) from one proto file (%v)", len(file.GetMessageType()), protoFileName)
+		log.Warnf("protoc-gen-jsonschema will create multiple MESSAGE schemas (%d) from one proto file (%v)", len(file.GetMessageType()), protoFileName)
 	}
 	if len(file.GetEnumType()) > 1 {
-		log.Warnf("protoc-gen-jsonschema is about to create multiple ENUM schemas (%d) from one proto file (%v)", len(file.GetEnumType()), protoFileName)
+		log.Warnf("protoc-gen-jsonschema will create multiple ENUM schemas (%d) from one proto file (%v)", len(file.GetEnumType()), protoFileName)
 	}
 
 	// Generate standalone ENUMs:
@@ -401,6 +401,7 @@ func convertFrom(rd io.Reader) (*plugin.CodeGeneratorResponse, error) {
 		log.Errorf("Failed to read request: %v", err)
 		return nil, err
 	}
+
 	req := &plugin.CodeGeneratorRequest{}
 	err = proto.Unmarshal(input, req)
 	if err != nil {
