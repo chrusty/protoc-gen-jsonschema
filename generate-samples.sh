@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
-PROTO_DIR="samples/proto"
-JSONSCHEMA_DIR="samples/jsonschema"
+PROTO_DIR="testdata/proto"
+JSONSCHEMA_DIR="jsonschemas"
 PATH=$PATH:.
+
+# Ensure that the JSONSchema directory exists
+mkdir -p $JSONSCHEMA_DIR
 
 # Generate all of the files:
 for PROTO_FILE in `ls ${PROTO_DIR}/*.proto`

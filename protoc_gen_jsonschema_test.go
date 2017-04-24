@@ -16,7 +16,7 @@ import (
 
 var (
 	protocBinary         = "/bin/protoc"
-	sampleProtoDirectory = "samples/proto"
+	sampleProtoDirectory = "testdata/proto"
 	sampleProtos         = make(map[string]SampleProto)
 )
 
