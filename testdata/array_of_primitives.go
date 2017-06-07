@@ -12,6 +12,18 @@ const ArrayOfPrimitives = `{
             },
             "type": "array"
         },
+        "luckyBigNumbers": {
+            "items": {},
+            "type": "array",
+            "oneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "integer"
+                }
+            ]
+        },
         "luckyNumbers": {
             "items": {
                 "type": "integer"
