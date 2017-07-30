@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 PROTO_DIR="testdata/proto"
 JSONSCHEMA_DIR="jsonschemas"
-PATH=$PATH:.
+PATH=.:$PATH
 
 # Ensure that the JSONSchema directory exists
 mkdir -p $JSONSCHEMA_DIR

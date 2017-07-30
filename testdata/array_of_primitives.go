@@ -17,10 +17,10 @@ const ArrayOfPrimitives = `{
             "type": "array",
             "oneOf": [
                 {
-                    "type": "string"
+                    "type": "integer"
                 },
                 {
-                    "type": "integer"
+                    "type": "string"
                 }
             ]
         },
