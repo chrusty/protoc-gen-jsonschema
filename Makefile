@@ -15,4 +15,6 @@ windows:
 samples:
 	@echo "Generating sample JSON-Schemas ..."
 	@mkdir -p jsonschemas
-	@PATH=.:$$PATH; for PROTO_FILE in `ls testdata/proto/*.proto`; do protoc --jsonschema_out=debug=true:jsonschemas --proto_path=testdata/proto $$PROTO_FILE; done
+	@PATH=.:$$PATH; for PROTO_FILE in `ls testdata/proto/*.proto`; do protoc --jsonschema_out=disallow_additional_properties:jsonschemas --proto_path=testdata/proto $$PROTO_FILE; done
+	# disallow_additional_properties
+	# disallow_bigints_as_strings

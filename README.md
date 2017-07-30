@@ -14,6 +14,16 @@ Links
 * [Another GoLang JSON-Schema validation library](https://github.com/lestrrat/go-jsschema)
 
 
+Usage
+-----
+* Disallow additional properties (JSONSchemas won't validate JSON containing extra parameters):
+    `protoc --jsonschema_out=disallow_additional_properties:. --proto_path=testdata/proto testdata/proto/ArrayOfPrimitives.proto`
+* Disallow permissive validation of big-integers as strings (eg scientific notation):
+    `protoc --jsonschema_out=disallow_bigints_as_strings:. --proto_path=testdata/proto testdata/proto/ArrayOfPrimitives.proto`
+* Enable debug logging:
+    `protoc --jsonschema_out=debug:. --proto_path=testdata/proto testdata/proto/ArrayOfPrimitives.proto`
+
+
 Sample protos (for testing)
 ---------------------------
 * Proto with a simple (flat) structure: [samples.PayloadMessage](testdata/proto/PayloadMessage.proto)

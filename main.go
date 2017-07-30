@@ -34,10 +34,10 @@ const (
 )
 
 var (
-	disallowAdditionalProperties bool
-	disallowBigIntsAsStrings     bool
-	debugLogging                 bool
-	globalPkg                    = &ProtoPackage{
+	disallowAdditionalProperties bool = false
+	disallowBigIntsAsStrings     bool = false
+	debugLogging                 bool = false
+	globalPkg                         = &ProtoPackage{
 		name:     "",
 		parent:   nil,
 		children: make(map[string]*ProtoPackage),
@@ -448,8 +448,23 @@ func convertFrom(rd io.Reader) (*plugin.CodeGeneratorResponse, error) {
 		return nil, err
 	}
 
+	commandLineParameter(req.GetParameter())
+
 	logWithLevel(LOG_DEBUG, "Converting input")
 	return convert(req)
+}
+
+func commandLineParameter(parameters string) {
+	for _, parameter := range strings.Split(parameters, ",") {
+		switch parameter {
+		case "debug":
+			debugLogging = true
+		case "disallow_additional_properties":
+			disallowAdditionalProperties = true
+		case "disallow_bigints_as_strings":
+			disallowBigIntsAsStrings = true
+		}
+	}
 }
 
 func main() {
