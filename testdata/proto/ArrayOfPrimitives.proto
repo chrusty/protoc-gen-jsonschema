@@ -2,7 +2,8 @@ syntax = "proto3";
 package samples;
 
 message ArrayOfPrimitives {
-    string description          = 1;
-    repeated int32 luckyNumbers = 2;
-    repeated string keyWords    = 3;
+    string description             = 1;
+    repeated int32 luckyNumbers    = 2;
+    repeated int64 luckyBigNumbers = 3;
+    repeated string keyWords       = 4;
 }
