@@ -22,6 +22,7 @@ import (
 	proto "github.com/golang/protobuf/proto"
 	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
+	gojsonschema "github.com/xeipuuv/gojsonschema"
 )
 
 const (
@@ -34,6 +35,7 @@ const (
 )
 
 var (
+	allowNullValues              bool = false
 	disallowAdditionalProperties bool = false
 	disallowBigIntsAsStrings     bool = false
 	debugLogging                 bool = false
@@ -64,6 +66,7 @@ type ProtoPackage struct {
 type LogLevel int
 
 func init() {
+	flag.BoolVar(&allowNullValues, "allow_null_values", false, "Allow NULL values to be validated")
 	flag.BoolVar(&disallowAdditionalProperties, "disallow_additional_properties", false, "Disallow additional properties")
 	flag.BoolVar(&disallowBigIntsAsStrings, "disallow_bigints_as_strings", false, "Disallow bigints to be strings (eg scientific notation)")
 	flag.BoolVar(&debugLogging, "debug", false, "Log debug messages")
@@ -184,32 +187,59 @@ func convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, m
 	switch desc.GetType() {
 	case descriptor.FieldDescriptorProto_TYPE_DOUBLE,
 		descriptor.FieldDescriptorProto_TYPE_FLOAT:
-		jsonSchemaType.Type = "number"
+		if allowNullValues {
+			jsonSchemaType.OneOf = []*jsonschema.Type{
+				{Type: gojsonschema.TYPE_NULL},
+				{Type: gojsonschema.TYPE_NUMBER},
+			}
+		} else {
+			jsonSchemaType.Type = gojsonschema.TYPE_NUMBER
+		}
 
 	case descriptor.FieldDescriptorProto_TYPE_INT32,
 		descriptor.FieldDescriptorProto_TYPE_UINT32,
 		descriptor.FieldDescriptorProto_TYPE_FIXED32,
 		descriptor.FieldDescriptorProto_TYPE_SFIXED32,
 		descriptor.FieldDescriptorProto_TYPE_SINT32:
-		jsonSchemaType.Type = "integer"
+		if allowNullValues {
+			jsonSchemaType.OneOf = []*jsonschema.Type{
+				{Type: gojsonschema.TYPE_NULL},
+				{Type: gojsonschema.TYPE_INTEGER},
+			}
+		} else {
+			jsonSchemaType.Type = gojsonschema.TYPE_INTEGER
+		}
 
 	case descriptor.FieldDescriptorProto_TYPE_INT64,
 		descriptor.FieldDescriptorProto_TYPE_UINT64,
 		descriptor.FieldDescriptorProto_TYPE_FIXED64,
 		descriptor.FieldDescriptorProto_TYPE_SFIXED64,
 		descriptor.FieldDescriptorProto_TYPE_SINT64:
-		jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: "integer"})
+		jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: gojsonschema.TYPE_INTEGER})
 		if !disallowBigIntsAsStrings {
-			jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: "string"})
+			jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: gojsonschema.TYPE_STRING})
+		}
+		if allowNullValues {
+			jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: gojsonschema.TYPE_NULL})
 		}
 
 	case descriptor.FieldDescriptorProto_TYPE_STRING,
 		descriptor.FieldDescriptorProto_TYPE_BYTES:
-		jsonSchemaType.Type = "string"
+		if allowNullValues {
+			jsonSchemaType.OneOf = []*jsonschema.Type{
+				{Type: gojsonschema.TYPE_NULL},
+				{Type: gojsonschema.TYPE_STRING},
+			}
+		} else {
+			jsonSchemaType.Type = gojsonschema.TYPE_STRING
+		}
 
 	case descriptor.FieldDescriptorProto_TYPE_ENUM:
-		jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: "string"})
-		jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: "integer"})
+		jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: gojsonschema.TYPE_STRING})
+		jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: gojsonschema.TYPE_INTEGER})
+		if allowNullValues {
+			jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: gojsonschema.TYPE_NULL})
+		}
 
 		// Go through all the enums we have, see if we can match any to this field by name:
 		for _, enumDescriptor := range msg.GetEnumType() {
@@ -229,11 +259,18 @@ func convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, m
 		}
 
 	case descriptor.FieldDescriptorProto_TYPE_BOOL:
-		jsonSchemaType.Type = "boolean"
+		if allowNullValues {
+			jsonSchemaType.OneOf = []*jsonschema.Type{
+				{Type: gojsonschema.TYPE_NULL},
+				{Type: gojsonschema.TYPE_BOOLEAN},
+			}
+		} else {
+			jsonSchemaType.Type = gojsonschema.TYPE_BOOLEAN
+		}
 
 	case descriptor.FieldDescriptorProto_TYPE_GROUP,
 		descriptor.FieldDescriptorProto_TYPE_MESSAGE:
-		jsonSchemaType.Type = "object"
+		jsonSchemaType.Type = gojsonschema.TYPE_OBJECT
 		if desc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_OPTIONAL {
 			jsonSchemaType.AdditionalProperties = []byte("true")
 		}
@@ -250,12 +287,12 @@ func convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, m
 		jsonSchemaType.Items = &jsonschema.Type{
 			Type: jsonSchemaType.Type,
 		}
-		jsonSchemaType.Type = "array"
+		jsonSchemaType.Type = gojsonschema.TYPE_ARRAY
 		return jsonSchemaType, nil
 	}
 
 	// Recurse nested objects / arrays of objects (if necessary):
-	if jsonSchemaType.Type == "object" {
+	if jsonSchemaType.Type == gojsonschema.TYPE_OBJECT {
 		recordType, ok := curPkg.lookupType(desc.GetTypeName())
 		if !ok {
 			return nil, fmt.Errorf("no such message type named %s", desc.GetTypeName())
@@ -270,7 +307,7 @@ func convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, m
 		// The result is stored differently for arrays of objects (they become "items"):
 		if desc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REPEATED {
 			jsonSchemaType.Items = &recursedJsonSchemaType
-			jsonSchemaType.Type = "array"
+			jsonSchemaType.Type = gojsonschema.TYPE_ARRAY
 		} else {
 			// Nested objects are more straight-forward:
 			jsonSchemaType.Properties = recursedJsonSchemaType.Properties
@@ -286,7 +323,7 @@ func convertMessageType(curPkg *ProtoPackage, msg *descriptor.DescriptorProto) (
 	// Prepare a new jsonschema:
 	jsonSchemaType := jsonschema.Type{
 		Properties: make(map[string]*jsonschema.Type),
-		Type:       "object",
+		Type:       gojsonschema.TYPE_OBJECT,
 		Version:    jsonschema.Version,
 	}
 
@@ -457,6 +494,8 @@ func convertFrom(rd io.Reader) (*plugin.CodeGeneratorResponse, error) {
 func commandLineParameter(parameters string) {
 	for _, parameter := range strings.Split(parameters, ",") {
 		switch parameter {
+		case "allow_null_values":
+			allowNullValues = true
 		case "debug":
 			debugLogging = true
 		case "disallow_additional_properties":

@@ -16,6 +16,8 @@ Links
 
 Usage
 -----
+* Allow NULL values (by default, JSONSchemas will reject NULL values unless we explicitly allow them):
+    `protoc --jsonschema_out=allow_null_values:. --proto_path=testdata/proto testdata/proto/ArrayOfPrimitives.proto`
 * Disallow additional properties (JSONSchemas won't validate JSON containing extra parameters):
     `protoc --jsonschema_out=disallow_additional_properties:. --proto_path=testdata/proto testdata/proto/ArrayOfPrimitives.proto`
 * Disallow permissive validation of big-integers as strings (eg scientific notation):
