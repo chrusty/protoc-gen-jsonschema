@@ -288,13 +288,24 @@ func convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, m
 			Type:  jsonSchemaType.Type,
 			OneOf: jsonSchemaType.OneOf,
 		}
-		jsonSchemaType.Type = gojsonschema.TYPE_ARRAY
-		jsonSchemaType.OneOf = []*jsonschema.Type{}
+		if allowNullValues {
+			jsonSchemaType.OneOf = []*jsonschema.Type{
+				{Type: gojsonschema.TYPE_NULL},
+				{Type: gojsonschema.TYPE_ARRAY},
+			}
+		} else {
+			jsonSchemaType.Type = gojsonschema.TYPE_ARRAY
+			jsonSchemaType.OneOf = []*jsonschema.Type{}
+		}
+
 		return jsonSchemaType, nil
 	}
 
 	// Recurse nested objects / arrays of objects (if necessary):
 	if jsonSchemaType.Type == gojsonschema.TYPE_OBJECT {
+
+		fmt.Fprintf(os.Stderr, "doing an object\n")
+
 		recordType, ok := curPkg.lookupType(desc.GetTypeName())
 		if !ok {
 			return nil, fmt.Errorf("no such message type named %s", desc.GetTypeName())
@@ -313,6 +324,15 @@ func convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, m
 		} else {
 			// Nested objects are more straight-forward:
 			jsonSchemaType.Properties = recursedJsonSchemaType.Properties
+		}
+
+		if allowNullValues {
+			fmt.Fprintf(os.Stderr, "Allowing nulls\n")
+			jsonSchemaType.OneOf = []*jsonschema.Type{
+				{Type: gojsonschema.TYPE_NULL},
+				{Type: jsonSchemaType.Type},
+			}
+			jsonSchemaType.Type = ""
 		}
 	}
 

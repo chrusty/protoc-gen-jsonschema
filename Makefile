@@ -1,16 +1,8 @@
 default: darwin linux windows
 
-darwin:
-	@echo "Generating MacOS binary (protoc-gen-jsonschema.darwin-amd64) ..."
-	@GOOS=darwin GOARCH=amd64 go build -o protoc-gen-jsonschema.darwin-amd64
-
-linux:
-	@echo "Generating Linux binary (protoc-gen-jsonschema.linux-amd64) ..."
-	@GOOS=linux GOARCH=amd64 go build -o protoc-gen-jsonschema.linux-amd64
-
-windows:
-	@echo "Generating Windows binary (protoc-gen-jsonschema.windows-amd64.exe) ..."
-	@GOOS=windows GOARCH=amd64 go build -o protoc-gen-jsonschema.windows-amd64.exe
+build:
+	@echo "Generating binary (protoc-gen-jsonschema) ..."
+	@go build -o protoc-gen-jsonschema
 
 samples:
 	@echo "Generating sample JSON-Schemas ..."

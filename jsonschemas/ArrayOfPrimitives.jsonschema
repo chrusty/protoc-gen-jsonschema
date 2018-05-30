@@ -1,6 +1,4 @@
-package testdata
-
-const ArrayOfPrimitives = `{
+{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "properties": {
         "description": {
@@ -79,4 +77,4 @@ const ArrayOfPrimitives = `{
     },
     "additionalProperties": true,
     "type": "object"
-}`
+}
