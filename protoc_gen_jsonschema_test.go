@@ -38,16 +38,16 @@ func TestGenerateJsonSchema(t *testing.T) {
 	configureSampleProtos()
 
 	// Convert the protos, compare the results against the expected JSON-Schemas:
-	// testConvertSampleProtos(t, sampleProtos["ArrayOfMessages"])
+	testConvertSampleProtos(t, sampleProtos["ArrayOfMessages"])
 	testConvertSampleProtos(t, sampleProtos["ArrayOfObjects"])
-	// testConvertSampleProtos(t, sampleProtos["ArrayOfPrimitives"])
-	// testConvertSampleProtos(t, sampleProtos["EnumCeption"])
-	// testConvertSampleProtos(t, sampleProtos["ImportedEnum"])
-	// testConvertSampleProtos(t, sampleProtos["NestedMessage"])
-	// testConvertSampleProtos(t, sampleProtos["NestedObject"])
-	// testConvertSampleProtos(t, sampleProtos["PayloadMessage"])
-	// testConvertSampleProtos(t, sampleProtos["SeveralEnums"])
-	// testConvertSampleProtos(t, sampleProtos["SeveralMessages"])
+	testConvertSampleProtos(t, sampleProtos["ArrayOfPrimitives"])
+	testConvertSampleProtos(t, sampleProtos["EnumCeption"])
+	testConvertSampleProtos(t, sampleProtos["ImportedEnum"])
+	testConvertSampleProtos(t, sampleProtos["NestedMessage"])
+	testConvertSampleProtos(t, sampleProtos["NestedObject"])
+	testConvertSampleProtos(t, sampleProtos["PayloadMessage"])
+	testConvertSampleProtos(t, sampleProtos["SeveralEnums"])
+	testConvertSampleProtos(t, sampleProtos["SeveralMessages"])
 }
 
 func testForProtocBinary(t *testing.T) {

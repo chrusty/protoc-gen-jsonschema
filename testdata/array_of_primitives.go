@@ -78,5 +78,12 @@ const ArrayOfPrimitives = `{
         }
     },
     "additionalProperties": true,
-    "type": "object"
+    "oneOf": [
+        {
+            "type": "null"
+        },
+        {
+            "type": "object"
+        }
+    ]
 }`

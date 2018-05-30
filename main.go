@@ -304,30 +304,28 @@ func convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, m
 	// Recurse nested objects / arrays of objects (if necessary):
 	if jsonSchemaType.Type == gojsonschema.TYPE_OBJECT {
 
-		fmt.Fprintf(os.Stderr, "doing an object\n")
-
 		recordType, ok := curPkg.lookupType(desc.GetTypeName())
 		if !ok {
 			return nil, fmt.Errorf("no such message type named %s", desc.GetTypeName())
 		}
 
 		// Recurse:
-		recursedJsonSchemaType, err := convertMessageType(curPkg, recordType)
+		recursedJSONSchemaType, err := convertMessageType(curPkg, recordType)
 		if err != nil {
 			return nil, err
 		}
 
 		// The result is stored differently for arrays of objects (they become "items"):
 		if desc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REPEATED {
-			jsonSchemaType.Items = &recursedJsonSchemaType
+			jsonSchemaType.Items = &recursedJSONSchemaType
 			jsonSchemaType.Type = gojsonschema.TYPE_ARRAY
 		} else {
 			// Nested objects are more straight-forward:
-			jsonSchemaType.Properties = recursedJsonSchemaType.Properties
+			jsonSchemaType.Properties = recursedJSONSchemaType.Properties
 		}
 
+		// Optionally allow NULL values:
 		if allowNullValues {
-			fmt.Fprintf(os.Stderr, "Allowing nulls\n")
 			jsonSchemaType.OneOf = []*jsonschema.Type{
 				{Type: gojsonschema.TYPE_NULL},
 				{Type: jsonSchemaType.Type},
@@ -345,8 +343,17 @@ func convertMessageType(curPkg *ProtoPackage, msg *descriptor.DescriptorProto) (
 	// Prepare a new jsonschema:
 	jsonSchemaType := jsonschema.Type{
 		Properties: make(map[string]*jsonschema.Type),
-		Type:       gojsonschema.TYPE_OBJECT,
 		Version:    jsonschema.Version,
+	}
+
+	// Optionally allow NULL values:
+	if allowNullValues {
+		jsonSchemaType.OneOf = []*jsonschema.Type{
+			{Type: gojsonschema.TYPE_NULL},
+			{Type: gojsonschema.TYPE_OBJECT},
+		}
+	} else {
+		jsonSchemaType.Type = gojsonschema.TYPE_OBJECT
 	}
 
 	// disallowAdditionalProperties will prevent validation where extra fields are found (outside of the schema):
@@ -358,12 +365,12 @@ func convertMessageType(curPkg *ProtoPackage, msg *descriptor.DescriptorProto) (
 
 	logWithLevel(LOG_DEBUG, "Converting message: %s", proto.MarshalTextString(msg))
 	for _, fieldDesc := range msg.GetField() {
-		recursedJsonSchemaType, err := convertField(curPkg, fieldDesc, msg)
+		recursedJSONSchemaType, err := convertField(curPkg, fieldDesc, msg)
 		if err != nil {
 			logWithLevel(LOG_ERROR, "Failed to convert field %s in %s: %v", fieldDesc.GetName(), msg.GetName(), err)
 			return jsonSchemaType, err
 		}
-		jsonSchemaType.Properties[fieldDesc.GetName()] = recursedJsonSchemaType
+		jsonSchemaType.Properties[fieldDesc.GetName()] = recursedJSONSchemaType
 	}
 	return jsonSchemaType, nil
 }
@@ -417,7 +424,7 @@ func convertFile(file *descriptor.FileDescriptorProto) ([]*plugin.CodeGeneratorR
 				return nil, err
 			} else {
 				// Marshal the JSON-Schema into JSON:
-				jsonSchemaJson, err := json.MarshalIndent(enumJsonSchema, "", "    ")
+				jsonSchemaJSON, err := json.MarshalIndent(enumJsonSchema, "", "    ")
 				if err != nil {
 					logWithLevel(LOG_ERROR, "Failed to encode jsonSchema: %v", err)
 					return nil, err
@@ -425,7 +432,7 @@ func convertFile(file *descriptor.FileDescriptorProto) ([]*plugin.CodeGeneratorR
 					// Add a response:
 					resFile := &plugin.CodeGeneratorResponse_File{
 						Name:    proto.String(jsonSchemaFileName),
-						Content: proto.String(string(jsonSchemaJson)),
+						Content: proto.String(string(jsonSchemaJSON)),
 					}
 					response = append(response, resFile)
 				}
@@ -440,13 +447,13 @@ func convertFile(file *descriptor.FileDescriptorProto) ([]*plugin.CodeGeneratorR
 		for _, msg := range file.GetMessageType() {
 			jsonSchemaFileName := fmt.Sprintf("%s.jsonschema", msg.GetName())
 			logWithLevel(LOG_INFO, "Generating JSON-schema for MESSAGE (%v) in file [%v] => %v", msg.GetName(), protoFileName, jsonSchemaFileName)
-			messageJsonSchema, err := convertMessageType(pkg, msg)
+			messageJSONSchema, err := convertMessageType(pkg, msg)
 			if err != nil {
 				logWithLevel(LOG_ERROR, "Failed to convert %s: %v", protoFileName, err)
 				return nil, err
 			} else {
 				// Marshal the JSON-Schema into JSON:
-				jsonSchemaJson, err := json.MarshalIndent(messageJsonSchema, "", "    ")
+				jsonSchemaJSON, err := json.MarshalIndent(messageJSONSchema, "", "    ")
 				if err != nil {
 					logWithLevel(LOG_ERROR, "Failed to encode jsonSchema: %v", err)
 					return nil, err
@@ -454,7 +461,7 @@ func convertFile(file *descriptor.FileDescriptorProto) ([]*plugin.CodeGeneratorR
 					// Add a response:
 					resFile := &plugin.CodeGeneratorResponse_File{
 						Name:    proto.String(jsonSchemaFileName),
-						Content: proto.String(string(jsonSchemaJson)),
+						Content: proto.String(string(jsonSchemaJSON)),
 					}
 					response = append(response, resFile)
 				}

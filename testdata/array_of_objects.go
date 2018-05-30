@@ -4,26 +4,68 @@ const ArrayOfObjects = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "properties": {
         "description": {
-            "type": "string"
+            "oneOf": [
+                {
+                    "type": "null"
+                },
+                {
+                    "type": "string"
+                }
+            ]
         },
         "payload": {
             "items": {
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "properties": {
                     "complete": {
-                        "type": "boolean"
+                        "oneOf": [
+                            {
+                                "type": "null"
+                            },
+                            {
+                                "type": "boolean"
+                            }
+                        ]
                     },
                     "id": {
-                        "type": "integer"
+                        "oneOf": [
+                            {
+                                "type": "null"
+                            },
+                            {
+                                "type": "integer"
+                            }
+                        ]
                     },
                     "name": {
-                        "type": "string"
+                        "oneOf": [
+                            {
+                                "type": "null"
+                            },
+                            {
+                                "type": "string"
+                            }
+                        ]
                     },
                     "rating": {
-                        "type": "number"
+                        "oneOf": [
+                            {
+                                "type": "null"
+                            },
+                            {
+                                "type": "number"
+                            }
+                        ]
                     },
                     "timestamp": {
-                        "type": "string"
+                        "oneOf": [
+                            {
+                                "type": "null"
+                            },
+                            {
+                                "type": "string"
+                            }
+                        ]
                     },
                     "topology": {
                         "enum": [
@@ -46,16 +88,40 @@ const ArrayOfObjects = `{
                             },
                             {
                                 "type": "integer"
+                            },
+                            {
+                                "type": "null"
                             }
                         ]
                     }
                 },
                 "additionalProperties": true,
-                "type": "object"
+                "oneOf": [
+                    {
+                        "type": "null"
+                    },
+                    {
+                        "type": "object"
+                    }
+                ]
             },
-            "type": "array"
+            "oneOf": [
+                {
+                    "type": "null"
+                },
+                {
+                    "type": "array"
+                }
+            ]
         }
     },
     "additionalProperties": true,
-    "type": "object"
+    "oneOf": [
+        {
+            "type": "null"
+        },
+        {
+            "type": "object"
+        }
+    ]
 }`
