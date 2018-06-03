@@ -21,9 +21,10 @@ var (
 )
 
 type SampleProto struct {
-	protoFileName      string
-	filesToGenerate    []string
-	expectedJsonSchema []string
+	AllowNullValues    bool
+	ExpectedJsonSchema []string
+	FilesToGenerate    []string
+	ProtoFileName      string
 }
 
 func TestGenerateJsonSchema(t *testing.T) {
@@ -63,15 +64,18 @@ func testConvertSampleProto(t *testing.T) {
 
 	// Go through the sample protos:
 	for _, sampleProto := range sampleProtos {
-		log.Infof("SampleProto: %v", sampleProto.protoFileName)
+		log.Infof("SampleProto: %v", sampleProto.ProtoFileName)
 	}
 
 }
 
 func testConvertSampleProtos(t *testing.T, sampleProto SampleProto) {
 
+	// Set allowNullValues accordingly:
+	allowNullValues = sampleProto.AllowNullValues
+
 	// Open the sample proto file:
-	sampleProtoFileName := fmt.Sprintf("%v/%v", sampleProtoDirectory, sampleProto.protoFileName)
+	sampleProtoFileName := fmt.Sprintf("%v/%v", sampleProtoDirectory, sampleProto.ProtoFileName)
 
 	// Prepare to run the "protoc" command (generates a CodeGeneratorRequest):
 	protocCommand := exec.Command(protocBinary, "--descriptor_set_out=/dev/stdout", "--include_imports", fmt.Sprintf("--proto_path=%v", sampleProtoDirectory), sampleProtoFileName)
@@ -89,19 +93,19 @@ func testConvertSampleProtos(t *testing.T, sampleProto SampleProto) {
 
 	// Prepare a request:
 	codeGeneratorRequest := plugin.CodeGeneratorRequest{
-		FileToGenerate: sampleProto.filesToGenerate,
+		FileToGenerate: sampleProto.FilesToGenerate,
 		ProtoFile:      fileDescriptorSet.GetFile(),
 	}
 
 	// Perform the conversion:
 	response, err := convert(&codeGeneratorRequest)
 	assert.NoError(t, err, "Unable to convert sample proto file (%v)", sampleProtoFileName)
-	assert.EqualValues(t, len(sampleProto.expectedJsonSchema), len(response.File), "Incorrect number of JSON-Schema files returned")
-	if len(sampleProto.expectedJsonSchema) != len(response.File) {
+	assert.Equal(t, len(sampleProto.ExpectedJsonSchema), len(response.File), "Incorrect number of JSON-Schema files returned for sample proto file (%v)", sampleProtoFileName)
+	if len(sampleProto.ExpectedJsonSchema) != len(response.File) {
 		t.Fail()
 	} else {
 		for responseFileIndex, responseFile := range response.File {
-			assert.EqualValues(t, sampleProto.expectedJsonSchema[responseFileIndex], *responseFile.Content, "Incorrect JSON-Schema returned")
+			assert.Equal(t, sampleProto.ExpectedJsonSchema[responseFileIndex], *responseFile.Content, "Incorrect JSON-Schema returned for sample proto file (%v)", sampleProtoFileName)
 		}
 	}
 
@@ -110,72 +114,82 @@ func testConvertSampleProtos(t *testing.T, sampleProto SampleProto) {
 func configureSampleProtos() {
 	// ArrayOfMessages:
 	sampleProtos["ArrayOfMessages"] = SampleProto{
-		protoFileName:      "ArrayOfMessages.proto",
-		filesToGenerate:    []string{"ArrayOfMessages.proto", "PayloadMessage.proto"},
-		expectedJsonSchema: []string{testdata.PayloadMessage, testdata.ArrayOfMessages},
+		AllowNullValues:    false,
+		ExpectedJsonSchema: []string{testdata.PayloadMessage, testdata.ArrayOfMessages},
+		FilesToGenerate:    []string{"ArrayOfMessages.proto", "PayloadMessage.proto"},
+		ProtoFileName:      "ArrayOfMessages.proto",
 	}
 
 	// ArrayOfObjects:
 	sampleProtos["ArrayOfObjects"] = SampleProto{
-		protoFileName:      "ArrayOfObjects.proto",
-		filesToGenerate:    []string{"ArrayOfObjects.proto"},
-		expectedJsonSchema: []string{testdata.ArrayOfObjects},
+		AllowNullValues:    true,
+		ExpectedJsonSchema: []string{testdata.ArrayOfObjects},
+		FilesToGenerate:    []string{"ArrayOfObjects.proto"},
+		ProtoFileName:      "ArrayOfObjects.proto",
 	}
 
 	// ArrayOfPrimitives:
 	sampleProtos["ArrayOfPrimitives"] = SampleProto{
-		protoFileName:      "ArrayOfPrimitives.proto",
-		filesToGenerate:    []string{"ArrayOfPrimitives.proto"},
-		expectedJsonSchema: []string{testdata.ArrayOfPrimitives},
+		AllowNullValues:    true,
+		ExpectedJsonSchema: []string{testdata.ArrayOfPrimitives},
+		FilesToGenerate:    []string{"ArrayOfPrimitives.proto"},
+		ProtoFileName:      "ArrayOfPrimitives.proto",
 	}
 
 	// EnumCeption:
 	sampleProtos["EnumCeption"] = SampleProto{
-		protoFileName:      "EnumCeption.proto",
-		filesToGenerate:    []string{"EnumCeption.proto", "PayloadMessage.proto", "ImportedEnum.proto"},
-		expectedJsonSchema: []string{testdata.PayloadMessage, testdata.ImportedEnum, testdata.EnumCeption},
+		AllowNullValues:    false,
+		ExpectedJsonSchema: []string{testdata.PayloadMessage, testdata.ImportedEnum, testdata.EnumCeption},
+		FilesToGenerate:    []string{"EnumCeption.proto", "PayloadMessage.proto", "ImportedEnum.proto"},
+		ProtoFileName:      "EnumCeption.proto",
 	}
 
 	// ImportedEnum:
 	sampleProtos["ImportedEnum"] = SampleProto{
-		protoFileName:      "ImportedEnum.proto",
-		filesToGenerate:    []string{"ImportedEnum.proto"},
-		expectedJsonSchema: []string{testdata.ImportedEnum},
+		AllowNullValues:    false,
+		ExpectedJsonSchema: []string{testdata.ImportedEnum},
+		FilesToGenerate:    []string{"ImportedEnum.proto"},
+		ProtoFileName:      "ImportedEnum.proto",
 	}
 
 	// NestedMessage:
 	sampleProtos["NestedMessage"] = SampleProto{
-		protoFileName:      "NestedMessage.proto",
-		filesToGenerate:    []string{"NestedMessage.proto", "PayloadMessage.proto"},
-		expectedJsonSchema: []string{testdata.PayloadMessage, testdata.NestedMessage},
+		AllowNullValues:    false,
+		ExpectedJsonSchema: []string{testdata.PayloadMessage, testdata.NestedMessage},
+		FilesToGenerate:    []string{"NestedMessage.proto", "PayloadMessage.proto"},
+		ProtoFileName:      "NestedMessage.proto",
 	}
 
 	// NestedObject:
 	sampleProtos["NestedObject"] = SampleProto{
-		protoFileName:      "NestedObject.proto",
-		filesToGenerate:    []string{"NestedObject.proto"},
-		expectedJsonSchema: []string{testdata.NestedObject},
+		AllowNullValues:    false,
+		ExpectedJsonSchema: []string{testdata.NestedObject},
+		FilesToGenerate:    []string{"NestedObject.proto"},
+		ProtoFileName:      "NestedObject.proto",
 	}
 
 	// PayloadMessage:
 	sampleProtos["PayloadMessage"] = SampleProto{
-		protoFileName:      "PayloadMessage.proto",
-		filesToGenerate:    []string{"PayloadMessage.proto"},
-		expectedJsonSchema: []string{testdata.PayloadMessage},
+		AllowNullValues:    false,
+		ExpectedJsonSchema: []string{testdata.PayloadMessage},
+		FilesToGenerate:    []string{"PayloadMessage.proto"},
+		ProtoFileName:      "PayloadMessage.proto",
 	}
 
 	// SeveralEnums:
 	sampleProtos["SeveralEnums"] = SampleProto{
-		protoFileName:      "SeveralEnums.proto",
-		filesToGenerate:    []string{"SeveralEnums.proto"},
-		expectedJsonSchema: []string{testdata.FirstEnum, testdata.SecondEnum},
+		AllowNullValues:    false,
+		ExpectedJsonSchema: []string{testdata.FirstEnum, testdata.SecondEnum},
+		FilesToGenerate:    []string{"SeveralEnums.proto"},
+		ProtoFileName:      "SeveralEnums.proto",
 	}
 
 	// SeveralMessages:
 	sampleProtos["SeveralMessages"] = SampleProto{
-		protoFileName:      "SeveralMessages.proto",
-		filesToGenerate:    []string{"SeveralMessages.proto"},
-		expectedJsonSchema: []string{testdata.FirstMessage, testdata.SecondMessage},
+		AllowNullValues:    false,
+		ExpectedJsonSchema: []string{testdata.FirstMessage, testdata.SecondMessage},
+		FilesToGenerate:    []string{"SeveralMessages.proto"},
+		ProtoFileName:      "SeveralMessages.proto",
 	}
 
 }
