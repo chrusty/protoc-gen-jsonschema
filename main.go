@@ -284,10 +284,17 @@ func convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, m
 
 	// Recurse array of primitive types:
 	if desc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REPEATED && jsonSchemaType.Type != gojsonschema.TYPE_OBJECT {
-		jsonSchemaType.Items = &jsonschema.Type{
-			Type:  jsonSchemaType.Type,
-			OneOf: jsonSchemaType.OneOf,
+		jsonSchemaType.Items = &jsonschema.Type{}
+
+		if len(jsonSchemaType.Enum) > 0 {
+			jsonSchemaType.Items.Enum = jsonSchemaType.Enum
+			jsonSchemaType.Enum = nil
+			jsonSchemaType.Items.OneOf = nil
+		} else {
+			jsonSchemaType.Items.Type = jsonSchemaType.Type
+			jsonSchemaType.Items.OneOf = jsonSchemaType.OneOf
 		}
+
 		if allowNullValues {
 			jsonSchemaType.OneOf = []*jsonschema.Type{
 				{Type: gojsonschema.TYPE_NULL},
