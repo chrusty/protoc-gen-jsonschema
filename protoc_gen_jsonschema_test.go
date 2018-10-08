@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"testing"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	testdata "github.com/chrusty/protoc-gen-jsonschema/testdata"
 	proto "github.com/golang/protobuf/proto"
 	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
