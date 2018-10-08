@@ -133,8 +133,8 @@ func configureSampleProtos() {
 	sampleProtos["EnumCeption"] = SampleProto{
 		AllowNullValues:    false,
 		ExpectedJsonSchema: []string{testdata.PayloadMessage, testdata.ImportedEnum, testdata.EnumCeption},
-		FilesToGenerate:    []string{"EnumCeption.proto", "PayloadMessage.proto", "ImportedEnum.proto"},
-		ProtoFileName:      "EnumCeption.proto",
+		FilesToGenerate:    []string{"Enumception.proto", "PayloadMessage.proto", "ImportedEnum.proto"},
+		ProtoFileName:      "Enumception.proto",
 	}
 
 	// ImportedEnum:
