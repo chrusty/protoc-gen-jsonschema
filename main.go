@@ -18,11 +18,11 @@ import (
 	"path"
 	"strings"
 
-	jsonschema "github.com/alecthomas/jsonschema"
-	proto "github.com/golang/protobuf/proto"
-	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	"github.com/alecthomas/jsonschema"
+	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
-	gojsonschema "github.com/xeipuuv/gojsonschema"
+	"github.com/xeipuuv/gojsonschema"
 )
 
 const (
