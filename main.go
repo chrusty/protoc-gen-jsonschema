@@ -9,6 +9,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -32,6 +33,11 @@ const (
 	LOG_ERROR = 3
 	LOG_FATAL = 4
 	LOG_PANIC = 5
+)
+
+const (
+	keyMapFieldIndex   = 0
+	valueMapFieldIndex = 1
 )
 
 var (
@@ -280,6 +286,43 @@ func convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, m
 
 	default:
 		return nil, fmt.Errorf("unrecognized field type: %s", desc.GetType().String())
+	}
+
+	// Parse maps
+	if desc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REPEATED && len(msg.NestedType) == 1 && msg.NestedType[0].Options.GetMapEntry() {
+		/*
+			// For maps fields:
+			map<KeyType, ValueType> map_field = 1;
+			The parsed descriptor looks like:
+			message MapFieldEntry {
+				option map_entry = true;
+				optional KeyType key = 1;
+				optional ValueType value = 2;
+			}
+			repeated MapFieldEntry map_field = 1;
+		*/
+
+		if msg.NestedType[0].Field[keyMapFieldIndex].GetType() != descriptor.FieldDescriptorProto_TYPE_STRING {
+			return nil, errors.New("only strings are supported as keys in maps")
+		}
+
+		t := convertFieldDescriptorFieldType(msg.NestedType[0].Field[valueMapFieldIndex].GetType())
+		jsonSchemaType = &jsonschema.Type{
+			AdditionalProperties: json.RawMessage(fmt.Sprintf("{\"type\": \"%v\"}", t)),
+			Type:                 jsonSchemaType.Type,
+			OneOf:                jsonSchemaType.OneOf,
+		}
+		if allowNullValues {
+			jsonSchemaType.OneOf = []*jsonschema.Type{
+				{Type: gojsonschema.TYPE_NULL},
+				{Type: gojsonschema.TYPE_OBJECT},
+			}
+		} else {
+			jsonSchemaType.Type = gojsonschema.TYPE_OBJECT
+			jsonSchemaType.OneOf = []*jsonschema.Type{}
+		}
+
+		return jsonSchemaType, nil
 	}
 
 	// Recurse array of primitive types:
@@ -566,4 +609,29 @@ func main() {
 		logWithLevel(LOG_WARN, "Failed to process code generator but successfully sent the error to protoc")
 		os.Exit(1)
 	}
+}
+
+func convertFieldDescriptorFieldType(f descriptor.FieldDescriptorProto_Type) string {
+	mapping := map[descriptor.FieldDescriptorProto_Type]string{
+		descriptor.FieldDescriptorProto_TYPE_DOUBLE:  "number",
+		descriptor.FieldDescriptorProto_TYPE_FLOAT:   "number",
+		descriptor.FieldDescriptorProto_TYPE_INT64:   "integer",
+		descriptor.FieldDescriptorProto_TYPE_UINT64:  "integer",
+		descriptor.FieldDescriptorProto_TYPE_INT32:   "integer",
+		descriptor.FieldDescriptorProto_TYPE_FIXED64: "integer",
+		descriptor.FieldDescriptorProto_TYPE_FIXED32: "integer",
+		descriptor.FieldDescriptorProto_TYPE_BOOL:    "boolean",
+		descriptor.FieldDescriptorProto_TYPE_STRING:  "string",
+		descriptor.FieldDescriptorProto_TYPE_BYTES:   "string",
+		descriptor.FieldDescriptorProto_TYPE_UINT32:  "integer",
+		descriptor.FieldDescriptorProto_TYPE_SINT32:  "integer",
+		descriptor.FieldDescriptorProto_TYPE_SINT64:  "integer",
+	}
+
+	v, ok := mapping[f]
+	if !ok {
+		return ""
+	}
+
+	return v
 }

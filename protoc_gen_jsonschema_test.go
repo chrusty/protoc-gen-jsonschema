@@ -48,6 +48,7 @@ func TestGenerateJsonSchema(t *testing.T) {
 	testConvertSampleProtos(t, sampleProtos["PayloadMessage"])
 	testConvertSampleProtos(t, sampleProtos["SeveralEnums"])
 	testConvertSampleProtos(t, sampleProtos["SeveralMessages"])
+	testConvertSampleProtos(t, sampleProtos["StringToStringMap"])
 }
 
 func testForProtocBinary(t *testing.T) {
@@ -192,4 +193,11 @@ func configureSampleProtos() {
 		ProtoFileName:      "SeveralMessages.proto",
 	}
 
+	// StringToStringMap:
+	sampleProtos["StringToStringMap"] = SampleProto{
+		AllowNullValues:    false,
+		ExpectedJsonSchema: []string{testdata.StringToStringMap},
+		FilesToGenerate:    []string{"StringToStringMap.proto"},
+		ProtoFileName:      "StringToStringMap.proto",
+	}
 }

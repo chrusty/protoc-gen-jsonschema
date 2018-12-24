@@ -1,0 +1,6 @@
+syntax = "proto3";
+package samples;
+
+message StringToStringMap {
+  map<string, string> meta = 1;
+}
