@@ -4,14 +4,15 @@ import (
 	"bytes"
 	"fmt"
 	"os/exec"
+	"strings"
 	"testing"
 
-	log "github.com/Sirupsen/logrus"
-	testdata "github.com/chrusty/protoc-gen-jsonschema/testdata"
-	proto "github.com/golang/protobuf/proto"
-	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	"github.com/chrusty/protoc-gen-jsonschema/testdata"
+	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
-	assert "github.com/stretchr/testify/assert"
+	log "github.com/sirupsen/logrus"
+	"github.com/stretchr/testify/assert"
 )
 
 var (
@@ -48,6 +49,7 @@ func TestGenerateJsonSchema(t *testing.T) {
 	testConvertSampleProtos(t, sampleProtos["PayloadMessage"])
 	testConvertSampleProtos(t, sampleProtos["SeveralEnums"])
 	testConvertSampleProtos(t, sampleProtos["SeveralMessages"])
+	testConvertSampleProtos(t, sampleProtos["ArrayOfEnums"])
 }
 
 func testForProtocBinary(t *testing.T) {
@@ -58,15 +60,6 @@ func testForProtocBinary(t *testing.T) {
 		protocBinary = path
 		log.Infof("Found 'protoc' binary (%v)", protocBinary)
 	}
-}
-
-func testConvertSampleProto(t *testing.T) {
-
-	// Go through the sample protos:
-	for _, sampleProto := range sampleProtos {
-		log.Infof("SampleProto: %v", sampleProto.ProtoFileName)
-	}
-
 }
 
 func testConvertSampleProtos(t *testing.T, sampleProto SampleProto) {
@@ -80,11 +73,12 @@ func testConvertSampleProtos(t *testing.T, sampleProto SampleProto) {
 	// Prepare to run the "protoc" command (generates a CodeGeneratorRequest):
 	protocCommand := exec.Command(protocBinary, "--descriptor_set_out=/dev/stdout", "--include_imports", fmt.Sprintf("--proto_path=%v", sampleProtoDirectory), sampleProtoFileName)
 	var protocCommandOutput bytes.Buffer
+	errChan := &bytes.Buffer{}
 	protocCommand.Stdout = &protocCommandOutput
-
+	protocCommand.Stderr = errChan
 	// Run the command:
 	err := protocCommand.Run()
-	assert.NoError(t, err, "Unable to prepare a codeGeneratorRequest using protoc (%v) for sample proto file (%v)", protocBinary, sampleProtoFileName)
+	assert.NoError(t, err, "Unable to prepare a codeGeneratorRequest using protoc (%v) for sample proto file (%v) (%s)", protocBinary, sampleProtoFileName, strings.TrimSpace(errChan.String()))
 
 	// Unmarshal the output from the protoc command (should be a "FileDescriptorSet"):
 	fileDescriptorSet := new(descriptor.FileDescriptorSet)
@@ -140,8 +134,8 @@ func configureSampleProtos() {
 	sampleProtos["EnumCeption"] = SampleProto{
 		AllowNullValues:    false,
 		ExpectedJsonSchema: []string{testdata.PayloadMessage, testdata.ImportedEnum, testdata.EnumCeption},
-		FilesToGenerate:    []string{"EnumCeption.proto", "PayloadMessage.proto", "ImportedEnum.proto"},
-		ProtoFileName:      "EnumCeption.proto",
+		FilesToGenerate:    []string{"Enumception.proto", "PayloadMessage.proto", "ImportedEnum.proto"},
+		ProtoFileName:      "Enumception.proto",
 	}
 
 	// ImportedEnum:
@@ -190,6 +184,14 @@ func configureSampleProtos() {
 		ExpectedJsonSchema: []string{testdata.FirstMessage, testdata.SecondMessage},
 		FilesToGenerate:    []string{"SeveralMessages.proto"},
 		ProtoFileName:      "SeveralMessages.proto",
+	}
+
+	// ArrayOfEnums
+	sampleProtos["ArrayOfEnums"] = SampleProto{
+		AllowNullValues:    false,
+		ExpectedJsonSchema: []string{testdata.ArrayOfEnums},
+		FilesToGenerate:    []string{"ArrayOfEnums.proto"},
+		ProtoFileName:      "ArrayOfEnums.proto",
 	}
 
 }
