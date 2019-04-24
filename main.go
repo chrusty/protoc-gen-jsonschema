@@ -215,12 +215,27 @@ func convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, m
 		descriptor.FieldDescriptorProto_TYPE_FIXED64,
 		descriptor.FieldDescriptorProto_TYPE_SFIXED64,
 		descriptor.FieldDescriptorProto_TYPE_SINT64:
-		jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: gojsonschema.TYPE_INTEGER})
+
+		// We should keep track on whether we need a oneOf block, or whether we can get by
+		// with just type.
+		needOneOf := false
+
+		jsonSchemaType.OneOf = []*jsonschema.Type{
+			{Type: gojsonschema.TYPE_INTEGER},
+		}
 		if !disallowBigIntsAsStrings {
 			jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: gojsonschema.TYPE_STRING})
+			needOneOf = true
 		}
 		if allowNullValues {
 			jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: gojsonschema.TYPE_NULL})
+			needOneOf = true
+		}
+
+		// If we do not need the oneOf block, get rid of the original, and just use type
+		if !needOneOf {
+			jsonSchemaType.OneOf = nil
+			jsonSchemaType.Type = gojsonschema.TYPE_INTEGER
 		}
 
 	case descriptor.FieldDescriptorProto_TYPE_STRING,

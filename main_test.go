@@ -22,10 +22,11 @@ var (
 )
 
 type SampleProto struct {
-	AllowNullValues    bool
-	ExpectedJsonSchema []string
-	FilesToGenerate    []string
-	ProtoFileName      string
+	AllowNullValues          bool
+	DisallowBigIntsAsStrings bool
+	ExpectedJsonSchema       []string
+	FilesToGenerate          []string
+	ProtoFileName            string
 }
 
 func TestGenerateJsonSchema(t *testing.T) {
@@ -50,6 +51,7 @@ func TestGenerateJsonSchema(t *testing.T) {
 	testConvertSampleProtos(t, sampleProtos["SeveralEnums"])
 	testConvertSampleProtos(t, sampleProtos["SeveralMessages"])
 	testConvertSampleProtos(t, sampleProtos["ArrayOfEnums"])
+	testConvertSampleProtos(t, sampleProtos["BigInts"])
 }
 
 func testForProtocBinary(t *testing.T) {
@@ -66,6 +68,7 @@ func testConvertSampleProtos(t *testing.T, sampleProto SampleProto) {
 
 	// Set allowNullValues accordingly:
 	allowNullValues = sampleProto.AllowNullValues
+	disallowBigIntsAsStrings = sampleProto.DisallowBigIntsAsStrings
 
 	// Open the sample proto file:
 	sampleProtoFileName := fmt.Sprintf("%v/%v", sampleProtoDirectory, sampleProto.ProtoFileName)
@@ -194,4 +197,21 @@ func configureSampleProtos() {
 		ProtoFileName:      "ArrayOfEnums.proto",
 	}
 
+	// BigInts, disallow big ints as strings
+	sampleProtos["BigInts"] = SampleProto{
+		AllowNullValues:          false,
+		DisallowBigIntsAsStrings: true,
+		ExpectedJsonSchema:       []string{testdata.BigInts},
+		FilesToGenerate:          []string{"BigInts.proto"},
+		ProtoFileName:            "BigInts.proto",
+	}
+
+	// BigInts, allow big ints as strings
+	sampleProtos["BigInts"] = SampleProto{
+		AllowNullValues:          false,
+		DisallowBigIntsAsStrings: false,
+		ExpectedJsonSchema:       []string{testdata.BigIntsAllowString},
+		FilesToGenerate:          []string{"BigIntsAllowStrings.proto"},
+		ProtoFileName:            "BigIntsAllowStrings.proto",
+	}
 }

@@ -1,0 +1,6 @@
+syntax = "proto3";
+package samples;
+
+message BigIntsAllowStrings {
+    int64 name1       = 1;
+}
