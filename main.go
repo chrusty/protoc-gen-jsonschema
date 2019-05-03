@@ -70,6 +70,7 @@ type LogLevel int
 
 func init() {
 	flag.BoolVar(&allowNullValues, "allow_null_values", false, "Allow NULL values to be validated")
+	flag.BoolVar(&camelCase, "camel_case", false, "write properties names in camel case")
 	flag.BoolVar(&disallowAdditionalProperties, "disallow_additional_properties", false, "Disallow additional properties")
 	flag.BoolVar(&disallowBigIntsAsStrings, "disallow_bigints_as_strings", false, "Disallow bigints to be strings (eg scientific notation)")
 	flag.BoolVar(&debugLogging, "debug", false, "Log debug messages")
