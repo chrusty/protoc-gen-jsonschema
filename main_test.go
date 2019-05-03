@@ -23,7 +23,6 @@ var (
 
 type SampleProto struct {
 	AllowNullValues          bool
-	CamelCase                bool
 	DisallowBigIntsAsStrings bool
 	ExpectedJsonSchema       []string
 	FilesToGenerate          []string
@@ -54,6 +53,7 @@ func TestGenerateJsonSchema(t *testing.T) {
 	testConvertSampleProtos(t, sampleProtos["ArrayOfEnums"])
 	testConvertSampleProtos(t, sampleProtos["BigInts"])
 	testConvertSampleProtos(t, sampleProtos["BigIntsAllowStrings"])
+	testConvertSampleProtos(t, sampleProtos["CamelCase"])
 }
 
 func testForProtocBinary(t *testing.T) {
@@ -70,7 +70,6 @@ func testConvertSampleProtos(t *testing.T, sampleProto SampleProto) {
 
 	// Set allowNullValues accordingly:
 	allowNullValues = sampleProto.AllowNullValues
-	camelCase = sampleProto.CamelCase
 	disallowBigIntsAsStrings = sampleProto.DisallowBigIntsAsStrings
 
 	// Open the sample proto file:
@@ -216,5 +215,14 @@ func configureSampleProtos() {
 		ExpectedJsonSchema:       []string{testdata.BigIntsAllowString},
 		FilesToGenerate:          []string{"BigIntsAllowStrings.proto"},
 		ProtoFileName:            "BigIntsAllowStrings.proto",
+	}
+
+	// BigInts, allow big ints as strings
+	sampleProtos["CamelCase"] = SampleProto{
+		AllowNullValues:          false,
+		DisallowBigIntsAsStrings: false,
+		ExpectedJsonSchema:       []string{testdata.CamelCase},
+		FilesToGenerate:          []string{"CamelCase.proto"},
+		ProtoFileName:            "CamelCase.proto",
 	}
 }
