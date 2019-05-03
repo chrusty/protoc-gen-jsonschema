@@ -18,6 +18,8 @@ import (
 	"path"
 	"strings"
 
+	"github.com/iancoleman/strcase"
+
 	"github.com/alecthomas/jsonschema"
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
@@ -36,6 +38,7 @@ const (
 
 var (
 	allowNullValues              bool = false
+	camelCase                    bool = false
 	disallowAdditionalProperties bool = false
 	disallowBigIntsAsStrings     bool = false
 	debugLogging                 bool = false
@@ -392,7 +395,13 @@ func convertMessageType(curPkg *ProtoPackage, msg *descriptor.DescriptorProto) (
 			logWithLevel(LOG_ERROR, "Failed to convert field %s in %s: %v", fieldDesc.GetName(), msg.GetName(), err)
 			return jsonSchemaType, err
 		}
-		jsonSchemaType.Properties[fieldDesc.GetName()] = recursedJSONSchemaType
+		if camelCase {
+			fieldName := strcase.ToLowerCamel(fieldDesc.GetName())
+			jsonSchemaType.Properties[fieldName] = recursedJSONSchemaType
+		} else {
+			jsonSchemaType.Properties[fieldDesc.GetName()] = recursedJSONSchemaType
+		}
+
 	}
 	return jsonSchemaType, nil
 }

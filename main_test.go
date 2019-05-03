@@ -7,10 +7,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/chrusty/protoc-gen-jsonschema/testdata"
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
+	"github.com/huttotw/protoc-gen-jsonschema/testdata"
 	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 )
@@ -23,6 +23,7 @@ var (
 
 type SampleProto struct {
 	AllowNullValues          bool
+	CamelCase                bool
 	DisallowBigIntsAsStrings bool
 	ExpectedJsonSchema       []string
 	FilesToGenerate          []string
@@ -52,6 +53,8 @@ func TestGenerateJsonSchema(t *testing.T) {
 	testConvertSampleProtos(t, sampleProtos["SeveralMessages"])
 	testConvertSampleProtos(t, sampleProtos["ArrayOfEnums"])
 	testConvertSampleProtos(t, sampleProtos["BigInts"])
+	testConvertSampleProtos(t, sampleProtos["BigIntsAllowStrings"])
+	testConvertSampleProtos(t, sampleProtos["CamelCase"])
 }
 
 func testForProtocBinary(t *testing.T) {
@@ -68,6 +71,7 @@ func testConvertSampleProtos(t *testing.T, sampleProto SampleProto) {
 
 	// Set allowNullValues accordingly:
 	allowNullValues = sampleProto.AllowNullValues
+	camelCase = sampleProto.CamelCase
 	disallowBigIntsAsStrings = sampleProto.DisallowBigIntsAsStrings
 
 	// Open the sample proto file:
@@ -207,11 +211,20 @@ func configureSampleProtos() {
 	}
 
 	// BigInts, allow big ints as strings
-	sampleProtos["BigInts"] = SampleProto{
+	sampleProtos["BigIntsAllowStrings"] = SampleProto{
 		AllowNullValues:          false,
 		DisallowBigIntsAsStrings: false,
 		ExpectedJsonSchema:       []string{testdata.BigIntsAllowString},
 		FilesToGenerate:          []string{"BigIntsAllowStrings.proto"},
 		ProtoFileName:            "BigIntsAllowStrings.proto",
+	}
+
+	// CamelCase: with camelCase
+	sampleProtos["CamelCase"] = SampleProto{
+		AllowNullValues:    false,
+		CamelCase:          true,
+		ExpectedJsonSchema: []string{testdata.CamelCase},
+		FilesToGenerate:    []string{"CamelCase.proto"},
+		ProtoFileName:      "CamelCase.proto",
 	}
 }
