@@ -18,8 +18,6 @@ import (
 	"path"
 	"strings"
 
-	"github.com/iancoleman/strcase"
-
 	"github.com/alecthomas/jsonschema"
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
@@ -38,7 +36,6 @@ const (
 
 var (
 	allowNullValues              bool = false
-	camelCase                    bool = false
 	disallowAdditionalProperties bool = false
 	disallowBigIntsAsStrings     bool = false
 	debugLogging                 bool = false
@@ -70,7 +67,6 @@ type LogLevel int
 
 func init() {
 	flag.BoolVar(&allowNullValues, "allow_null_values", false, "Allow NULL values to be validated")
-	flag.BoolVar(&camelCase, "camel_case", false, "write properties names in camel case")
 	flag.BoolVar(&disallowAdditionalProperties, "disallow_additional_properties", false, "Disallow additional properties")
 	flag.BoolVar(&disallowBigIntsAsStrings, "disallow_bigints_as_strings", false, "Disallow bigints to be strings (eg scientific notation)")
 	flag.BoolVar(&debugLogging, "debug", false, "Log debug messages")
@@ -396,12 +392,8 @@ func convertMessageType(curPkg *ProtoPackage, msg *descriptor.DescriptorProto) (
 			logWithLevel(LOG_ERROR, "Failed to convert field %s in %s: %v", fieldDesc.GetName(), msg.GetName(), err)
 			return jsonSchemaType, err
 		}
-		if camelCase {
-			fieldName := strcase.ToLowerCamel(fieldDesc.GetName())
-			jsonSchemaType.Properties[fieldName] = recursedJSONSchemaType
-		} else {
-			jsonSchemaType.Properties[fieldDesc.GetName()] = recursedJSONSchemaType
-		}
+
+		jsonSchemaType.Properties[fieldDesc.GetJsonName()] = recursedJSONSchemaType
 
 	}
 	return jsonSchemaType, nil

@@ -54,7 +54,6 @@ func TestGenerateJsonSchema(t *testing.T) {
 	testConvertSampleProtos(t, sampleProtos["ArrayOfEnums"])
 	testConvertSampleProtos(t, sampleProtos["BigInts"])
 	testConvertSampleProtos(t, sampleProtos["BigIntsAllowStrings"])
-	testConvertSampleProtos(t, sampleProtos["CamelCase"])
 }
 
 func testForProtocBinary(t *testing.T) {
@@ -217,14 +216,5 @@ func configureSampleProtos() {
 		ExpectedJsonSchema:       []string{testdata.BigIntsAllowString},
 		FilesToGenerate:          []string{"BigIntsAllowStrings.proto"},
 		ProtoFileName:            "BigIntsAllowStrings.proto",
-	}
-
-	// CamelCase: with camelCase
-	sampleProtos["CamelCase"] = SampleProto{
-		AllowNullValues:    false,
-		CamelCase:          true,
-		ExpectedJsonSchema: []string{testdata.CamelCase},
-		FilesToGenerate:    []string{"CamelCase.proto"},
-		ProtoFileName:      "CamelCase.proto",
 	}
 }
