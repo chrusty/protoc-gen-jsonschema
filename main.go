@@ -318,8 +318,6 @@ func convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, m
 			return nil, fmt.Errorf("no such message type named %s", desc.GetTypeName())
 		}
 
-		// recursedJSONSchemaType, err := convertMessageType(curPkg, recordType)
-		// (jsonschema.Type, error)
 		var recursedJSONSchemaType jsonschema.Type
 		var err error
 		if nestedMessagesAsReferences {
