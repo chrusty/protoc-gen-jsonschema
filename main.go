@@ -39,6 +39,7 @@ var (
 	disallowAdditionalProperties bool = false
 	disallowBigIntsAsStrings     bool = false
 	debugLogging                 bool = false
+	nestedMessagesAsReferences   bool = false
 	globalPkg                         = &ProtoPackage{
 		name:     "",
 		parent:   nil,
@@ -70,6 +71,7 @@ func init() {
 	flag.BoolVar(&disallowAdditionalProperties, "disallow_additional_properties", false, "Disallow additional properties")
 	flag.BoolVar(&disallowBigIntsAsStrings, "disallow_bigints_as_strings", false, "Disallow bigints to be strings (eg scientific notation)")
 	flag.BoolVar(&debugLogging, "debug", false, "Log debug messages")
+	flag.BoolVar(&nestedMessagesAsReferences, "nested_messages_as_references", false, "Define nested messages as references")
 }
 
 func logWithLevel(logLevel LogLevel, logFormat string, logParams ...interface{}) {
@@ -316,8 +318,16 @@ func convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, m
 			return nil, fmt.Errorf("no such message type named %s", desc.GetTypeName())
 		}
 
-		// Recurse:
-		recursedJSONSchemaType, err := convertMessageType(curPkg, recordType)
+		// recursedJSONSchemaType, err := convertMessageType(curPkg, recordType)
+		// (jsonschema.Type, error)
+		var recursedJSONSchemaType jsonschema.Type
+		var err error
+		if nestedMessagesAsReferences {
+			recursedJSONSchemaType, err = convertMessageTypeReference(recordType)
+		} else {
+			// Recurse:
+			recursedJSONSchemaType, err = convertMessageType(curPkg, recordType)
+		}
 		if err != nil {
 			return nil, err
 		}
@@ -340,6 +350,19 @@ func convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, m
 			jsonSchemaType.Type = ""
 		}
 	}
+
+	return jsonSchemaType, nil
+}
+
+func convertMessageTypeReference(msg *descriptor.DescriptorProto) (jsonschema.Type, error) {
+
+	// Prepare a new jsonschema:
+	jsonSchemaType := jsonschema.Type{
+		Properties: make(map[string]*jsonschema.Type),
+		Version:    jsonschema.Version,
+	}
+
+	jsonSchemaType.Ref = *msg.Name
 
 	return jsonSchemaType, nil
 }
@@ -538,6 +561,8 @@ func commandLineParameter(parameters string) {
 			disallowAdditionalProperties = true
 		case "disallow_bigints_as_strings":
 			disallowBigIntsAsStrings = true
+		case "nested_messages_as_references":
+			nestedMessagesAsReferences = true
 		}
 	}
 }
