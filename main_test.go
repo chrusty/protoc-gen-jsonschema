@@ -50,6 +50,7 @@ func TestGenerateJsonSchema(t *testing.T) {
 	testConvertSampleProtos(t, sampleProtos["SeveralEnums"])
 	testConvertSampleProtos(t, sampleProtos["SeveralMessages"])
 	testConvertSampleProtos(t, sampleProtos["ArrayOfEnums"])
+	testConvertSampleProtos(t, sampleProtos["Timestamp"])
 }
 
 func testForProtocBinary(t *testing.T) {
@@ -192,6 +193,14 @@ func configureSampleProtos() {
 		ExpectedJsonSchema: []string{testdata.ArrayOfEnums},
 		FilesToGenerate:    []string{"ArrayOfEnums.proto"},
 		ProtoFileName:      "ArrayOfEnums.proto",
+	}
+
+	// Timestamp
+	sampleProtos["Timestamp"] = SampleProto{
+		AllowNullValues:    false,
+		ExpectedJsonSchema: []string{testdata.Timestamp},
+		FilesToGenerate:    []string{"Timestamp.proto"},
+		ProtoFileName:      "Timestamp.proto",
 	}
 
 }

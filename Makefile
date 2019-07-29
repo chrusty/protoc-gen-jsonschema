@@ -21,7 +21,8 @@ samples:
 	@PATH=.:$$PATH; protoc --jsonschema_out=disallow_bigints_as_strings:jsonschemas --proto_path=testdata/proto testdata/proto/PayloadMessage.proto 2>/dev/null || echo "No messages found (PayloadMessage.proto)"
 	@PATH=.:$$PATH; protoc --jsonschema_out=disallow_bigints_as_strings:jsonschemas --proto_path=testdata/proto testdata/proto/SeveralEnums.proto 2>/dev/null || echo "No messages found (SeveralEnums.proto)"
 	@PATH=.:$$PATH; protoc --jsonschema_out=disallow_bigints_as_strings:jsonschemas --proto_path=testdata/proto testdata/proto/SeveralMessages.proto 2>/dev/null || echo "No messages found (SeveralMessages.proto)"
-	@PATH=.:$$PATH; protoc --jsonschema_out=jsonschemas --proto_path=testdata/proto testdata/proto/ArrayOfEnums.proto 2>/dev/null || echo "No messages found (SeveralMessages.proto)"
+	@PATH=.:$$PATH; protoc --jsonschema_out=disallow_bigints_as_strings:jsonschemas --proto_path=testdata/proto testdata/proto/Timestamp.proto 2>/dev/null || echo "No messages found (Timestamp.proto)"
+	@PATH=.:$$PATH; protoc --jsonschema_out=jsonschemas --proto_path=testdata/proto testdata/proto/ArrayOfEnums.proto || echo "No messages found (SeveralMessages.proto)"
 
 test:
 	@go test
