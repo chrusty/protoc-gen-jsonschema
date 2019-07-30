@@ -378,6 +378,7 @@ func convertMessageType(curPkg *ProtoPackage, msg *descriptor.DescriptorProto) (
 			return jsonSchemaType, err
 		}
 		jsonSchemaType.Properties[fieldDesc.GetName()] = recursedJSONSchemaType
+		jsonSchemaType.Properties[fieldDesc.GetJsonName()] = recursedJSONSchemaType
 	}
 	return jsonSchemaType, nil
 }
