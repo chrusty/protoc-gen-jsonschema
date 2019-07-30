@@ -4,6 +4,10 @@ build:
 	@echo "Generating binary (protoc-gen-jsonschema) ..."
 	@go build -o protoc-gen-jsonschema
 
+build_linux:
+	@echo "Generating Linux-amd64 binary (protoc-gen-jsonschema.linux-amd64) ..."
+	@GOOS=linux GOARCH=amd64 go build -o protoc-gen-jsonschema.linux-amd64
+
 samples:
 	@echo "Generating sample JSON-Schemas ..."
 	@mkdir -p jsonschemas
