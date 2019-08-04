@@ -26,26 +26,26 @@ import (
 )
 
 const (
-	LOG_DEBUG = 0
-	LOG_INFO  = 1
-	LOG_WARN  = 2
-	LOG_ERROR = 3
-	LOG_FATAL = 4
-	LOG_PANIC = 5
+	logDebug = 0
+	logInfo  = 1
+	logWarn  = 2
+	logError = 3
+	logFatal = 4
+	logPanic = 5
 )
 
 var (
-	allowNullValues              bool = false
-	disallowAdditionalProperties bool = false
-	disallowBigIntsAsStrings     bool = false
-	debugLogging                 bool = false
-	globalPkg                         = &ProtoPackage{
+	allowNullValues              bool
+	disallowAdditionalProperties bool
+	disallowBigIntsAsStrings     bool
+	debugLogging                 bool
+	globalPkg                    = &ProtoPackage{
 		name:     "",
 		parent:   nil,
 		children: make(map[string]*ProtoPackage),
 		types:    make(map[string]*descriptor.DescriptorProto),
 	}
-	logLevels = map[LogLevel]string{
+	logLevels = map[logLevel]string{
 		0: "DEBUG",
 		1: "INFO",
 		2: "WARN",
@@ -63,7 +63,7 @@ type ProtoPackage struct {
 	types    map[string]*descriptor.DescriptorProto
 }
 
-type LogLevel int
+type logLevel int
 
 func init() {
 	flag.BoolVar(&allowNullValues, "allow_null_values", false, "Allow NULL values to be validated")
@@ -72,9 +72,9 @@ func init() {
 	flag.BoolVar(&debugLogging, "debug", false, "Log debug messages")
 }
 
-func logWithLevel(logLevel LogLevel, logFormat string, logParams ...interface{}) {
+func logWithLevel(logLevel logLevel, logFormat string, logParams ...interface{}) {
 	// If we're not doing debug logging then just return:
-	if logLevel <= LOG_INFO && !debugLogging {
+	if logLevel <= logInfo && !debugLogging {
 		return
 	}
 
@@ -130,7 +130,7 @@ componentLoop:
 				continue componentLoop
 			}
 		}
-		logWithLevel(LOG_INFO, "no such nested message %s in %s", component, desc.GetName())
+		logWithLevel(logInfo, "no such nested message %s in %s", component, desc.GetName())
 		return nil, false
 	}
 	return desc, true
@@ -140,13 +140,13 @@ func (pkg *ProtoPackage) relativelyLookupType(name string) (*descriptor.Descript
 	components := strings.SplitN(name, ".", 2)
 	switch len(components) {
 	case 0:
-		logWithLevel(LOG_DEBUG, "empty message name")
+		logWithLevel(logDebug, "empty message name")
 		return nil, false
 	case 1:
 		found, ok := pkg.types[components[0]]
 		return found, ok
 	case 2:
-		logWithLevel(LOG_DEBUG, "looking for %s in %s at %s (%v)", components[1], components[0], pkg.name, pkg)
+		logWithLevel(logDebug, "looking for %s in %s at %s (%v)", components[1], components[0], pkg.name, pkg)
 		if child, ok := pkg.children[components[0]]; ok {
 			found, ok := child.relativelyLookupType(components[1])
 			return found, ok
@@ -155,10 +155,10 @@ func (pkg *ProtoPackage) relativelyLookupType(name string) (*descriptor.Descript
 			found, ok := relativelyLookupNestedType(msg, components[1])
 			return found, ok
 		}
-		logWithLevel(LOG_INFO, "no such package nor message %s in %s", components[0], pkg.name)
+		logWithLevel(logInfo, "no such package nor message %s in %s", components[0], pkg.name)
 		return nil, false
 	default:
-		logWithLevel(LOG_FATAL, "not reached")
+		logWithLevel(logFatal, "not reached")
 		return nil, false
 	}
 }
@@ -370,11 +370,11 @@ func convertMessageType(curPkg *ProtoPackage, msg *descriptor.DescriptorProto) (
 		jsonSchemaType.AdditionalProperties = []byte("true")
 	}
 
-	logWithLevel(LOG_DEBUG, "Converting message: %s", proto.MarshalTextString(msg))
+	logWithLevel(logDebug, "Converting message: %s", proto.MarshalTextString(msg))
 	for _, fieldDesc := range msg.GetField() {
 		recursedJSONSchemaType, err := convertField(curPkg, fieldDesc, msg)
 		if err != nil {
-			logWithLevel(LOG_ERROR, "Failed to convert field %s in %s: %v", fieldDesc.GetName(), msg.GetName(), err)
+			logWithLevel(logError, "Failed to convert field %s in %s: %v", fieldDesc.GetName(), msg.GetName(), err)
 			return jsonSchemaType, err
 		}
 		jsonSchemaType.Properties[fieldDesc.GetName()] = recursedJSONSchemaType
@@ -414,36 +414,38 @@ func convertFile(file *descriptor.FileDescriptorProto) ([]*plugin.CodeGeneratorR
 
 	// Warn about multiple messages / enums in files:
 	if len(file.GetMessageType()) > 1 {
-		logWithLevel(LOG_WARN, "protoc-gen-jsonschema will create multiple MESSAGE schemas (%d) from one proto file (%v)", len(file.GetMessageType()), protoFileName)
+		logWithLevel(logWarn, "protoc-gen-jsonschema will create multiple MESSAGE schemas (%d) from one proto file (%v)", len(file.GetMessageType()), protoFileName)
 	}
 	if len(file.GetEnumType()) > 1 {
-		logWithLevel(LOG_WARN, "protoc-gen-jsonschema will create multiple ENUM schemas (%d) from one proto file (%v)", len(file.GetEnumType()), protoFileName)
+		logWithLevel(logWarn, "protoc-gen-jsonschema will create multiple ENUM schemas (%d) from one proto file (%v)", len(file.GetEnumType()), protoFileName)
 	}
 
 	// Generate standalone ENUMs:
 	if len(file.GetMessageType()) == 0 {
 		for _, enum := range file.GetEnumType() {
 			jsonSchemaFileName := fmt.Sprintf("%s.jsonschema", enum.GetName())
-			logWithLevel(LOG_INFO, "Generating JSON-schema for stand-alone ENUM (%v) in file [%v] => %v", enum.GetName(), protoFileName, jsonSchemaFileName)
-			enumJsonSchema, err := convertEnumType(enum)
+			logWithLevel(logInfo, "Generating JSON-schema for stand-alone ENUM (%v) in file [%v] => %v", enum.GetName(), protoFileName, jsonSchemaFileName)
+
+			// Convert the ENUM:
+			enumJSONSchema, err := convertEnumType(enum)
 			if err != nil {
-				logWithLevel(LOG_ERROR, "Failed to convert %s: %v", protoFileName, err)
+				logWithLevel(logError, "Failed to convert %s: %v", protoFileName, err)
 				return nil, err
-			} else {
-				// Marshal the JSON-Schema into JSON:
-				jsonSchemaJSON, err := json.MarshalIndent(enumJsonSchema, "", "    ")
-				if err != nil {
-					logWithLevel(LOG_ERROR, "Failed to encode jsonSchema: %v", err)
-					return nil, err
-				} else {
-					// Add a response:
-					resFile := &plugin.CodeGeneratorResponse_File{
-						Name:    proto.String(jsonSchemaFileName),
-						Content: proto.String(string(jsonSchemaJSON)),
-					}
-					response = append(response, resFile)
-				}
 			}
+
+			// Marshal the JSON-Schema into JSON:
+			jsonSchemaJSON, err := json.MarshalIndent(enumJSONSchema, "", "    ")
+			if err != nil {
+				logWithLevel(logError, "Failed to encode jsonSchema: %v", err)
+				return nil, err
+			}
+
+			// Add a response:
+			resFile := &plugin.CodeGeneratorResponse_File{
+				Name:    proto.String(jsonSchemaFileName),
+				Content: proto.String(string(jsonSchemaJSON)),
+			}
+			response = append(response, resFile)
 		}
 	} else {
 		// Otherwise process MESSAGES (packages):
@@ -453,26 +455,28 @@ func convertFile(file *descriptor.FileDescriptorProto) ([]*plugin.CodeGeneratorR
 		}
 		for _, msg := range file.GetMessageType() {
 			jsonSchemaFileName := fmt.Sprintf("%s.jsonschema", msg.GetName())
-			logWithLevel(LOG_INFO, "Generating JSON-schema for MESSAGE (%v) in file [%v] => %v", msg.GetName(), protoFileName, jsonSchemaFileName)
+			logWithLevel(logInfo, "Generating JSON-schema for MESSAGE (%v) in file [%v] => %v", msg.GetName(), protoFileName, jsonSchemaFileName)
+
+			// Convert the message:
 			messageJSONSchema, err := convertMessageType(pkg, msg)
 			if err != nil {
-				logWithLevel(LOG_ERROR, "Failed to convert %s: %v", protoFileName, err)
+				logWithLevel(logError, "Failed to convert %s: %v", protoFileName, err)
 				return nil, err
-			} else {
-				// Marshal the JSON-Schema into JSON:
-				jsonSchemaJSON, err := json.MarshalIndent(messageJSONSchema, "", "    ")
-				if err != nil {
-					logWithLevel(LOG_ERROR, "Failed to encode jsonSchema: %v", err)
-					return nil, err
-				} else {
-					// Add a response:
-					resFile := &plugin.CodeGeneratorResponse_File{
-						Name:    proto.String(jsonSchemaFileName),
-						Content: proto.String(string(jsonSchemaJSON)),
-					}
-					response = append(response, resFile)
-				}
 			}
+
+			// Marshal the JSON-Schema into JSON:
+			jsonSchemaJSON, err := json.MarshalIndent(messageJSONSchema, "", "    ")
+			if err != nil {
+				logWithLevel(logError, "Failed to encode jsonSchema: %v", err)
+				return nil, err
+			}
+
+			// Add a response:
+			resFile := &plugin.CodeGeneratorResponse_File{
+				Name:    proto.String(jsonSchemaFileName),
+				Content: proto.String(string(jsonSchemaJSON)),
+			}
+			response = append(response, resFile)
 		}
 	}
 
@@ -488,13 +492,13 @@ func convert(req *plugin.CodeGeneratorRequest) (*plugin.CodeGeneratorResponse, e
 	res := &plugin.CodeGeneratorResponse{}
 	for _, file := range req.GetProtoFile() {
 		for _, msg := range file.GetMessageType() {
-			logWithLevel(LOG_DEBUG, "Loading a message type %s from package %s", msg.GetName(), file.GetPackage())
+			logWithLevel(logDebug, "Loading a message type %s from package %s", msg.GetName(), file.GetPackage())
 			registerType(file.Package, msg)
 		}
 	}
 	for _, file := range req.GetProtoFile() {
 		if _, ok := generateTargets[file.GetName()]; ok {
-			logWithLevel(LOG_DEBUG, "Converting file (%v)", file.GetName())
+			logWithLevel(logDebug, "Converting file (%v)", file.GetName())
 			converted, err := convertFile(file)
 			if err != nil {
 				res.Error = proto.String(fmt.Sprintf("Failed to convert %s: %v", file.GetName(), err))
@@ -507,23 +511,23 @@ func convert(req *plugin.CodeGeneratorRequest) (*plugin.CodeGeneratorResponse, e
 }
 
 func convertFrom(rd io.Reader) (*plugin.CodeGeneratorResponse, error) {
-	logWithLevel(LOG_DEBUG, "Reading code generation request")
+	logWithLevel(logDebug, "Reading code generation request")
 	input, err := ioutil.ReadAll(rd)
 	if err != nil {
-		logWithLevel(LOG_ERROR, "Failed to read request: %v", err)
+		logWithLevel(logError, "Failed to read request: %v", err)
 		return nil, err
 	}
 
 	req := &plugin.CodeGeneratorRequest{}
 	err = proto.Unmarshal(input, req)
 	if err != nil {
-		logWithLevel(LOG_ERROR, "Can't unmarshal input: %v", err)
+		logWithLevel(logError, "Can't unmarshal input: %v", err)
 		return nil, err
 	}
 
 	commandLineParameter(req.GetParameter())
 
-	logWithLevel(LOG_DEBUG, "Converting input")
+	logWithLevel(logDebug, "Converting input")
 	return convert(req)
 }
 
@@ -545,7 +549,7 @@ func commandLineParameter(parameters string) {
 func main() {
 	flag.Parse()
 	ok := true
-	logWithLevel(LOG_DEBUG, "Processing code generator request")
+	logWithLevel(logDebug, "Processing code generator request")
 	res, err := convertFrom(os.Stdin)
 	if err != nil {
 		ok = false
@@ -557,20 +561,20 @@ func main() {
 		}
 	}
 
-	logWithLevel(LOG_DEBUG, "Serializing code generator response")
+	logWithLevel(logDebug, "Serializing code generator response")
 	data, err := proto.Marshal(res)
 	if err != nil {
-		logWithLevel(LOG_FATAL, "Cannot marshal response: %v", err)
+		logWithLevel(logFatal, "Cannot marshal response: %v", err)
 	}
 	_, err = os.Stdout.Write(data)
 	if err != nil {
-		logWithLevel(LOG_FATAL, "Failed to write response: %v", err)
+		logWithLevel(logFatal, "Failed to write response: %v", err)
 	}
 
 	if ok {
-		logWithLevel(LOG_DEBUG, "Succeeded to process code generator request")
+		logWithLevel(logDebug, "Succeeded to process code generator request")
 	} else {
-		logWithLevel(LOG_WARN, "Failed to process code generator but successfully sent the error to protoc")
+		logWithLevel(logWarn, "Failed to process code generator but successfully sent the error to protoc")
 		os.Exit(1)
 	}
 }
