@@ -3,6 +3,7 @@ package converter
 import (
 	"bytes"
 	"fmt"
+	"os"
 	"os/exec"
 	"strings"
 	"testing"
@@ -30,8 +31,6 @@ type sampleProto struct {
 }
 
 func TestGenerateJsonSchema(t *testing.T) {
-	// We only want to see "Info" level logs and above (there's a LOT of debug otherwise):
-	log.SetLevel(log.InfoLevel)
 
 	// Make sure we have "protoc" installed and available:
 	testForProtocBinary(t)
@@ -66,9 +65,10 @@ func testForProtocBinary(t *testing.T) {
 
 func testConvertSampleProto(t *testing.T, sampleProto sampleProto) {
 
-	// Make a Logrus logger (default to WARN):
+	// Make a Logrus logger:
 	logger := logrus.New()
-	logger.SetLevel(logrus.WarnLevel)
+	logger.SetLevel(logrus.ErrorLevel)
+	logger.SetOutput(os.Stderr)
 
 	// Use the logger to make a Converter:
 	protoConverter := New(logger)

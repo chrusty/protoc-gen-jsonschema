@@ -1,6 +1,7 @@
 package converter
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -166,6 +167,47 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 		return nil, fmt.Errorf("unrecognized field type: %s", desc.GetType().String())
 	}
 
+	// Handle MAP types:
+	c.logger.WithField("field_name", *msg.Name).Infof("len(msg.Field): %d", len(msg.Field))
+	if len(msg.Field) == 2 && *msg.Field[0].Name == "key" && *msg.Field[1].Name == "value" {
+		c.logger.WithField("field_name", *msg.Name).WithField("nested_type", msg.NestedType).Info("Map type")
+
+		// if msg.Options != nil && *msg.Options.MapEntry {
+		// c.logger.WithField("name", desc.GetName()).Error("MAP types aren't supported yet")
+		// panic(fmt.Errorf("MAP types aren't supported yet"))
+		// return nil, fmt.Errorf("MAP types aren't supported yet")
+
+		// We only allow maps with string keys:
+		if msg.Field[0].GetType() != descriptor.FieldDescriptorProto_TYPE_STRING {
+			c.logger.WithField("name", desc.GetName()).Warn("Only strings are supported as keys in maps")
+			return nil, fmt.Errorf("Only strings are supported as keys in maps")
+		}
+
+		if c.AllowNullValues {
+			jsonSchemaType.OneOf = []*jsonschema.Type{
+				{Type: gojsonschema.TYPE_NULL},
+				{Type: gojsonschema.TYPE_OBJECT},
+			}
+		} else {
+			jsonSchemaType.Type = gojsonschema.TYPE_OBJECT
+			jsonSchemaType.OneOf = []*jsonschema.Type{}
+		}
+
+		cruft := jsonschema.Type{
+			Type: gojsonschema.TYPE_STRING,
+		}
+
+		// Marshal the type to JSON (because that's how we can pass on AdditionalProperties):
+		additionalPropertiesJSON, err := json.Marshal(cruft)
+		if err != nil {
+			return nil, err
+		}
+		jsonSchemaType.AdditionalProperties = additionalPropertiesJSON
+
+		// return jsonSchemaType, nil
+		return jsonSchemaType, nil
+	}
+
 	// Recurse array of primitive types:
 	if desc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REPEATED && jsonSchemaType.Type != gojsonschema.TYPE_OBJECT {
 		jsonSchemaType.Items = &jsonschema.Type{}
@@ -206,12 +248,30 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			return nil, err
 		}
 
-		// The result is stored differently for arrays of objects (they become "items"):
-		if desc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+		// Maps, arrays, and objects are structured in different ways:
+		switch {
+
+		// Maps:
+		case recordType.Options.GetMapEntry():
+			c.logger.WithField("field_name", *msg.Name).Infof("Is a map")
+
+			// Marshal the type to JSON (because that's how we can pass on AdditionalProperties):
+			additionalProperties := jsonschema.Type{
+				Type: recursedJSONSchemaType.Type,
+			}
+			additionalPropertiesJSON, err := json.Marshal(additionalProperties)
+			if err != nil {
+				return nil, err
+			}
+			jsonSchemaType.AdditionalProperties = additionalPropertiesJSON
+
+		// Arrays:
+		case desc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REPEATED:
 			jsonSchemaType.Items = &recursedJSONSchemaType
 			jsonSchemaType.Type = gojsonschema.TYPE_ARRAY
-		} else {
-			// Nested objects are more straight-forward:
+
+		// Objects:
+		default:
 			jsonSchemaType.Properties = recursedJSONSchemaType.Properties
 		}
 
@@ -257,6 +317,7 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.Des
 	c.logger.WithField("message_str", proto.MarshalTextString(msg)).Debug("Converting message")
 	for _, fieldDesc := range msg.GetField() {
 		recursedJSONSchemaType, err := c.convertField(curPkg, fieldDesc, msg)
+		c.logger.WithField("field_name", fieldDesc.GetName()).WithField("type", recursedJSONSchemaType.Type).Debug("Converted field")
 		if err != nil {
 			c.logger.WithError(err).WithField("field_name", fieldDesc.GetName()).WithField("message_name", msg.GetName()).Error("Failed to convert field")
 			return jsonSchemaType, err
