@@ -50,6 +50,7 @@ func (c *Converter) ConvertFrom(rd io.Reader) (*plugin.CodeGeneratorResponse, er
 
 	c.logger.Debug("Converting input")
 	return c.convert(req)
+	// return c.debugger(req)
 }
 
 func (c *Converter) parseGeneratorParameters(parameters string) {

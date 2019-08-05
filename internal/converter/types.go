@@ -167,47 +167,6 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 		return nil, fmt.Errorf("unrecognized field type: %s", desc.GetType().String())
 	}
 
-	// Handle MAP types:
-	c.logger.WithField("field_name", *msg.Name).Infof("len(msg.Field): %d", len(msg.Field))
-	if len(msg.Field) == 2 && *msg.Field[0].Name == "key" && *msg.Field[1].Name == "value" {
-		c.logger.WithField("field_name", *msg.Name).WithField("nested_type", msg.NestedType).Info("Map type")
-
-		// if msg.Options != nil && *msg.Options.MapEntry {
-		// c.logger.WithField("name", desc.GetName()).Error("MAP types aren't supported yet")
-		// panic(fmt.Errorf("MAP types aren't supported yet"))
-		// return nil, fmt.Errorf("MAP types aren't supported yet")
-
-		// We only allow maps with string keys:
-		if msg.Field[0].GetType() != descriptor.FieldDescriptorProto_TYPE_STRING {
-			c.logger.WithField("name", desc.GetName()).Warn("Only strings are supported as keys in maps")
-			return nil, fmt.Errorf("Only strings are supported as keys in maps")
-		}
-
-		if c.AllowNullValues {
-			jsonSchemaType.OneOf = []*jsonschema.Type{
-				{Type: gojsonschema.TYPE_NULL},
-				{Type: gojsonschema.TYPE_OBJECT},
-			}
-		} else {
-			jsonSchemaType.Type = gojsonschema.TYPE_OBJECT
-			jsonSchemaType.OneOf = []*jsonschema.Type{}
-		}
-
-		cruft := jsonschema.Type{
-			Type: gojsonschema.TYPE_STRING,
-		}
-
-		// Marshal the type to JSON (because that's how we can pass on AdditionalProperties):
-		additionalPropertiesJSON, err := json.Marshal(cruft)
-		if err != nil {
-			return nil, err
-		}
-		jsonSchemaType.AdditionalProperties = additionalPropertiesJSON
-
-		// return jsonSchemaType, nil
-		return jsonSchemaType, nil
-	}
-
 	// Recurse array of primitive types:
 	if desc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REPEATED && jsonSchemaType.Type != gojsonschema.TYPE_OBJECT {
 		jsonSchemaType.Items = &jsonschema.Type{}
@@ -242,7 +201,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			return nil, fmt.Errorf("no such message type named %s", desc.GetTypeName())
 		}
 
-		// Recurse:
+		// Recurse the recordType:
 		recursedJSONSchemaType, err := c.convertMessageType(curPkg, recordType)
 		if err != nil {
 			return nil, err
@@ -253,13 +212,18 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 
 		// Maps:
 		case recordType.Options.GetMapEntry():
-			c.logger.WithField("field_name", *msg.Name).Infof("Is a map")
+			c.logger.
+				WithField("field_name", recordType.GetName()).
+				WithField("msg_name", *msg.Name).
+				Tracef("Is a map")
 
-			// Marshal the type to JSON (because that's how we can pass on AdditionalProperties):
-			additionalProperties := jsonschema.Type{
-				Type: recursedJSONSchemaType.Type,
+			// Make sure we have a "value":
+			if _, ok := recursedJSONSchemaType.Properties["value"]; !ok {
+				return nil, fmt.Errorf("Unable to find 'value' property of MAP type")
 			}
-			additionalPropertiesJSON, err := json.Marshal(additionalProperties)
+
+			// Marshal the "value" properties to JSON (because that's how we can pass on AdditionalProperties):
+			additionalPropertiesJSON, err := json.Marshal(recursedJSONSchemaType.Properties["value"])
 			if err != nil {
 				return nil, err
 			}
@@ -314,7 +278,7 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.Des
 		jsonSchemaType.AdditionalProperties = []byte("true")
 	}
 
-	c.logger.WithField("message_str", proto.MarshalTextString(msg)).Debug("Converting message")
+	c.logger.WithField("message_str", proto.MarshalTextString(msg)).Trace("Converting message")
 	for _, fieldDesc := range msg.GetField() {
 		recursedJSONSchemaType, err := c.convertField(curPkg, fieldDesc, msg)
 		c.logger.WithField("field_name", fieldDesc.GetName()).WithField("type", recursedJSONSchemaType.Type).Debug("Converted field")

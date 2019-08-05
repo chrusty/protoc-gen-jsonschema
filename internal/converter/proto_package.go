@@ -37,7 +37,7 @@ func (c *Converter) relativelyLookupType(pkg *ProtoPackage, name string) (*descr
 		found, ok := pkg.types[components[0]]
 		return found, ok
 	case 2:
-		c.logger.Debugf("Looking for %s in %s at %s (%v)", components[1], components[0], pkg.name, pkg)
+		c.logger.Tracef("Looking for %s in %s at %s (%v)", components[1], components[0], pkg.name, pkg)
 		if child, ok := pkg.children[components[0]]; ok {
 			found, ok := c.relativelyLookupType(child, components[1])
 			return found, ok
