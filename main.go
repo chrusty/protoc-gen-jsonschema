@@ -39,6 +39,7 @@ var (
 	disallowAdditionalProperties bool = false
 	disallowBigIntsAsStrings     bool = false
 	debugLogging                 bool = false
+	useProtoAndJSONFieldnames    bool = false
 	globalPkg                         = &ProtoPackage{
 		name:     "",
 		parent:   nil,
@@ -378,6 +379,9 @@ func convertMessageType(curPkg *ProtoPackage, msg *descriptor.DescriptorProto) (
 			return jsonSchemaType, err
 		}
 		jsonSchemaType.Properties[fieldDesc.GetName()] = recursedJSONSchemaType
+		if useProtoAndJSONFieldnames && fieldDesc.GetName() != fieldDesc.GetJsonName() {
+			jsonSchemaType.Properties[fieldDesc.GetJsonName()] = recursedJSONSchemaType
+		}
 	}
 	return jsonSchemaType, nil
 }
@@ -538,6 +542,8 @@ func commandLineParameter(parameters string) {
 			disallowAdditionalProperties = true
 		case "disallow_bigints_as_strings":
 			disallowBigIntsAsStrings = true
+		case "proto_and_json_fieldnames":
+			useProtoAndJSONFieldnames = true
 		}
 	}
 }
