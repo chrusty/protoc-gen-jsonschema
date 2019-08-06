@@ -20,6 +20,7 @@ type Converter struct {
 	AllowNullValues              bool
 	DisallowAdditionalProperties bool
 	DisallowBigIntsAsStrings     bool
+	UseProtoAndJSONFieldnames    bool
 	logger                       *logrus.Logger
 }
 
@@ -64,6 +65,8 @@ func (c *Converter) parseGeneratorParameters(parameters string) {
 			c.DisallowAdditionalProperties = true
 		case "disallow_bigints_as_strings":
 			c.DisallowBigIntsAsStrings = true
+		case "proto_and_json_fieldnames":
+			c.UseProtoAndJSONFieldnames = true
 		}
 	}
 }

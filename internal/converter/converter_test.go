@@ -24,10 +24,11 @@ var (
 )
 
 type sampleProto struct {
-	AllowNullValues    bool
-	ExpectedJSONSchema []string
-	FilesToGenerate    []string
-	ProtoFileName      string
+	AllowNullValues           bool
+	ExpectedJSONSchema        []string
+	FilesToGenerate           []string
+	ProtoFileName             string
+	UseProtoAndJSONFieldNames bool
 }
 
 func TestGenerateJsonSchema(t *testing.T) {
@@ -42,6 +43,7 @@ func TestGenerateJsonSchema(t *testing.T) {
 	testConvertSampleProto(t, sampleProtos["ArrayOfMessages"])
 	testConvertSampleProto(t, sampleProtos["ArrayOfObjects"])
 	testConvertSampleProto(t, sampleProtos["ArrayOfPrimitives"])
+	testConvertSampleProto(t, sampleProtos["ArrayOfPrimitivesDouble"])
 	testConvertSampleProto(t, sampleProtos["EnumCeption"])
 	testConvertSampleProto(t, sampleProtos["ImportedEnum"])
 	testConvertSampleProto(t, sampleProtos["NestedMessage"])
@@ -73,6 +75,7 @@ func testConvertSampleProto(t *testing.T, sampleProto sampleProto) {
 	// Use the logger to make a Converter:
 	protoConverter := New(logger)
 	protoConverter.AllowNullValues = sampleProto.AllowNullValues
+	protoConverter.UseProtoAndJSONFieldnames = sampleProto.UseProtoAndJSONFieldNames
 
 	// Open the sample proto file:
 	sampleProtoFileName := fmt.Sprintf("%v/%v", sampleProtoDirectory, sampleProto.ProtoFileName)
@@ -135,6 +138,15 @@ func configureSampleProtos() {
 		ExpectedJSONSchema: []string{testdata.ArrayOfPrimitives},
 		FilesToGenerate:    []string{"ArrayOfPrimitives.proto"},
 		ProtoFileName:      "ArrayOfPrimitives.proto",
+	}
+
+	// ArrayOfPrimitives:
+	sampleProtos["ArrayOfPrimitivesDouble"] = sampleProto{
+		AllowNullValues:           true,
+		ExpectedJSONSchema:        []string{testdata.ArrayOfPrimitivesDouble},
+		FilesToGenerate:           []string{"ArrayOfPrimitives.proto"},
+		ProtoFileName:             "ArrayOfPrimitives.proto",
+		UseProtoAndJSONFieldNames: true,
 	}
 
 	// EnumCeption:

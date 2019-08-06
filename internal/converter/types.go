@@ -287,6 +287,9 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.Des
 			return jsonSchemaType, err
 		}
 		jsonSchemaType.Properties[fieldDesc.GetName()] = recursedJSONSchemaType
+		if c.UseProtoAndJSONFieldnames && fieldDesc.GetName() != fieldDesc.GetJsonName() {
+			jsonSchemaType.Properties[fieldDesc.GetJsonName()] = recursedJSONSchemaType
+		}
 	}
 	return jsonSchemaType, nil
 }
