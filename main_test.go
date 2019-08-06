@@ -210,6 +210,3 @@ func configureSampleProtos() {
 
 }
 
-func TestUseProtoAndJSONFieldnames(t *testing.T) {
-
-}
