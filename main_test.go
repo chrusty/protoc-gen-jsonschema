@@ -22,10 +22,11 @@ var (
 )
 
 type SampleProto struct {
-	AllowNullValues    bool
-	ExpectedJsonSchema []string
-	FilesToGenerate    []string
-	ProtoFileName      string
+	AllowNullValues           bool
+	ExpectedJsonSchema        []string
+	FilesToGenerate           []string
+	ProtoFileName             string
+	UseProtoAndJSONFieldNames bool
 }
 
 func TestGenerateJsonSchema(t *testing.T) {
@@ -42,6 +43,7 @@ func TestGenerateJsonSchema(t *testing.T) {
 	testConvertSampleProtos(t, sampleProtos["ArrayOfMessages"])
 	testConvertSampleProtos(t, sampleProtos["ArrayOfObjects"])
 	testConvertSampleProtos(t, sampleProtos["ArrayOfPrimitives"])
+	testConvertSampleProtos(t, sampleProtos["ArrayOfPrimitivesDouble"])
 	testConvertSampleProtos(t, sampleProtos["EnumCeption"])
 	testConvertSampleProtos(t, sampleProtos["ImportedEnum"])
 	testConvertSampleProtos(t, sampleProtos["NestedMessage"])
@@ -63,6 +65,9 @@ func testForProtocBinary(t *testing.T) {
 }
 
 func testConvertSampleProtos(t *testing.T, sampleProto SampleProto) {
+
+	// Set useProtoAndJSONFieldnames accordingly:
+	useProtoAndJSONFieldnames = sampleProto.UseProtoAndJSONFieldNames
 
 	// Set allowNullValues accordingly:
 	allowNullValues = sampleProto.AllowNullValues
@@ -130,6 +135,15 @@ func configureSampleProtos() {
 		ProtoFileName:      "ArrayOfPrimitives.proto",
 	}
 
+	// ArrayOfPrimitives:
+	sampleProtos["ArrayOfPrimitivesDouble"] = SampleProto{
+		AllowNullValues:    true,
+		ExpectedJsonSchema: []string{testdata.ArrayOfPrimitivesDouble},
+		FilesToGenerate:    []string{"ArrayOfPrimitives.proto"},
+		ProtoFileName:      "ArrayOfPrimitives.proto",
+		UseProtoAndJSONFieldNames: true,
+	}
+
 	// EnumCeption:
 	sampleProtos["EnumCeption"] = SampleProto{
 		AllowNullValues:    false,
@@ -193,5 +207,9 @@ func configureSampleProtos() {
 		FilesToGenerate:    []string{"ArrayOfEnums.proto"},
 		ProtoFileName:      "ArrayOfEnums.proto",
 	}
+
+}
+
+func TestUseProtoAndJSONFieldnames(t *testing.T) {
 
 }
