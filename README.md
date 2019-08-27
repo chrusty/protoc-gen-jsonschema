@@ -9,7 +9,7 @@ This will hopefully be useful for people who define their data using ProtoBuf, b
 
 Installation
 ------------
-`go install github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema`
+`GO111MODULE=on go get -u github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema && go install github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema`
 
 Links
 -----
