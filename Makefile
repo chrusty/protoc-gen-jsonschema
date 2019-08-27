@@ -1,9 +1,12 @@
-default: darwin linux windows
+default: build
 
 build:
 	@echo "Generating binary (protoc-gen-jsonschema) ..."
 	@mkdir -p bin
 	@go build -o bin/protoc-gen-jsonschema cmd/protoc-gen-jsonschema/main.go
+
+install:
+	@go install github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema
 
 build_linux:
 	@echo "Generating Linux-amd64 binary (protoc-gen-jsonschema.linux-amd64) ..."
