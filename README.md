@@ -7,6 +7,10 @@ This will hopefully be useful for people who define their data using ProtoBuf, b
 "Heavily influenced" by [Google's protobuf-to-BigQuery-schema compiler](https://github.com/GoogleCloudPlatform/protoc-gen-bq-schema).
 
 
+Installation
+------------
+`go install github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema`
+
 Links
 -----
 * [About JSON Schema](http://json-schema.org/)
