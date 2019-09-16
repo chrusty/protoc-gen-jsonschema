@@ -40,6 +40,7 @@ func TestGenerateJsonSchema(t *testing.T) {
 	configureSampleProtos()
 
 	// Convert the protos, compare the results against the expected JSON-Schemas:
+	testConvertSampleProto(t, sampleProtos["Comments"])
 	testConvertSampleProto(t, sampleProtos["ArrayOfMessages"])
 	testConvertSampleProto(t, sampleProtos["ArrayOfObjects"])
 	testConvertSampleProto(t, sampleProtos["ArrayOfPrimitives"])
@@ -219,5 +220,13 @@ func configureSampleProtos() {
 		ExpectedJSONSchema: []string{testdata.Maps},
 		FilesToGenerate:    []string{"Maps.proto"},
 		ProtoFileName:      "Maps.proto",
+	}
+
+	// Comments:
+	sampleProtos["Comments"] = sampleProto{
+		AllowNullValues:    false,
+		ExpectedJSONSchema: []string{testdata.MessageWithComments},
+		FilesToGenerate:    []string{"MessageWithComments.proto"},
+		ProtoFileName:      "MessageWithComments.proto",
 	}
 }
