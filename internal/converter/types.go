@@ -68,6 +68,11 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 		Properties: make(map[string]*jsonschema.Type),
 	}
 
+	// Generate a description from src comments (if available)
+	if src := c.sourceInfo.GetField(desc); src != nil {
+		jsonSchemaType.Description = formatDescription(src)
+	}
+
 	// Switch the types, and pick a JSONSchema equivalent:
 	switch desc.GetType() {
 	case descriptor.FieldDescriptorProto_TYPE_DOUBLE,
@@ -260,6 +265,10 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.Des
 		Properties: make(map[string]*jsonschema.Type),
 		Version:    jsonschema.Version,
 	}
+	// Generate a description from src comments (if available)
+	if src := c.sourceInfo.GetMessage(msg); src != nil {
+		jsonSchemaType.Description = formatDescription(src)
+	}
 
 	// Optionally allow NULL values:
 	if c.AllowNullValues {
@@ -292,4 +301,20 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.Des
 		}
 	}
 	return jsonSchemaType, nil
+}
+
+func formatDescription(sl *descriptor.SourceCodeInfo_Location) string {
+	var lines []string
+	for _, str := range sl.GetLeadingDetachedComments() {
+		if s := strings.TrimSpace(str); s != "" {
+			lines = append(lines, s)
+		}
+	}
+	if s := strings.TrimSpace(sl.GetLeadingComments()); s != "" {
+		lines = append(lines, s)
+	}
+	if s := strings.TrimSpace(sl.GetTrailingComments()); s != "" {
+		lines = append(lines, s)
+	}
+	return strings.Join(lines, "\n\n")
 }

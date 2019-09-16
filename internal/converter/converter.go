@@ -22,6 +22,7 @@ type Converter struct {
 	DisallowBigIntsAsStrings     bool
 	UseProtoAndJSONFieldnames    bool
 	logger                       *logrus.Logger
+	sourceInfo                   *sourceCodeInfo
 }
 
 // New returns a configured *Converter:
@@ -77,6 +78,11 @@ func (c *Converter) convertEnumType(enum *descriptor.EnumDescriptorProto) (jsons
 	// Prepare a new jsonschema.Type for our eventual return value:
 	jsonSchemaType := jsonschema.Type{
 		Version: jsonschema.Version,
+	}
+
+	// Generate a description from src comments (if available)
+	if src := c.sourceInfo.GetEnum(enum); src != nil {
+		jsonSchemaType.Description = formatDescription(src)
 	}
 
 	// Allow both strings and integers:
@@ -178,6 +184,7 @@ func (c *Converter) convert(req *plugin.CodeGeneratorRequest) (*plugin.CodeGener
 		generateTargets[file] = true
 	}
 
+	c.sourceInfo = newSourceCodeInfo(req.GetProtoFile())
 	res := &plugin.CodeGeneratorResponse{}
 	for _, file := range req.GetProtoFile() {
 		for _, msg := range file.GetMessageType() {
