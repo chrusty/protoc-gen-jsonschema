@@ -13,12 +13,10 @@ import (
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
 	"github.com/sirupsen/logrus"
-	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 )
 
 var (
-	protocBinary         = "/bin/protoc"
 	sampleProtoDirectory = "testdata/proto"
 	sampleProtos         = make(map[string]sampleProto)
 )
@@ -33,13 +31,11 @@ type sampleProto struct {
 
 func TestGenerateJsonSchema(t *testing.T) {
 
-	// Make sure we have "protoc" installed and available:
-	testForProtocBinary(t)
-
 	// Configure the list of sample protos to test, and their expected JSON-Schemas:
 	configureSampleProtos()
 
 	// Convert the protos, compare the results against the expected JSON-Schemas:
+	testConvertSampleProto(t, sampleProtos["Comments"])
 	testConvertSampleProto(t, sampleProtos["ArrayOfMessages"])
 	testConvertSampleProto(t, sampleProtos["ArrayOfObjects"])
 	testConvertSampleProto(t, sampleProtos["ArrayOfPrimitives"])
@@ -53,16 +49,6 @@ func TestGenerateJsonSchema(t *testing.T) {
 	testConvertSampleProto(t, sampleProtos["SeveralMessages"])
 	testConvertSampleProto(t, sampleProtos["ArrayOfEnums"])
 	testConvertSampleProto(t, sampleProtos["Maps"])
-}
-
-func testForProtocBinary(t *testing.T) {
-	path, err := exec.LookPath("protoc")
-	if err != nil {
-		assert.NoError(t, err, "Can't find 'protoc' binary in $PATH")
-	} else {
-		protocBinary = path
-		log.Infof("Found 'protoc' binary (%v)", protocBinary)
-	}
 }
 
 func testConvertSampleProto(t *testing.T, sampleProto sampleProto) {
@@ -79,21 +65,7 @@ func testConvertSampleProto(t *testing.T, sampleProto sampleProto) {
 
 	// Open the sample proto file:
 	sampleProtoFileName := fmt.Sprintf("%v/%v", sampleProtoDirectory, sampleProto.ProtoFileName)
-
-	// Prepare to run the "protoc" command (generates a CodeGeneratorRequest):
-	protocCommand := exec.Command(protocBinary, "--descriptor_set_out=/dev/stdout", "--include_imports", fmt.Sprintf("--proto_path=%v", sampleProtoDirectory), sampleProtoFileName)
-	var protocCommandOutput bytes.Buffer
-	errChan := &bytes.Buffer{}
-	protocCommand.Stdout = &protocCommandOutput
-	protocCommand.Stderr = errChan
-	// Run the command:
-	err := protocCommand.Run()
-	assert.NoError(t, err, "Unable to prepare a codeGeneratorRequest using protoc (%v) for sample proto file (%v) (%s)", protocBinary, sampleProtoFileName, strings.TrimSpace(errChan.String()))
-
-	// Unmarshal the output from the protoc command (should be a "FileDescriptorSet"):
-	fileDescriptorSet := new(descriptor.FileDescriptorSet)
-	err = proto.Unmarshal(protocCommandOutput.Bytes(), fileDescriptorSet)
-	assert.NoError(t, err, "Unable to unmarshal proto FileDescriptorSet for sample proto file (%v)", sampleProtoFileName)
+	fileDescriptorSet := mustReadProtoFiles(t, sampleProtoDirectory, sampleProto.ProtoFileName)
 
 	// Prepare a request:
 	codeGeneratorRequest := plugin.CodeGeneratorRequest{
@@ -220,4 +192,45 @@ func configureSampleProtos() {
 		FilesToGenerate:    []string{"Maps.proto"},
 		ProtoFileName:      "Maps.proto",
 	}
+
+	// Comments:
+	sampleProtos["Comments"] = sampleProto{
+		AllowNullValues:    false,
+		ExpectedJSONSchema: []string{testdata.MessageWithComments},
+		FilesToGenerate:    []string{"MessageWithComments.proto"},
+		ProtoFileName:      "MessageWithComments.proto",
+	}
+}
+
+// Load the specified .proto files into a FileDescriptorSet. Any errors in loading/parsing will
+// immediately fail the test.
+func mustReadProtoFiles(t *testing.T, includePath string, filenames ...string) *descriptor.FileDescriptorSet {
+	protocBinary, err := exec.LookPath("protoc")
+	if err != nil {
+		t.Fatalf("Can't find 'protoc' binary in $PATH: %s", err.Error())
+	}
+
+	// Use protoc to output descriptor info for the specified .proto files.
+	var args []string
+	args = append(args, "--descriptor_set_out=/dev/stdout")
+	args = append(args, "--include_source_info")
+	args = append(args, "--include_imports")
+	args = append(args, "--proto_path="+includePath)
+	args = append(args, filenames...)
+	cmd := exec.Command(protocBinary, args...)
+	stdoutBuf := bytes.Buffer{}
+	stderrBuf := bytes.Buffer{}
+	cmd.Stdout = &stdoutBuf
+	cmd.Stderr = &stderrBuf
+	err = cmd.Run()
+	if err != nil {
+		t.Fatalf("failed to load descriptor set (%s): %s: %s",
+			strings.Join(cmd.Args, " "), err.Error(), stderrBuf.String())
+	}
+	fds := &descriptor.FileDescriptorSet{}
+	err = proto.Unmarshal(stdoutBuf.Bytes(), fds)
+	if err != nil {
+		t.Fatalf("failed to parse protoc output as FileDescriptorSet: %s", err.Error())
+	}
+	return fds
 }
