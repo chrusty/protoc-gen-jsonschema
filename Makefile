@@ -28,6 +28,7 @@ samples:
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=disallow_bigints_as_strings:jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/SeveralMessages.proto 2>/dev/null || echo "No messages found (SeveralMessages.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/ArrayOfEnums.proto 2>/dev/null || echo "No messages found (SeveralMessages.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/Maps.proto 2>/dev/null || echo "No messages found (Maps.proto)"
+	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/MessageWithComments.proto 2>/dev/null || echo "No messages found (MessageWithComments.proto)"
 
 test:
-	@go test ./...
+	@go test ./... -cover
