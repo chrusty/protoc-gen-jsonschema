@@ -8,6 +8,7 @@ import (
 	"github.com/alecthomas/jsonschema"
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
+	"github.com/iancoleman/orderedmap"
 	"github.com/xeipuuv/gojsonschema"
 )
 
@@ -65,7 +66,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 
 	// Prepare a new jsonschema.Type for our eventual return value:
 	jsonSchemaType := &jsonschema.Type{
-		Properties: make(map[string]*jsonschema.Type),
+		Properties: orderedmap.New(),
 	}
 
 	// Generate a description from src comments (if available)
@@ -223,12 +224,13 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 				Tracef("Is a map")
 
 			// Make sure we have a "value":
-			if _, ok := recursedJSONSchemaType.Properties["value"]; !ok {
+			value, ok := recursedJSONSchemaType.Properties.Get("value")
+			if !ok {
 				return nil, fmt.Errorf("Unable to find 'value' property of MAP type")
 			}
 
 			// Marshal the "value" properties to JSON (because that's how we can pass on AdditionalProperties):
-			additionalPropertiesJSON, err := json.Marshal(recursedJSONSchemaType.Properties["value"])
+			additionalPropertiesJSON, err := json.Marshal(value)
 			if err != nil {
 				return nil, err
 			}
@@ -262,7 +264,7 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.Des
 
 	// Prepare a new jsonschema:
 	jsonSchemaType := jsonschema.Type{
-		Properties: make(map[string]*jsonschema.Type),
+		Properties: orderedmap.New(),
 		Version:    jsonschema.Version,
 	}
 	// Generate a description from src comments (if available)
@@ -295,9 +297,9 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.Des
 			c.logger.WithError(err).WithField("field_name", fieldDesc.GetName()).WithField("message_name", msg.GetName()).Error("Failed to convert field")
 			return jsonSchemaType, err
 		}
-		jsonSchemaType.Properties[fieldDesc.GetName()] = recursedJSONSchemaType
+		jsonSchemaType.Properties.Set(fieldDesc.GetName(), recursedJSONSchemaType)
 		if c.UseProtoAndJSONFieldnames && fieldDesc.GetName() != fieldDesc.GetJsonName() {
-			jsonSchemaType.Properties[fieldDesc.GetJsonName()] = recursedJSONSchemaType
+			jsonSchemaType.Properties.Set(fieldDesc.GetJsonName(), recursedJSONSchemaType)
 		}
 	}
 	return jsonSchemaType, nil
