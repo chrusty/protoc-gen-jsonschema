@@ -4,6 +4,7 @@ const ArrayOfEnums = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "properties": {
         "description": {
+            "properties": {},
             "type": "string"
         },
         "stuff": {
@@ -19,6 +20,7 @@ const ArrayOfEnums = `{
                     3
                 ]
             },
+            "properties": {},
             "type": "array"
         }
     },

@@ -2,6 +2,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "properties": {
         "description": {
+            "properties": {},
             "type": "string"
         },
         "stuff": {
@@ -17,6 +18,7 @@
                     3
                 ]
             },
+            "properties": {},
             "type": "array"
         }
     },

@@ -4,6 +4,7 @@ const ArrayOfObjects = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "properties": {
         "description": {
+            "properties": {},
             "oneOf": [
                 {
                     "type": "null"
@@ -17,17 +18,30 @@ const ArrayOfObjects = `{
             "items": {
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "properties": {
-                    "complete": {
+                    "name": {
+                        "properties": {},
                         "oneOf": [
                             {
                                 "type": "null"
                             },
                             {
-                                "type": "boolean"
+                                "type": "string"
+                            }
+                        ]
+                    },
+                    "timestamp": {
+                        "properties": {},
+                        "oneOf": [
+                            {
+                                "type": "null"
+                            },
+                            {
+                                "type": "string"
                             }
                         ]
                     },
                     "id": {
+                        "properties": {},
                         "oneOf": [
                             {
                                 "type": "null"
@@ -37,17 +51,8 @@ const ArrayOfObjects = `{
                             }
                         ]
                     },
-                    "name": {
-                        "oneOf": [
-                            {
-                                "type": "null"
-                            },
-                            {
-                                "type": "string"
-                            }
-                        ]
-                    },
                     "rating": {
+                        "properties": {},
                         "oneOf": [
                             {
                                 "type": "null"
@@ -57,17 +62,19 @@ const ArrayOfObjects = `{
                             }
                         ]
                     },
-                    "timestamp": {
+                    "complete": {
+                        "properties": {},
                         "oneOf": [
                             {
                                 "type": "null"
                             },
                             {
-                                "type": "string"
+                                "type": "boolean"
                             }
                         ]
                     },
                     "topology": {
+                        "properties": {},
                         "enum": [
                             "FLAT",
                             0,
@@ -105,6 +112,7 @@ const ArrayOfObjects = `{
                     }
                 ]
             },
+            "properties": {},
             "oneOf": [
                 {
                     "type": "null"

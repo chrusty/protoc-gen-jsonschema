@@ -4,6 +4,7 @@ const MessageWithComments = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "properties": {
         "name1": {
+            "properties": {},
             "type": "string",
             "description": "This field is supposed to represent blahblahblah"
         }

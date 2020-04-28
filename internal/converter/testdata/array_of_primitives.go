@@ -3,20 +3,8 @@ package testdata
 const ArrayOfPrimitives = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "properties": {
-        "big_number": {
-            "oneOf": [
-                {
-                    "type": "integer"
-                },
-                {
-                    "type": "string"
-                },
-                {
-                    "type": "null"
-                }
-            ]
-        },
         "description": {
+            "properties": {},
             "oneOf": [
                 {
                     "type": "null"
@@ -26,17 +14,18 @@ const ArrayOfPrimitives = `{
                 }
             ]
         },
-        "keyWords": {
+        "luckyNumbers": {
             "items": {
                 "oneOf": [
                     {
                         "type": "null"
                     },
                     {
-                        "type": "string"
+                        "type": "integer"
                     }
                 ]
             },
+            "properties": {},
             "oneOf": [
                 {
                     "type": "null"
@@ -60,6 +49,7 @@ const ArrayOfPrimitives = `{
                     }
                 ]
             },
+            "properties": {},
             "oneOf": [
                 {
                     "type": "null"
@@ -69,23 +59,38 @@ const ArrayOfPrimitives = `{
                 }
             ]
         },
-        "luckyNumbers": {
+        "keyWords": {
             "items": {
                 "oneOf": [
                     {
                         "type": "null"
                     },
                     {
-                        "type": "integer"
+                        "type": "string"
                     }
                 ]
             },
+            "properties": {},
             "oneOf": [
                 {
                     "type": "null"
                 },
                 {
                     "type": "array"
+                }
+            ]
+        },
+        "big_number": {
+            "properties": {},
+            "oneOf": [
+                {
+                    "type": "integer"
+                },
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "null"
                 }
             ]
         }
@@ -105,33 +110,8 @@ const ArrayOfPrimitives = `{
 const ArrayOfPrimitivesDouble = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "properties": {
-        "bigNumber": {
-            "oneOf": [
-                {
-                    "type": "integer"
-                },
-                {
-                    "type": "string"
-                },
-                {
-                    "type": "null"
-                }
-            ]
-        },
-        "big_number": {
-            "oneOf": [
-                {
-                    "type": "integer"
-                },
-                {
-                    "type": "string"
-                },
-                {
-                    "type": "null"
-                }
-            ]
-        },
         "description": {
+            "properties": {},
             "oneOf": [
                 {
                     "type": "null"
@@ -141,17 +121,18 @@ const ArrayOfPrimitivesDouble = `{
                 }
             ]
         },
-        "keyWords": {
+        "luckyNumbers": {
             "items": {
                 "oneOf": [
                     {
                         "type": "null"
                     },
                     {
-                        "type": "string"
+                        "type": "integer"
                     }
                 ]
             },
+            "properties": {},
             "oneOf": [
                 {
                     "type": "null"
@@ -175,6 +156,7 @@ const ArrayOfPrimitivesDouble = `{
                     }
                 ]
             },
+            "properties": {},
             "oneOf": [
                 {
                     "type": "null"
@@ -184,23 +166,52 @@ const ArrayOfPrimitivesDouble = `{
                 }
             ]
         },
-        "luckyNumbers": {
+        "keyWords": {
             "items": {
                 "oneOf": [
                     {
                         "type": "null"
                     },
                     {
-                        "type": "integer"
+                        "type": "string"
                     }
                 ]
             },
+            "properties": {},
             "oneOf": [
                 {
                     "type": "null"
                 },
                 {
                     "type": "array"
+                }
+            ]
+        },
+        "big_number": {
+            "properties": {},
+            "oneOf": [
+                {
+                    "type": "integer"
+                },
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "null"
+                }
+            ]
+        },
+        "bigNumber": {
+            "properties": {},
+            "oneOf": [
+                {
+                    "type": "integer"
+                },
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "null"
                 }
             ]
         }

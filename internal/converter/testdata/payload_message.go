@@ -3,22 +3,28 @@ package testdata
 const PayloadMessage = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "properties": {
-        "complete": {
-            "type": "boolean"
-        },
-        "id": {
-            "type": "integer"
-        },
         "name": {
+            "properties": {},
             "type": "string"
-        },
-        "rating": {
-            "type": "number"
         },
         "timestamp": {
+            "properties": {},
             "type": "string"
         },
+        "id": {
+            "properties": {},
+            "type": "integer"
+        },
+        "rating": {
+            "properties": {},
+            "type": "number"
+        },
+        "complete": {
+            "properties": {},
+            "type": "boolean"
+        },
         "topology": {
+            "properties": {},
             "enum": [
                 "FLAT",
                 0,
