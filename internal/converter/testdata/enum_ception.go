@@ -4,27 +4,21 @@ const EnumCeption = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "properties": {
         "name": {
-            "properties": {},
             "type": "string"
         },
         "timestamp": {
-            "properties": {},
             "type": "string"
         },
         "id": {
-            "properties": {},
             "type": "integer"
         },
         "rating": {
-            "properties": {},
             "type": "number"
         },
         "complete": {
-            "properties": {},
             "type": "boolean"
         },
         "failureMode": {
-            "properties": {},
             "enum": [
                 "RECURSION_ERROR",
                 0,
@@ -50,11 +44,9 @@ const EnumCeption = `{
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "$ref": "samples.PayloadMessage"
             },
-            "properties": {},
             "type": "array"
         },
         "importedEnum": {
-            "properties": {},
             "oneOf": [
                 {
                     "type": "string"
@@ -72,27 +64,21 @@ const EnumCeption = `{
             "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
-                    "properties": {},
                     "type": "string"
                 },
                 "timestamp": {
-                    "properties": {},
                     "type": "string"
                 },
                 "id": {
-                    "properties": {},
                     "type": "integer"
                 },
                 "rating": {
-                    "properties": {},
                     "type": "number"
                 },
                 "complete": {
-                    "properties": {},
                     "type": "boolean"
                 },
                 "topology": {
-                    "properties": {},
                     "enum": [
                         "FLAT",
                         0,

@@ -2,7 +2,6 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "properties": {
         "description": {
-            "properties": {},
             "oneOf": [
                 {
                     "type": "null"
@@ -23,7 +22,6 @@
                     }
                 ]
             },
-            "properties": {},
             "oneOf": [
                 {
                     "type": "null"
@@ -47,7 +45,6 @@
                     }
                 ]
             },
-            "properties": {},
             "oneOf": [
                 {
                     "type": "null"
@@ -68,7 +65,6 @@
                     }
                 ]
             },
-            "properties": {},
             "oneOf": [
                 {
                     "type": "null"
@@ -79,7 +75,6 @@
             ]
         },
         "big_number": {
-            "properties": {},
             "oneOf": [
                 {
                     "type": "integer"

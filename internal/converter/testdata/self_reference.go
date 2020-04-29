@@ -8,7 +8,6 @@ const SelfReference = `{
             "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
-                    "properties": {},
                     "type": "string"
                 },
                 "bar": {
@@ -16,7 +15,6 @@ const SelfReference = `{
                         "$schema": "http://json-schema.org/draft-04/schema#",
                         "$ref": "Foo"
                     },
-                    "properties": {},
                     "type": "array"
                 }
             },

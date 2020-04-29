@@ -4,7 +4,6 @@ const ArrayOfPrimitives = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "properties": {
         "description": {
-            "properties": {},
             "oneOf": [
                 {
                     "type": "null"
@@ -25,7 +24,6 @@ const ArrayOfPrimitives = `{
                     }
                 ]
             },
-            "properties": {},
             "oneOf": [
                 {
                     "type": "null"
@@ -49,7 +47,6 @@ const ArrayOfPrimitives = `{
                     }
                 ]
             },
-            "properties": {},
             "oneOf": [
                 {
                     "type": "null"
@@ -70,7 +67,6 @@ const ArrayOfPrimitives = `{
                     }
                 ]
             },
-            "properties": {},
             "oneOf": [
                 {
                     "type": "null"
@@ -81,7 +77,6 @@ const ArrayOfPrimitives = `{
             ]
         },
         "big_number": {
-            "properties": {},
             "oneOf": [
                 {
                     "type": "integer"
@@ -111,7 +106,6 @@ const ArrayOfPrimitivesDouble = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "properties": {
         "description": {
-            "properties": {},
             "oneOf": [
                 {
                     "type": "null"
@@ -132,7 +126,6 @@ const ArrayOfPrimitivesDouble = `{
                     }
                 ]
             },
-            "properties": {},
             "oneOf": [
                 {
                     "type": "null"
@@ -156,7 +149,6 @@ const ArrayOfPrimitivesDouble = `{
                     }
                 ]
             },
-            "properties": {},
             "oneOf": [
                 {
                     "type": "null"
@@ -177,7 +169,6 @@ const ArrayOfPrimitivesDouble = `{
                     }
                 ]
             },
-            "properties": {},
             "oneOf": [
                 {
                     "type": "null"
@@ -188,7 +179,6 @@ const ArrayOfPrimitivesDouble = `{
             ]
         },
         "big_number": {
-            "properties": {},
             "oneOf": [
                 {
                     "type": "integer"
@@ -202,7 +192,6 @@ const ArrayOfPrimitivesDouble = `{
             ]
         },
         "bigNumber": {
-            "properties": {},
             "oneOf": [
                 {
                     "type": "integer"

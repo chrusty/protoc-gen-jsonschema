@@ -17,7 +17,6 @@ const (
             "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
-                    "properties": {},
                     "type": "string"
                 },
                 "bar": {
@@ -25,13 +24,11 @@ const (
                         "$schema": "http://json-schema.org/draft-04/schema#",
                         "properties": {
                             "id": {
-                                "properties": {},
                                 "type": "integer"
                             },
                             "baz": {
                                 "properties": {
                                     "enabled": {
-                                        "properties": {},
                                         "type": "boolean"
                                     },
                                     "foo": {
@@ -47,7 +44,6 @@ const (
                         "additionalProperties": true,
                         "type": "object"
                     },
-                    "properties": {},
                     "type": "array"
                 }
             },
@@ -66,7 +62,6 @@ const (
             "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
-                    "properties": {},
                     "type": "string"
                 },
                 "bar": {
@@ -74,13 +69,11 @@ const (
                         "$schema": "http://json-schema.org/draft-04/schema#",
                         "properties": {
                             "id": {
-                                "properties": {},
                                 "type": "integer"
                             },
                             "baz": {
                                 "properties": {
                                     "enabled": {
-                                        "properties": {},
                                         "type": "boolean"
                                     },
                                     "foo": {
@@ -96,7 +89,6 @@ const (
                         "additionalProperties": true,
                         "type": "object"
                     },
-                    "properties": {},
                     "type": "array"
                 }
             },
@@ -115,19 +107,16 @@ const (
             "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "id": {
-                    "properties": {},
                     "type": "integer"
                 },
                 "baz": {
                     "properties": {
                         "enabled": {
-                            "properties": {},
                             "type": "boolean"
                         },
                         "foo": {
                             "properties": {
                                 "name": {
-                                    "properties": {},
                                     "type": "string"
                                 },
                                 "bar": {
@@ -135,7 +124,6 @@ const (
                                         "$schema": "http://json-schema.org/draft-04/schema#",
                                         "$ref": "Bar"
                                     },
-                                    "properties": {},
                                     "type": "array"
                                 }
                             },
@@ -162,13 +150,11 @@ const (
             "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "enabled": {
-                    "properties": {},
                     "type": "boolean"
                 },
                 "foo": {
                     "properties": {
                         "name": {
-                            "properties": {},
                             "type": "string"
                         },
                         "bar": {
@@ -176,7 +162,6 @@ const (
                                 "$schema": "http://json-schema.org/draft-04/schema#",
                                 "properties": {
                                     "id": {
-                                        "properties": {},
                                         "type": "integer"
                                     },
                                     "baz": {
@@ -188,7 +173,6 @@ const (
                                 "additionalProperties": true,
                                 "type": "object"
                             },
-                            "properties": {},
                             "type": "array"
                         }
                     },

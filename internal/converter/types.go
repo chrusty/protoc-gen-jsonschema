@@ -64,9 +64,7 @@ componentLoop:
 // Convert a proto "field" (essentially a type-switch with some recursion):
 func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, msg *descriptor.DescriptorProto, duplicatedMessages map[*descriptor.DescriptorProto]string) (*jsonschema.Type, error) {
 	// Prepare a new jsonschema.Type for our eventual return value:
-	jsonSchemaType := &jsonschema.Type{
-		Properties: orderedmap.New(),
-	}
+	jsonSchemaType := &jsonschema.Type{}
 
 	// Generate a description from src comments (if available)
 	if src := c.sourceInfo.GetField(desc); src != nil {
@@ -389,7 +387,7 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 		recursedJSONSchemaType, err := c.convertField(curPkg, fieldDesc, msg, duplicatedMessages)
 		if err != nil {
 			c.logger.WithError(err).WithField("field_name", fieldDesc.GetName()).WithField("message_name", msg.GetName()).Error("Failed to convert field")
-			return jsonSchemaType, err
+			return nil, err
 		}
 		c.logger.WithField("field_name", fieldDesc.GetName()).WithField("type", recursedJSONSchemaType.Type).Trace("Converted field")
 		jsonSchemaType.Properties.Set(fieldDesc.GetName(), recursedJSONSchemaType)
@@ -397,6 +395,12 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 			jsonSchemaType.Properties.Set(fieldDesc.GetJsonName(), recursedJSONSchemaType)
 		}
 	}
+
+	if len(jsonSchemaType.Properties.Keys()) == 0 {
+		// remove empty properties to clean the final output as clean as possible
+		jsonSchemaType.Properties = nil
+	}
+
 	return jsonSchemaType, nil
 }
 

@@ -6,27 +6,21 @@ const NestedObject = `{
         "payload": {
             "properties": {
                 "name": {
-                    "properties": {},
                     "type": "string"
                 },
                 "timestamp": {
-                    "properties": {},
                     "type": "string"
                 },
                 "id": {
-                    "properties": {},
                     "type": "integer"
                 },
                 "rating": {
-                    "properties": {},
                     "type": "number"
                 },
                 "complete": {
-                    "properties": {},
                     "type": "boolean"
                 },
                 "topology": {
-                    "properties": {},
                     "enum": [
                         "FLAT",
                         0,
@@ -55,7 +49,6 @@ const NestedObject = `{
             "type": "object"
         },
         "description": {
-            "properties": {},
             "type": "string"
         }
     },

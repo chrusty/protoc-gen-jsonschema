@@ -2,7 +2,6 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "properties": {
         "description": {
-            "properties": {},
             "oneOf": [
                 {
                     "type": "null"
@@ -17,7 +16,6 @@
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "properties": {
                     "name": {
-                        "properties": {},
                         "oneOf": [
                             {
                                 "type": "null"
@@ -28,7 +26,6 @@
                         ]
                     },
                     "timestamp": {
-                        "properties": {},
                         "oneOf": [
                             {
                                 "type": "null"
@@ -39,7 +36,6 @@
                         ]
                     },
                     "id": {
-                        "properties": {},
                         "oneOf": [
                             {
                                 "type": "null"
@@ -50,7 +46,6 @@
                         ]
                     },
                     "rating": {
-                        "properties": {},
                         "oneOf": [
                             {
                                 "type": "null"
@@ -61,7 +56,6 @@
                         ]
                     },
                     "complete": {
-                        "properties": {},
                         "oneOf": [
                             {
                                 "type": "null"
@@ -72,7 +66,6 @@
                         ]
                     },
                     "topology": {
-                        "properties": {},
                         "enum": [
                             "FLAT",
                             0,
@@ -110,7 +103,6 @@
                     }
                 ]
             },
-            "properties": {},
             "oneOf": [
                 {
                     "type": "null"

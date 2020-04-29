@@ -4,7 +4,6 @@ const ArrayOfObjects = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "properties": {
         "description": {
-            "properties": {},
             "oneOf": [
                 {
                     "type": "null"
@@ -19,7 +18,6 @@ const ArrayOfObjects = `{
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "properties": {
                     "name": {
-                        "properties": {},
                         "oneOf": [
                             {
                                 "type": "null"
@@ -30,7 +28,6 @@ const ArrayOfObjects = `{
                         ]
                     },
                     "timestamp": {
-                        "properties": {},
                         "oneOf": [
                             {
                                 "type": "null"
@@ -41,7 +38,6 @@ const ArrayOfObjects = `{
                         ]
                     },
                     "id": {
-                        "properties": {},
                         "oneOf": [
                             {
                                 "type": "null"
@@ -52,7 +48,6 @@ const ArrayOfObjects = `{
                         ]
                     },
                     "rating": {
-                        "properties": {},
                         "oneOf": [
                             {
                                 "type": "null"
@@ -63,7 +58,6 @@ const ArrayOfObjects = `{
                         ]
                     },
                     "complete": {
-                        "properties": {},
                         "oneOf": [
                             {
                                 "type": "null"
@@ -74,7 +68,6 @@ const ArrayOfObjects = `{
                         ]
                     },
                     "topology": {
-                        "properties": {},
                         "enum": [
                             "FLAT",
                             0,
@@ -112,7 +105,6 @@ const ArrayOfObjects = `{
                     }
                 ]
             },
-            "properties": {},
             "oneOf": [
                 {
                     "type": "null"
