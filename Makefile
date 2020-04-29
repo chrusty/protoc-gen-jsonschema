@@ -6,7 +6,7 @@ build:
 	@go build -o bin/protoc-gen-jsonschema cmd/protoc-gen-jsonschema/main.go
 
 install:
-	@GO111MODULE=on go get -u github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema && go install github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema
+	@GO111MODULE=on go get github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema && go install github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema
 
 build_linux:
 	@echo "Generating Linux-amd64 binary (protoc-gen-jsonschema.linux-amd64) ..."
