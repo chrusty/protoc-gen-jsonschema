@@ -3,19 +3,6 @@ package testdata
 const ArrayOfPrimitives = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "properties": {
-        "big_number": {
-            "oneOf": [
-                {
-                    "type": "integer"
-                },
-                {
-                    "type": "string"
-                },
-                {
-                    "type": "null"
-                }
-            ]
-        },
         "description": {
             "oneOf": [
                 {
@@ -26,14 +13,14 @@ const ArrayOfPrimitives = `{
                 }
             ]
         },
-        "keyWords": {
+        "luckyNumbers": {
             "items": {
                 "oneOf": [
                     {
                         "type": "null"
                     },
                     {
-                        "type": "string"
+                        "type": "integer"
                     }
                 ]
             },
@@ -69,14 +56,14 @@ const ArrayOfPrimitives = `{
                 }
             ]
         },
-        "luckyNumbers": {
+        "keyWords": {
             "items": {
                 "oneOf": [
                     {
                         "type": "null"
                     },
                     {
-                        "type": "integer"
+                        "type": "string"
                     }
                 ]
             },
@@ -86,6 +73,19 @@ const ArrayOfPrimitives = `{
                 },
                 {
                     "type": "array"
+                }
+            ]
+        },
+        "big_number": {
+            "oneOf": [
+                {
+                    "type": "integer"
+                },
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "null"
                 }
             ]
         }
@@ -105,32 +105,6 @@ const ArrayOfPrimitives = `{
 const ArrayOfPrimitivesDouble = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "properties": {
-        "bigNumber": {
-            "oneOf": [
-                {
-                    "type": "integer"
-                },
-                {
-                    "type": "string"
-                },
-                {
-                    "type": "null"
-                }
-            ]
-        },
-        "big_number": {
-            "oneOf": [
-                {
-                    "type": "integer"
-                },
-                {
-                    "type": "string"
-                },
-                {
-                    "type": "null"
-                }
-            ]
-        },
         "description": {
             "oneOf": [
                 {
@@ -141,14 +115,14 @@ const ArrayOfPrimitivesDouble = `{
                 }
             ]
         },
-        "keyWords": {
+        "luckyNumbers": {
             "items": {
                 "oneOf": [
                     {
                         "type": "null"
                     },
                     {
-                        "type": "string"
+                        "type": "integer"
                     }
                 ]
             },
@@ -184,14 +158,14 @@ const ArrayOfPrimitivesDouble = `{
                 }
             ]
         },
-        "luckyNumbers": {
+        "keyWords": {
             "items": {
                 "oneOf": [
                     {
                         "type": "null"
                     },
                     {
-                        "type": "integer"
+                        "type": "string"
                     }
                 ]
             },
@@ -201,6 +175,32 @@ const ArrayOfPrimitivesDouble = `{
                 },
                 {
                     "type": "array"
+                }
+            ]
+        },
+        "big_number": {
+            "oneOf": [
+                {
+                    "type": "integer"
+                },
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "null"
+                }
+            ]
+        },
+        "bigNumber": {
+            "oneOf": [
+                {
+                    "type": "integer"
+                },
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "null"
                 }
             ]
         }

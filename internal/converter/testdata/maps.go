@@ -3,6 +3,12 @@ package testdata
 const Maps = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "properties": {
+        "map_of_strings": {
+            "additionalProperties": {
+                "type": "string"
+            },
+            "type": "object"
+        },
         "map_of_ints": {
             "additionalProperties": {
                 "type": "integer"
@@ -12,20 +18,20 @@ const Maps = `{
         "map_of_messages": {
             "additionalProperties": {
                 "properties": {
-                    "complete": {
-                        "type": "boolean"
+                    "name": {
+                        "type": "string"
+                    },
+                    "timestamp": {
+                        "type": "string"
                     },
                     "id": {
                         "type": "integer"
                     },
-                    "name": {
-                        "type": "string"
-                    },
                     "rating": {
                         "type": "number"
                     },
-                    "timestamp": {
-                        "type": "string"
+                    "complete": {
+                        "type": "boolean"
                     },
                     "topology": {
                         "enum": [
@@ -54,12 +60,6 @@ const Maps = `{
                 },
                 "additionalProperties": true,
                 "type": "object"
-            },
-            "type": "object"
-        },
-        "map_of_strings": {
-            "additionalProperties": {
-                "type": "string"
             },
             "type": "object"
         }

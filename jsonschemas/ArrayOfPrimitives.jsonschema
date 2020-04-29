@@ -1,19 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
     "properties": {
-        "big_number": {
-            "oneOf": [
-                {
-                    "type": "integer"
-                },
-                {
-                    "type": "string"
-                },
-                {
-                    "type": "null"
-                }
-            ]
-        },
         "description": {
             "oneOf": [
                 {
@@ -24,14 +11,14 @@
                 }
             ]
         },
-        "keyWords": {
+        "luckyNumbers": {
             "items": {
                 "oneOf": [
                     {
                         "type": "null"
                     },
                     {
-                        "type": "string"
+                        "type": "integer"
                     }
                 ]
             },
@@ -67,14 +54,14 @@
                 }
             ]
         },
-        "luckyNumbers": {
+        "keyWords": {
             "items": {
                 "oneOf": [
                     {
                         "type": "null"
                     },
                     {
-                        "type": "integer"
+                        "type": "string"
                     }
                 ]
             },
@@ -84,6 +71,19 @@
                 },
                 {
                     "type": "array"
+                }
+            ]
+        },
+        "big_number": {
+            "oneOf": [
+                {
+                    "type": "integer"
+                },
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "null"
                 }
             ]
         }

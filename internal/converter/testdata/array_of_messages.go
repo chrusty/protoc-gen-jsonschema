@@ -10,20 +10,20 @@ const ArrayOfMessages = `{
             "items": {
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "properties": {
-                    "complete": {
-                        "type": "boolean"
+                    "name": {
+                        "type": "string"
+                    },
+                    "timestamp": {
+                        "type": "string"
                     },
                     "id": {
                         "type": "integer"
                     },
-                    "name": {
-                        "type": "string"
-                    },
                     "rating": {
                         "type": "number"
                     },
-                    "timestamp": {
-                        "type": "string"
+                    "complete": {
+                        "type": "boolean"
                     },
                     "topology": {
                         "enum": [

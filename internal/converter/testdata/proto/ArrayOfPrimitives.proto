@@ -6,5 +6,5 @@ message ArrayOfPrimitives {
     repeated int32 luckyNumbers    = 2;
     repeated int64 luckyBigNumbers = 3;
     repeated string keyWords       = 4;
-    int64 big_number = 5;
+    int64 big_number               = 5;
 }

@@ -49,6 +49,8 @@ func TestGenerateJsonSchema(t *testing.T) {
 	testConvertSampleProto(t, sampleProtos["SeveralMessages"])
 	testConvertSampleProto(t, sampleProtos["ArrayOfEnums"])
 	testConvertSampleProto(t, sampleProtos["Maps"])
+	testConvertSampleProto(t, sampleProtos["SelfReference"])
+	testConvertSampleProto(t, sampleProtos["CyclicalReference"])
 }
 
 func testConvertSampleProto(t *testing.T, sampleProto sampleProto) {
@@ -199,6 +201,20 @@ func configureSampleProtos() {
 		ExpectedJSONSchema: []string{testdata.MessageWithComments},
 		FilesToGenerate:    []string{"MessageWithComments.proto"},
 		ProtoFileName:      "MessageWithComments.proto",
+	}
+
+	// Self referencing proto message (see https://github.com/chrusty/protoc-gen-jsonschema/issues/7)
+	sampleProtos["SelfReference"] = sampleProto{
+		ExpectedJSONSchema: []string{testdata.SelfReference},
+		FilesToGenerate:    []string{"SelfReference.proto"},
+		ProtoFileName:      "SelfReference.proto",
+	}
+
+	// Messages that depend on one another so as to form a cycle (see https://github.com/chrusty/protoc-gen-jsonschema/issues/20)
+	sampleProtos["CyclicalReference"] = sampleProto{
+		ExpectedJSONSchema: []string{testdata.CyclicalReferenceMessageM, testdata.CyclicalReferenceMessageFoo, testdata.CyclicalReferenceMessageBar, testdata.CyclicalReferenceMessageBaz},
+		FilesToGenerate:    []string{"CyclicalReference.proto"},
+		ProtoFileName:      "CyclicalReference.proto",
 	}
 }
 

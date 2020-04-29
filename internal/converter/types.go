@@ -8,6 +8,7 @@ import (
 	"github.com/alecthomas/jsonschema"
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
+	"github.com/iancoleman/orderedmap"
 	"github.com/xeipuuv/gojsonschema"
 )
 
@@ -61,12 +62,9 @@ componentLoop:
 }
 
 // Convert a proto "field" (essentially a type-switch with some recursion):
-func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, msg *descriptor.DescriptorProto) (*jsonschema.Type, error) {
-
+func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, msg *descriptor.DescriptorProto, duplicatedMessages map[*descriptor.DescriptorProto]string) (*jsonschema.Type, error) {
 	// Prepare a new jsonschema.Type for our eventual return value:
-	jsonSchemaType := &jsonschema.Type{
-		Properties: make(map[string]*jsonschema.Type),
-	}
+	jsonSchemaType := &jsonschema.Type{}
 
 	// Generate a description from src comments (if available)
 	if src := c.sourceInfo.GetField(desc); src != nil {
@@ -194,7 +192,6 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			jsonSchemaType.Type = gojsonschema.TYPE_ARRAY
 			jsonSchemaType.OneOf = []*jsonschema.Type{}
 		}
-
 		return jsonSchemaType, nil
 	}
 
@@ -207,7 +204,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 		}
 
 		// Recurse the recordType:
-		recursedJSONSchemaType, err := c.convertMessageType(curPkg, recordType)
+		recursedJSONSchemaType, err := c.recursiveConvertMessageType(curPkg, recordType, duplicatedMessages, false)
 		if err != nil {
 			return nil, err
 		}
@@ -223,12 +220,13 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 				Tracef("Is a map")
 
 			// Make sure we have a "value":
-			if _, ok := recursedJSONSchemaType.Properties["value"]; !ok {
+			value, valuePresent := recursedJSONSchemaType.Properties.Get("value")
+			if !valuePresent {
 				return nil, fmt.Errorf("Unable to find 'value' property of MAP type")
 			}
 
 			// Marshal the "value" properties to JSON (because that's how we can pass on AdditionalProperties):
-			additionalPropertiesJSON, err := json.Marshal(recursedJSONSchemaType.Properties["value"])
+			additionalPropertiesJSON, err := json.Marshal(value)
 			if err != nil {
 				return nil, err
 			}
@@ -236,12 +234,13 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 
 		// Arrays:
 		case desc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REPEATED:
-			jsonSchemaType.Items = &recursedJSONSchemaType
+			jsonSchemaType.Items = recursedJSONSchemaType
 			jsonSchemaType.Type = gojsonschema.TYPE_ARRAY
 
 		// Objects:
 		default:
 			jsonSchemaType.Properties = recursedJSONSchemaType.Properties
+			jsonSchemaType.Ref = recursedJSONSchemaType.Ref
 		}
 
 		// Optionally allow NULL values:
@@ -258,13 +257,109 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 }
 
 // Converts a proto "MESSAGE" into a JSON-Schema:
-func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.DescriptorProto) (jsonschema.Type, error) {
+func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.DescriptorProto) (*jsonschema.Schema, error) {
+	// first, recursively find messages that appear more than once - in particular, that will break cycles
+	duplicatedMessages, err := c.findDuplicatedNestedMessages(curPkg, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	// main schema for the message
+	rootType, err := c.recursiveConvertMessageType(curPkg, msg, duplicatedMessages, false)
+	if err != nil {
+		return nil, err
+	}
+
+	// and then generate the sub-schema for each duplicated message
+	definitions := jsonschema.Definitions{}
+
+	for refMsg, name := range duplicatedMessages {
+		refType, err := c.recursiveConvertMessageType(curPkg, refMsg, duplicatedMessages, true)
+		if err != nil {
+			return nil, err
+		}
+
+		// need to give that schema an ID
+		if refType.Extras == nil {
+			refType.Extras = make(map[string]interface{})
+		}
+		refType.Extras["id"] = name
+		definitions[name] = refType
+	}
+
+	return &jsonschema.Schema{
+		Type:        rootType,
+		Definitions: definitions,
+	}, nil
+}
+
+// findDuplicatedNestedMessages takes a message, and returns a map mapping pointers to messages that appear more than once
+// (typically because they're part of a reference cycle) to the sub-schema name that we give them.
+func (c *Converter) findDuplicatedNestedMessages(curPkg *ProtoPackage, msg *descriptor.DescriptorProto) (map[*descriptor.DescriptorProto]string, error) {
+	all := make(map[*descriptor.DescriptorProto]*nameAndCounter)
+	if err := c.recursiveFindDuplicatedNestedMessages(curPkg, msg, msg.GetName(), all); err != nil {
+		return nil, err
+	}
+
+	result := make(map[*descriptor.DescriptorProto]string)
+	for m, nameAndCounter := range all {
+		if nameAndCounter.counter > 1 {
+			result[m] = strings.TrimLeft(nameAndCounter.name, ".")
+		}
+	}
+
+	return result, nil
+}
+
+type nameAndCounter struct {
+	name    string
+	counter int
+}
+
+func (c *Converter) recursiveFindDuplicatedNestedMessages(curPkg *ProtoPackage, msg *descriptor.DescriptorProto, typeName string, alreadySeen map[*descriptor.DescriptorProto]*nameAndCounter) error {
+	if nameAndCounter, present := alreadySeen[msg]; present {
+		nameAndCounter.counter++
+		return nil
+	}
+	alreadySeen[msg] = &nameAndCounter{
+		name:    typeName,
+		counter: 1,
+	}
+
+	for _, desc := range msg.GetField() {
+		descType := desc.GetType()
+		if descType != descriptor.FieldDescriptorProto_TYPE_MESSAGE && descType != descriptor.FieldDescriptorProto_TYPE_GROUP {
+			// no nested messages
+			continue
+		}
+
+		typeName := desc.GetTypeName()
+		recordType, ok := c.lookupType(curPkg, typeName)
+		if !ok {
+			return fmt.Errorf("no such message type named %s", typeName)
+		}
+		if err := c.recursiveFindDuplicatedNestedMessages(curPkg, recordType, typeName, alreadySeen); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descriptor.DescriptorProto, duplicatedMessages map[*descriptor.DescriptorProto]string, ignoreDuplicatedMessages bool) (*jsonschema.Type, error) {
+	if refName, ok := duplicatedMessages[msg]; ok && !ignoreDuplicatedMessages {
+		return &jsonschema.Type{
+			Version: jsonschema.Version,
+			Ref:     refName,
+		}, nil
+	}
 
 	// Prepare a new jsonschema:
-	jsonSchemaType := jsonschema.Type{
-		Properties: make(map[string]*jsonschema.Type),
+	jsonSchemaType := &jsonschema.Type{
+		Properties: orderedmap.New(),
 		Version:    jsonschema.Version,
 	}
+
 	// Generate a description from src comments (if available)
 	if src := c.sourceInfo.GetMessage(msg); src != nil {
 		jsonSchemaType.Description = formatDescription(src)
@@ -289,17 +384,23 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.Des
 
 	c.logger.WithField("message_str", proto.MarshalTextString(msg)).Trace("Converting message")
 	for _, fieldDesc := range msg.GetField() {
-		recursedJSONSchemaType, err := c.convertField(curPkg, fieldDesc, msg)
-		c.logger.WithField("field_name", fieldDesc.GetName()).WithField("type", recursedJSONSchemaType.Type).Debug("Converted field")
+		recursedJSONSchemaType, err := c.convertField(curPkg, fieldDesc, msg, duplicatedMessages)
 		if err != nil {
 			c.logger.WithError(err).WithField("field_name", fieldDesc.GetName()).WithField("message_name", msg.GetName()).Error("Failed to convert field")
-			return jsonSchemaType, err
+			return nil, err
 		}
-		jsonSchemaType.Properties[fieldDesc.GetName()] = recursedJSONSchemaType
+		c.logger.WithField("field_name", fieldDesc.GetName()).WithField("type", recursedJSONSchemaType.Type).Trace("Converted field")
+		jsonSchemaType.Properties.Set(fieldDesc.GetName(), recursedJSONSchemaType)
 		if c.UseProtoAndJSONFieldnames && fieldDesc.GetName() != fieldDesc.GetJsonName() {
-			jsonSchemaType.Properties[fieldDesc.GetJsonName()] = recursedJSONSchemaType
+			jsonSchemaType.Properties.Set(fieldDesc.GetJsonName(), recursedJSONSchemaType)
 		}
 	}
+
+	if len(jsonSchemaType.Properties.Keys()) == 0 {
+		// remove empty properties to clean the final output as clean as possible
+		jsonSchemaType.Properties = nil
+	}
+
 	return jsonSchemaType, nil
 }
 

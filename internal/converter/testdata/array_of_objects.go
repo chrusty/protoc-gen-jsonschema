@@ -17,13 +17,23 @@ const ArrayOfObjects = `{
             "items": {
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "properties": {
-                    "complete": {
+                    "name": {
                         "oneOf": [
                             {
                                 "type": "null"
                             },
                             {
-                                "type": "boolean"
+                                "type": "string"
+                            }
+                        ]
+                    },
+                    "timestamp": {
+                        "oneOf": [
+                            {
+                                "type": "null"
+                            },
+                            {
+                                "type": "string"
                             }
                         ]
                     },
@@ -37,16 +47,6 @@ const ArrayOfObjects = `{
                             }
                         ]
                     },
-                    "name": {
-                        "oneOf": [
-                            {
-                                "type": "null"
-                            },
-                            {
-                                "type": "string"
-                            }
-                        ]
-                    },
                     "rating": {
                         "oneOf": [
                             {
@@ -57,13 +57,13 @@ const ArrayOfObjects = `{
                             }
                         ]
                     },
-                    "timestamp": {
+                    "complete": {
                         "oneOf": [
                             {
                                 "type": "null"
                             },
                             {
-                                "type": "string"
+                                "type": "boolean"
                             }
                         ]
                     },

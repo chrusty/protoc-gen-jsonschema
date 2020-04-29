@@ -3,20 +3,20 @@ package testdata
 const SecondMessage = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "properties": {
-        "complete2": {
-            "type": "boolean"
+        "name2": {
+            "type": "string"
+        },
+        "timestamp2": {
+            "type": "string"
         },
         "id2": {
             "type": "integer"
         },
-        "name2": {
-            "type": "string"
-        },
         "rating2": {
             "type": "number"
         },
-        "timestamp2": {
-            "type": "string"
+        "complete2": {
+            "type": "boolean"
         }
     },
     "additionalProperties": true,

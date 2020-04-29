@@ -31,4 +31,4 @@ samples:
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/MessageWithComments.proto 2>/dev/null || echo "No messages found (MessageWithComments.proto)"
 
 test:
-	@go test ./... -cover
+	@go test ./... -cover -v
