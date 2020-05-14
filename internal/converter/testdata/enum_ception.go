@@ -1,4 +1,6 @@
-{
+package testdata
+
+const EnumCeption = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "properties": {
         "name": {
@@ -55,7 +57,7 @@
             ]
         }
     },
-    "additionalProperties": false,
+    "additionalProperties": true,
     "type": "object",
     "definitions": {
         "samples.PayloadMessage": {
@@ -101,9 +103,9 @@
                     ]
                 }
             },
-            "additionalProperties": false,
+            "additionalProperties": true,
             "type": "object",
             "id": "samples.PayloadMessage"
         }
     }
-}
+}`

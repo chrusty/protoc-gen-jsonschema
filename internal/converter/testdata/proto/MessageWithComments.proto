@@ -1,0 +1,9 @@
+syntax = "proto3";
+package samples;
+
+// This is a message level comment and talks about what this message is and why you should care about it!
+message MessageWithComments {
+
+    // This field is supposed to represent blahblahblah
+    string name1 = 1;
+}

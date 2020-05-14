@@ -1,22 +1,22 @@
 package testdata
 
-const FirstMessage = `{
+const SecondMessage = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "properties": {
-        "complete1": {
-            "type": "boolean"
+        "name2": {
+            "type": "string"
         },
-        "id1": {
+        "timestamp2": {
+            "type": "string"
+        },
+        "id2": {
             "type": "integer"
         },
-        "name1": {
-            "type": "string"
-        },
-        "rating1": {
+        "rating2": {
             "type": "number"
         },
-        "timestamp1": {
-            "type": "string"
+        "complete2": {
+            "type": "boolean"
         }
     },
     "additionalProperties": true,

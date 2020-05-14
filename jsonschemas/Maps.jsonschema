@@ -1,29 +1,35 @@
-package testdata
-
-const ArrayOfMessages = `{
+{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "properties": {
-        "description": {
-            "type": "string"
+        "map_of_strings": {
+            "additionalProperties": {
+                "type": "string"
+            },
+            "type": "object"
         },
-        "payload": {
-            "items": {
-                "$schema": "http://json-schema.org/draft-04/schema#",
+        "map_of_ints": {
+            "additionalProperties": {
+                "type": "integer"
+            },
+            "type": "object"
+        },
+        "map_of_messages": {
+            "additionalProperties": {
                 "properties": {
-                    "complete": {
-                        "type": "boolean"
+                    "name": {
+                        "type": "string"
+                    },
+                    "timestamp": {
+                        "type": "string"
                     },
                     "id": {
                         "type": "integer"
                     },
-                    "name": {
-                        "type": "string"
-                    },
                     "rating": {
                         "type": "number"
                     },
-                    "timestamp": {
-                        "type": "string"
+                    "complete": {
+                        "type": "boolean"
                     },
                     "topology": {
                         "enum": [
@@ -53,9 +59,9 @@ const ArrayOfMessages = `{
                 "additionalProperties": true,
                 "type": "object"
             },
-            "type": "array"
+            "type": "object"
         }
     },
     "additionalProperties": true,
     "type": "object"
-}`
+}
