@@ -14,43 +14,43 @@ type ProtoPackage struct {
 	types    map[string]*descriptor.DescriptorProto
 }
 
-func (c *Converter) lookupType(pkg *ProtoPackage, name string) (*descriptor.DescriptorProto, bool) {
+func (c *Converter) lookupType(pkg *ProtoPackage, name string) (*descriptor.DescriptorProto, string, bool) {
 	if strings.HasPrefix(name, ".") {
 		return c.relativelyLookupType(globalPkg, name[1:len(name)])
 	}
 
 	for ; pkg != nil; pkg = pkg.parent {
-		if desc, ok := c.relativelyLookupType(pkg, name); ok {
-			return desc, ok
+		if desc, pkgName, ok := c.relativelyLookupType(pkg, name); ok {
+			return desc, pkgName, ok
 		}
 	}
-	return nil, false
+	return nil, "", false
 }
 
-func (c *Converter) relativelyLookupType(pkg *ProtoPackage, name string) (*descriptor.DescriptorProto, bool) {
+func (c *Converter) relativelyLookupType(pkg *ProtoPackage, name string) (*descriptor.DescriptorProto, string, bool) {
 	components := strings.SplitN(name, ".", 2)
 	switch len(components) {
 	case 0:
 		c.logger.Debug("empty message name")
-		return nil, false
+		return nil, "", false
 	case 1:
 		found, ok := pkg.types[components[0]]
-		return found, ok
+		return found, pkg.name, ok
 	case 2:
 		c.logger.Tracef("Looking for %s in %s at %s (%v)", components[1], components[0], pkg.name, pkg)
 		if child, ok := pkg.children[components[0]]; ok {
-			found, ok := c.relativelyLookupType(child, components[1])
-			return found, ok
+			found, pkgName, ok := c.relativelyLookupType(child, components[1])
+			return found, pkgName, ok
 		}
 		if msg, ok := pkg.types[components[0]]; ok {
 			found, ok := c.relativelyLookupNestedType(msg, components[1])
-			return found, ok
+			return found, pkg.name, ok
 		}
 		c.logger.WithField("component", components[0]).WithField("package_name", pkg.name).Info("No such package nor message in package")
-		return nil, false
+		return nil, "", false
 	default:
 		c.logger.Error("Failed to lookup type")
-		return nil, false
+		return nil, "", false
 	}
 }
 

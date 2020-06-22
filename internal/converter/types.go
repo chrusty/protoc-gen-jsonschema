@@ -19,6 +19,18 @@ var (
 		children: make(map[string]*ProtoPackage),
 		types:    make(map[string]*descriptor.DescriptorProto),
 	}
+
+	wellKnownTypes = map[string]bool{
+		"DoubleValue": true,
+		"FloatValue":  true,
+		"Int64Value":  true,
+		"UInt64Value": true,
+		"Int32Value":  true,
+		"UInt32Value": true,
+		"BoolValue":   true,
+		"StringValue": true,
+		"BytesValue":  true,
+	}
 )
 
 func (c *Converter) registerType(pkgName *string, msg *descriptor.DescriptorProto) {
@@ -198,13 +210,13 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 	// Recurse nested objects / arrays of objects (if necessary):
 	if jsonSchemaType.Type == gojsonschema.TYPE_OBJECT {
 
-		recordType, ok := c.lookupType(curPkg, desc.GetTypeName())
+		recordType, pkgName, ok := c.lookupType(curPkg, desc.GetTypeName())
 		if !ok {
 			return nil, fmt.Errorf("no such message type named %s", desc.GetTypeName())
 		}
 
 		// Recurse the recordType:
-		recursedJSONSchemaType, err := c.recursiveConvertMessageType(curPkg, recordType, duplicatedMessages, false)
+		recursedJSONSchemaType, err := c.recursiveConvertMessageType(curPkg, recordType, pkgName, duplicatedMessages, false)
 		if err != nil {
 			return nil, err
 		}
@@ -239,8 +251,12 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 
 		// Objects:
 		default:
-			jsonSchemaType.Properties = recursedJSONSchemaType.Properties
-			jsonSchemaType.Ref = recursedJSONSchemaType.Ref
+			if recursedJSONSchemaType.OneOf != nil {
+				return recursedJSONSchemaType, nil
+			} else {
+				jsonSchemaType.Properties = recursedJSONSchemaType.Properties
+				jsonSchemaType.Ref = recursedJSONSchemaType.Ref
+			}
 		}
 
 		// Optionally allow NULL values:
@@ -265,7 +281,7 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.Des
 	}
 
 	// main schema for the message
-	rootType, err := c.recursiveConvertMessageType(curPkg, msg, duplicatedMessages, false)
+	rootType, err := c.recursiveConvertMessageType(curPkg, msg, "", duplicatedMessages, false)
 	if err != nil {
 		return nil, err
 	}
@@ -274,7 +290,7 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.Des
 	definitions := jsonschema.Definitions{}
 
 	for refMsg, name := range duplicatedMessages {
-		refType, err := c.recursiveConvertMessageType(curPkg, refMsg, duplicatedMessages, true)
+		refType, err := c.recursiveConvertMessageType(curPkg, refMsg, "", duplicatedMessages, true)
 		if err != nil {
 			return nil, err
 		}
@@ -303,7 +319,7 @@ func (c *Converter) findDuplicatedNestedMessages(curPkg *ProtoPackage, msg *desc
 
 	result := make(map[*descriptor.DescriptorProto]string)
 	for m, nameAndCounter := range all {
-		if nameAndCounter.counter > 1 {
+		if nameAndCounter.counter > 1 && !strings.HasPrefix(nameAndCounter.name, ".google.protobuf.") {
 			result[m] = strings.TrimLeft(nameAndCounter.name, ".")
 		}
 	}
@@ -334,7 +350,7 @@ func (c *Converter) recursiveFindDuplicatedNestedMessages(curPkg *ProtoPackage, 
 		}
 
 		typeName := desc.GetTypeName()
-		recordType, ok := c.lookupType(curPkg, typeName)
+		recordType, _, ok := c.lookupType(curPkg, typeName)
 		if !ok {
 			return fmt.Errorf("no such message type named %s", typeName)
 		}
@@ -346,7 +362,35 @@ func (c *Converter) recursiveFindDuplicatedNestedMessages(curPkg *ProtoPackage, 
 	return nil
 }
 
-func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descriptor.DescriptorProto, duplicatedMessages map[*descriptor.DescriptorProto]string, ignoreDuplicatedMessages bool) (*jsonschema.Type, error) {
+func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descriptor.DescriptorProto, pkgName string, duplicatedMessages map[*descriptor.DescriptorProto]string, ignoreDuplicatedMessages bool) (*jsonschema.Type, error) {
+	if msg.Name != nil && wellKnownTypes[*msg.Name] && pkgName == ".google.protobuf" {
+		schema := &jsonschema.Type{}
+		schema.Type = ""
+		switch *msg.Name {
+		case "DoubleValue", "FloatValue":
+			schema.OneOf = []*jsonschema.Type{
+				{Type: gojsonschema.TYPE_NULL},
+				{Type: gojsonschema.TYPE_NUMBER},
+			}
+		case "Int32Value", "UInt32Value", "Int64Value", "UInt64Value":
+			schema.OneOf = []*jsonschema.Type{
+				{Type: gojsonschema.TYPE_NULL},
+				{Type: gojsonschema.TYPE_INTEGER},
+			}
+		case "BoolValue":
+			schema.OneOf = []*jsonschema.Type{
+				{Type: gojsonschema.TYPE_NULL},
+				{Type: gojsonschema.TYPE_BOOLEAN},
+			}
+		case "BytesValue", "StringValue":
+			schema.OneOf = []*jsonschema.Type{
+				{Type: gojsonschema.TYPE_NULL},
+				{Type: gojsonschema.TYPE_STRING},
+			}
+		}
+		return schema, nil
+	}
+
 	if refName, ok := duplicatedMessages[msg]; ok && !ignoreDuplicatedMessages {
 		return &jsonschema.Type{
 			Version: jsonschema.Version,

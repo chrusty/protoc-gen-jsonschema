@@ -216,6 +216,13 @@ func configureSampleProtos() {
 		FilesToGenerate:    []string{"CyclicalReference.proto"},
 		ProtoFileName:      "CyclicalReference.proto",
 	}
+
+	sampleProtos["WellKnown"] = sampleProto{
+		ExpectedJSONSchema: []string{testdata.WellKnown},
+		FilesToGenerate:    []string{"WellKnown.proto"},
+		ProtoFileName:      "WellKnown.proto",
+	}
+
 }
 
 // Load the specified .proto files into a FileDescriptorSet. Any errors in loading/parsing will
