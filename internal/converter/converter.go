@@ -187,12 +187,20 @@ func (c *Converter) convert(req *plugin.CodeGeneratorRequest) (*plugin.CodeGener
 	c.sourceInfo = newSourceCodeInfo(req.GetProtoFile())
 	res := &plugin.CodeGeneratorResponse{}
 	for _, file := range req.GetProtoFile() {
+		if file.GetPackage() == "" {
+			c.logger.WithField("filename", file.GetName()).Warn("Proto file doesn't specify a package")
+			continue
+		}
 		for _, msg := range file.GetMessageType() {
 			c.logger.WithField("msg_name", msg.GetName()).WithField("package_name", file.GetPackage()).Debug("Loading a message")
 			c.registerType(file.Package, msg)
 		}
 	}
 	for _, file := range req.GetProtoFile() {
+		if file.GetPackage() == "" {
+			c.logger.WithField("filename", file.GetName()).Warn("Proto file doesn't specify a package")
+			continue
+		}
 		if _, ok := generateTargets[file.GetName()]; ok {
 			c.logger.WithField("filename", file.GetName()).Debug("Converting file")
 			converted, err := c.convertFile(file)
