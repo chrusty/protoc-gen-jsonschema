@@ -51,6 +51,7 @@ func TestGenerateJsonSchema(t *testing.T) {
 	testConvertSampleProto(t, sampleProtos["Maps"])
 	testConvertSampleProto(t, sampleProtos["SelfReference"])
 	testConvertSampleProto(t, sampleProtos["CyclicalReference"])
+	testConvertSampleProto(t, sampleProtos["Timestamp"])
 }
 
 func testConvertSampleProto(t *testing.T, sampleProto sampleProto) {
@@ -203,26 +204,33 @@ func configureSampleProtos() {
 		ProtoFileName:      "MessageWithComments.proto",
 	}
 
-	// Self referencing proto message (see https://github.com/chrusty/protoc-gen-jsonschema/issues/7)
+	// Self referencing proto message (see https://github.com/chrusty/protoc-gen-jsonschema/issues/7):
 	sampleProtos["SelfReference"] = sampleProto{
 		ExpectedJSONSchema: []string{testdata.SelfReference},
 		FilesToGenerate:    []string{"SelfReference.proto"},
 		ProtoFileName:      "SelfReference.proto",
 	}
 
-	// Messages that depend on one another so as to form a cycle (see https://github.com/chrusty/protoc-gen-jsonschema/issues/20)
+	// Messages that depend on one another so as to form a cycle (see https://github.com/chrusty/protoc-gen-jsonschema/issues/20):
 	sampleProtos["CyclicalReference"] = sampleProto{
 		ExpectedJSONSchema: []string{testdata.CyclicalReferenceMessageM, testdata.CyclicalReferenceMessageFoo, testdata.CyclicalReferenceMessageBar, testdata.CyclicalReferenceMessageBaz},
 		FilesToGenerate:    []string{"CyclicalReference.proto"},
 		ProtoFileName:      "CyclicalReference.proto",
 	}
 
+	// Google's well-known types:
 	sampleProtos["WellKnown"] = sampleProto{
 		ExpectedJSONSchema: []string{testdata.WellKnown},
 		FilesToGenerate:    []string{"WellKnown.proto"},
 		ProtoFileName:      "WellKnown.proto",
 	}
 
+	// Timestamp:
+	sampleProtos["Timestamp"] = sampleProto{
+		ExpectedJSONSchema: []string{testdata.Timestamp},
+		FilesToGenerate:    []string{"Timestamp.proto"},
+		ProtoFileName:      "Timestamp.proto",
+	}
 }
 
 // Load the specified .proto files into a FileDescriptorSet. Any errors in loading/parsing will
