@@ -17,6 +17,7 @@ import (
 
 // Converter is everything you need to convert protos to JSONSchemas:
 type Converter struct {
+	AllFieldsRequired            bool
 	AllowNullValues              bool
 	DisallowAdditionalProperties bool
 	DisallowBigIntsAsStrings     bool
@@ -59,6 +60,8 @@ func (c *Converter) ConvertFrom(rd io.Reader) (*plugin.CodeGeneratorResponse, er
 func (c *Converter) parseGeneratorParameters(parameters string) {
 	for _, parameter := range strings.Split(parameters, ",") {
 		switch parameter {
+		case "all_fields_required":
+			c.AllFieldsRequired = true
 		case "allow_null_values":
 			c.AllowNullValues = true
 		case "debug":

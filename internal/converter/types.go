@@ -261,6 +261,9 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			} else {
 				jsonSchemaType.Properties = recursedJSONSchemaType.Properties
 				jsonSchemaType.Ref = recursedJSONSchemaType.Ref
+				if c.AllFieldsRequired || desc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REQUIRED {
+					jsonSchemaType.Required = append(jsonSchemaType.Required, desc.GetName())
+				}
 			}
 		}
 
@@ -279,6 +282,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 
 // Converts a proto "MESSAGE" into a JSON-Schema:
 func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.DescriptorProto) (*jsonschema.Schema, error) {
+
 	// first, recursively find messages that appear more than once - in particular, that will break cycles
 	duplicatedMessages, err := c.findDuplicatedNestedMessages(curPkg, msg)
 	if err != nil {
@@ -293,7 +297,6 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.Des
 
 	// and then generate the sub-schema for each duplicated message
 	definitions := jsonschema.Definitions{}
-
 	for refMsg, name := range duplicatedMessages {
 		refType, err := c.recursiveConvertMessageType(curPkg, refMsg, "", duplicatedMessages, true)
 		if err != nil {
@@ -308,10 +311,19 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.Des
 		definitions[name] = refType
 	}
 
-	return &jsonschema.Schema{
+	newJSONSchema := &jsonschema.Schema{
 		Type:        rootType,
 		Definitions: definitions,
-	}, nil
+	}
+
+	// Look for required fields (either by proto2 required flag, or the AllFieldsRequired option):
+	for _, fieldDesc := range msg.GetField() {
+		if c.AllFieldsRequired || fieldDesc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REQUIRED {
+			newJSONSchema.Required = append(newJSONSchema.Required, fieldDesc.GetName())
+		}
+	}
+
+	return newJSONSchema, nil
 }
 
 // findDuplicatedNestedMessages takes a message, and returns a map mapping pointers to messages that appear more than once
