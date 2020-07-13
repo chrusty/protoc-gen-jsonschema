@@ -261,6 +261,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			} else {
 				jsonSchemaType.Properties = recursedJSONSchemaType.Properties
 				jsonSchemaType.Ref = recursedJSONSchemaType.Ref
+				jsonSchemaType.Required = recursedJSONSchemaType.Required
 			}
 		}
 
@@ -442,6 +443,9 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 		jsonSchemaType.Properties.Set(fieldDesc.GetName(), recursedJSONSchemaType)
 		if c.UseProtoAndJSONFieldnames && fieldDesc.GetName() != fieldDesc.GetJsonName() {
 			jsonSchemaType.Properties.Set(fieldDesc.GetJsonName(), recursedJSONSchemaType)
+		}
+		if fieldDesc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REQUIRED {
+			jsonSchemaType.Required = append(jsonSchemaType.Required, fieldDesc.GetName())
 		}
 	}
 
