@@ -20,6 +20,7 @@ type Converter struct {
 	AllowNullValues              bool
 	DisallowAdditionalProperties bool
 	DisallowBigIntsAsStrings     bool
+	PrefixSchemaFilesWithPackage bool
 	UseProtoAndJSONFieldnames    bool
 	logger                       *logrus.Logger
 	sourceInfo                   *sourceCodeInfo
@@ -66,6 +67,8 @@ func (c *Converter) parseGeneratorParameters(parameters string) {
 			c.DisallowAdditionalProperties = true
 		case "disallow_bigints_as_strings":
 			c.DisallowBigIntsAsStrings = true
+		case "prefix_schema_files_with_package":
+			c.PrefixSchemaFilesWithPackage = true
 		case "proto_and_json_fieldnames":
 			c.UseProtoAndJSONFieldnames = true
 		}
@@ -118,7 +121,7 @@ func (c *Converter) convertFile(file *descriptor.FileDescriptorProto) ([]*plugin
 	// Generate standalone ENUMs:
 	if len(file.GetMessageType()) == 0 {
 		for _, enum := range file.GetEnumType() {
-			jsonSchemaFileName := fmt.Sprintf("%s.jsonschema", enum.GetName())
+			jsonSchemaFileName := c.generateSchemaFilename(file, enum.GetName())
 			c.logger.WithField("proto_filename", protoFileName).WithField("enum_name", enum.GetName()).WithField("jsonschema_filename", jsonSchemaFileName).Info("Generating JSON-schema for stand-alone ENUM")
 
 			// Convert the ENUM:
@@ -149,7 +152,7 @@ func (c *Converter) convertFile(file *descriptor.FileDescriptorProto) ([]*plugin
 			return nil, fmt.Errorf("no such package found: %s", file.GetPackage())
 		}
 		for _, msg := range file.GetMessageType() {
-			jsonSchemaFileName := fmt.Sprintf("%s.jsonschema", msg.GetName())
+			jsonSchemaFileName := c.generateSchemaFilename(file, msg.GetName())
 			c.logger.WithField("proto_filename", protoFileName).WithField("msg_name", msg.GetName()).WithField("jsonschema_filename", jsonSchemaFileName).Info("Generating JSON-schema for MESSAGE")
 
 			// Convert the message:
@@ -212,4 +215,11 @@ func (c *Converter) convert(req *plugin.CodeGeneratorRequest) (*plugin.CodeGener
 		}
 	}
 	return res, nil
+}
+
+func (c *Converter) generateSchemaFilename(file *descriptor.FileDescriptorProto, protoName string) string {
+	if c.PrefixSchemaFilesWithPackage {
+		return (fmt.Sprintf("%s/%s.jsonschema", file.GetPackage(), protoName))
+	}
+	return (fmt.Sprintf("%s.jsonschema", protoName))
 }

@@ -16,42 +16,28 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var (
+const (
 	sampleProtoDirectory = "testdata/proto"
-	sampleProtos         = make(map[string]sampleProto)
 )
 
 type sampleProto struct {
-	AllowNullValues           bool
-	ExpectedJSONSchema        []string
-	FilesToGenerate           []string
-	ProtoFileName             string
-	UseProtoAndJSONFieldNames bool
+	AllowNullValues              bool
+	ExpectedJSONSchema           []string
+	FilesToGenerate              []string
+	PrefixSchemaFilesWithPackage bool
+	ProtoFileName                string
+	UseProtoAndJSONFieldNames    bool
 }
 
 func TestGenerateJsonSchema(t *testing.T) {
 
 	// Configure the list of sample protos to test, and their expected JSON-Schemas:
-	configureSampleProtos()
+	sampleProtos := configureSampleProtos()
 
 	// Convert the protos, compare the results against the expected JSON-Schemas:
-	testConvertSampleProto(t, sampleProtos["Comments"])
-	testConvertSampleProto(t, sampleProtos["ArrayOfMessages"])
-	testConvertSampleProto(t, sampleProtos["ArrayOfObjects"])
-	testConvertSampleProto(t, sampleProtos["ArrayOfPrimitives"])
-	testConvertSampleProto(t, sampleProtos["ArrayOfPrimitivesDouble"])
-	testConvertSampleProto(t, sampleProtos["EnumCeption"])
-	testConvertSampleProto(t, sampleProtos["ImportedEnum"])
-	testConvertSampleProto(t, sampleProtos["NestedMessage"])
-	testConvertSampleProto(t, sampleProtos["NestedObject"])
-	testConvertSampleProto(t, sampleProtos["PayloadMessage"])
-	testConvertSampleProto(t, sampleProtos["SeveralEnums"])
-	testConvertSampleProto(t, sampleProtos["SeveralMessages"])
-	testConvertSampleProto(t, sampleProtos["ArrayOfEnums"])
-	testConvertSampleProto(t, sampleProtos["Maps"])
-	testConvertSampleProto(t, sampleProtos["SelfReference"])
-	testConvertSampleProto(t, sampleProtos["CyclicalReference"])
-	testConvertSampleProto(t, sampleProtos["Timestamp"])
+	for _, sampleProto := range sampleProtos {
+		testConvertSampleProto(t, sampleProto)
+	}
 }
 
 func testConvertSampleProto(t *testing.T, sampleProto sampleProto) {
@@ -65,6 +51,7 @@ func testConvertSampleProto(t *testing.T, sampleProto sampleProto) {
 	protoConverter := New(logger)
 	protoConverter.AllowNullValues = sampleProto.AllowNullValues
 	protoConverter.UseProtoAndJSONFieldnames = sampleProto.UseProtoAndJSONFieldNames
+	protoConverter.PrefixSchemaFilesWithPackage = sampleProto.PrefixSchemaFilesWithPackage
 
 	// Open the sample proto file:
 	sampleProtoFileName := fmt.Sprintf("%v/%v", sampleProtoDirectory, sampleProto.ProtoFileName)
@@ -88,148 +75,138 @@ func testConvertSampleProto(t *testing.T, sampleProto sampleProto) {
 		}
 	}
 
+	// Return now if we have no files:
+	if len(response.File) == 0 {
+		return
+	}
+
+	// Check for the correct prefix:
+	if protoConverter.PrefixSchemaFilesWithPackage {
+		assert.Contains(t, response.File[0].GetName(), "samples")
+	} else {
+		assert.NotContains(t, response.File[0].GetName(), "samples")
+	}
 }
 
-func configureSampleProtos() {
-	// ArrayOfMessages:
-	sampleProtos["ArrayOfMessages"] = sampleProto{
-		AllowNullValues:    false,
-		ExpectedJSONSchema: []string{testdata.PayloadMessage, testdata.ArrayOfMessages},
-		FilesToGenerate:    []string{"ArrayOfMessages.proto", "PayloadMessage.proto"},
-		ProtoFileName:      "ArrayOfMessages.proto",
-	}
+func configureSampleProtos() map[string]sampleProto {
+	return map[string]sampleProto{
+		"ArrayOfMessages": {
+			AllowNullValues:    false,
+			ExpectedJSONSchema: []string{testdata.PayloadMessage, testdata.ArrayOfMessages},
+			FilesToGenerate:    []string{"ArrayOfMessages.proto", "PayloadMessage.proto"},
+			ProtoFileName:      "ArrayOfMessages.proto",
+		},
+		"ArrayOfObjects": {
+			AllowNullValues:    true,
+			ExpectedJSONSchema: []string{testdata.ArrayOfObjects},
+			FilesToGenerate:    []string{"ArrayOfObjects.proto"},
+			ProtoFileName:      "ArrayOfObjects.proto",
+		},
+		"ArrayOfPrimitives": {
+			AllowNullValues:    true,
+			ExpectedJSONSchema: []string{testdata.ArrayOfPrimitives},
+			FilesToGenerate:    []string{"ArrayOfPrimitives.proto"},
+			ProtoFileName:      "ArrayOfPrimitives.proto",
+		},
+		"ArrayOfPrimitivesDouble": {
+			AllowNullValues:           true,
+			ExpectedJSONSchema:        []string{testdata.ArrayOfPrimitivesDouble},
+			FilesToGenerate:           []string{"ArrayOfPrimitives.proto"},
+			ProtoFileName:             "ArrayOfPrimitives.proto",
+			UseProtoAndJSONFieldNames: true,
+		},
+		"EnumCeption": {
+			AllowNullValues:    false,
+			ExpectedJSONSchema: []string{testdata.PayloadMessage, testdata.ImportedEnum, testdata.EnumCeption},
+			FilesToGenerate:    []string{"Enumception.proto", "PayloadMessage.proto", "ImportedEnum.proto"},
+			ProtoFileName:      "Enumception.proto",
+		},
+		"ImportedEnum": {
+			AllowNullValues:    false,
+			ExpectedJSONSchema: []string{testdata.ImportedEnum},
+			FilesToGenerate:    []string{"ImportedEnum.proto"},
+			ProtoFileName:      "ImportedEnum.proto",
+		},
+		"NestedMessage": {
+			AllowNullValues:    false,
+			ExpectedJSONSchema: []string{testdata.PayloadMessage, testdata.NestedMessage},
+			FilesToGenerate:    []string{"NestedMessage.proto", "PayloadMessage.proto"},
+			ProtoFileName:      "NestedMessage.proto",
+		},
+		"NestedObject": {
+			AllowNullValues:    false,
+			ExpectedJSONSchema: []string{testdata.NestedObject},
+			FilesToGenerate:    []string{"NestedObject.proto"},
+			ProtoFileName:      "NestedObject.proto",
+		},
+		"PayloadMessage": {
+			AllowNullValues:    false,
+			ExpectedJSONSchema: []string{testdata.PayloadMessage},
+			FilesToGenerate:    []string{"PayloadMessage.proto"},
+			ProtoFileName:      "PayloadMessage.proto",
+		},
 
-	// ArrayOfObjects:
-	sampleProtos["ArrayOfObjects"] = sampleProto{
-		AllowNullValues:    true,
-		ExpectedJSONSchema: []string{testdata.ArrayOfObjects},
-		FilesToGenerate:    []string{"ArrayOfObjects.proto"},
-		ProtoFileName:      "ArrayOfObjects.proto",
-	}
-
-	// ArrayOfPrimitives:
-	sampleProtos["ArrayOfPrimitives"] = sampleProto{
-		AllowNullValues:    true,
-		ExpectedJSONSchema: []string{testdata.ArrayOfPrimitives},
-		FilesToGenerate:    []string{"ArrayOfPrimitives.proto"},
-		ProtoFileName:      "ArrayOfPrimitives.proto",
-	}
-
-	// ArrayOfPrimitives:
-	sampleProtos["ArrayOfPrimitivesDouble"] = sampleProto{
-		AllowNullValues:           true,
-		ExpectedJSONSchema:        []string{testdata.ArrayOfPrimitivesDouble},
-		FilesToGenerate:           []string{"ArrayOfPrimitives.proto"},
-		ProtoFileName:             "ArrayOfPrimitives.proto",
-		UseProtoAndJSONFieldNames: true,
-	}
-
-	// EnumCeption:
-	sampleProtos["EnumCeption"] = sampleProto{
-		AllowNullValues:    false,
-		ExpectedJSONSchema: []string{testdata.PayloadMessage, testdata.ImportedEnum, testdata.EnumCeption},
-		FilesToGenerate:    []string{"Enumception.proto", "PayloadMessage.proto", "ImportedEnum.proto"},
-		ProtoFileName:      "Enumception.proto",
-	}
-
-	// ImportedEnum:
-	sampleProtos["ImportedEnum"] = sampleProto{
-		AllowNullValues:    false,
-		ExpectedJSONSchema: []string{testdata.ImportedEnum},
-		FilesToGenerate:    []string{"ImportedEnum.proto"},
-		ProtoFileName:      "ImportedEnum.proto",
-	}
-
-	// NestedMessage:
-	sampleProtos["NestedMessage"] = sampleProto{
-		AllowNullValues:    false,
-		ExpectedJSONSchema: []string{testdata.PayloadMessage, testdata.NestedMessage},
-		FilesToGenerate:    []string{"NestedMessage.proto", "PayloadMessage.proto"},
-		ProtoFileName:      "NestedMessage.proto",
-	}
-
-	// NestedObject:
-	sampleProtos["NestedObject"] = sampleProto{
-		AllowNullValues:    false,
-		ExpectedJSONSchema: []string{testdata.NestedObject},
-		FilesToGenerate:    []string{"NestedObject.proto"},
-		ProtoFileName:      "NestedObject.proto",
-	}
-
-	// PayloadMessage:
-	sampleProtos["PayloadMessage"] = sampleProto{
-		AllowNullValues:    false,
-		ExpectedJSONSchema: []string{testdata.PayloadMessage},
-		FilesToGenerate:    []string{"PayloadMessage.proto"},
-		ProtoFileName:      "PayloadMessage.proto",
-	}
-
-	// SeveralEnums:
-	sampleProtos["SeveralEnums"] = sampleProto{
-		AllowNullValues:    false,
-		ExpectedJSONSchema: []string{testdata.FirstEnum, testdata.SecondEnum},
-		FilesToGenerate:    []string{"SeveralEnums.proto"},
-		ProtoFileName:      "SeveralEnums.proto",
-	}
-
-	// SeveralMessages:
-	sampleProtos["SeveralMessages"] = sampleProto{
-		AllowNullValues:    false,
-		ExpectedJSONSchema: []string{testdata.FirstMessage, testdata.SecondMessage},
-		FilesToGenerate:    []string{"SeveralMessages.proto"},
-		ProtoFileName:      "SeveralMessages.proto",
-	}
-
-	// ArrayOfEnums:
-	sampleProtos["ArrayOfEnums"] = sampleProto{
-		AllowNullValues:    false,
-		ExpectedJSONSchema: []string{testdata.ArrayOfEnums},
-		FilesToGenerate:    []string{"ArrayOfEnums.proto"},
-		ProtoFileName:      "ArrayOfEnums.proto",
-	}
-
-	// Maps:
-	sampleProtos["Maps"] = sampleProto{
-		AllowNullValues:    false,
-		ExpectedJSONSchema: []string{testdata.Maps},
-		FilesToGenerate:    []string{"Maps.proto"},
-		ProtoFileName:      "Maps.proto",
-	}
-
-	// Comments:
-	sampleProtos["Comments"] = sampleProto{
-		AllowNullValues:    false,
-		ExpectedJSONSchema: []string{testdata.MessageWithComments},
-		FilesToGenerate:    []string{"MessageWithComments.proto"},
-		ProtoFileName:      "MessageWithComments.proto",
-	}
-
-	// Self referencing proto message (see https://github.com/chrusty/protoc-gen-jsonschema/issues/7):
-	sampleProtos["SelfReference"] = sampleProto{
-		ExpectedJSONSchema: []string{testdata.SelfReference},
-		FilesToGenerate:    []string{"SelfReference.proto"},
-		ProtoFileName:      "SelfReference.proto",
-	}
-
-	// Messages that depend on one another so as to form a cycle (see https://github.com/chrusty/protoc-gen-jsonschema/issues/20):
-	sampleProtos["CyclicalReference"] = sampleProto{
-		ExpectedJSONSchema: []string{testdata.CyclicalReferenceMessageM, testdata.CyclicalReferenceMessageFoo, testdata.CyclicalReferenceMessageBar, testdata.CyclicalReferenceMessageBaz},
-		FilesToGenerate:    []string{"CyclicalReference.proto"},
-		ProtoFileName:      "CyclicalReference.proto",
-	}
-
-	// Google's well-known types:
-	sampleProtos["WellKnown"] = sampleProto{
-		ExpectedJSONSchema: []string{testdata.WellKnown},
-		FilesToGenerate:    []string{"WellKnown.proto"},
-		ProtoFileName:      "WellKnown.proto",
-	}
-
-	// Timestamp:
-	sampleProtos["Timestamp"] = sampleProto{
-		ExpectedJSONSchema: []string{testdata.Timestamp},
-		FilesToGenerate:    []string{"Timestamp.proto"},
-		ProtoFileName:      "Timestamp.proto",
+		"SeveralEnums": {
+			AllowNullValues:    false,
+			ExpectedJSONSchema: []string{testdata.FirstEnum, testdata.SecondEnum},
+			FilesToGenerate:    []string{"SeveralEnums.proto"},
+			ProtoFileName:      "SeveralEnums.proto",
+		},
+		"SeveralMessages": {
+			AllowNullValues:    false,
+			ExpectedJSONSchema: []string{testdata.FirstMessage, testdata.SecondMessage},
+			FilesToGenerate:    []string{"SeveralMessages.proto"},
+			ProtoFileName:      "SeveralMessages.proto",
+		},
+		"ArrayOfEnums": {
+			AllowNullValues:    false,
+			ExpectedJSONSchema: []string{testdata.ArrayOfEnums},
+			FilesToGenerate:    []string{"ArrayOfEnums.proto"},
+			ProtoFileName:      "ArrayOfEnums.proto",
+		},
+		"Maps": {
+			AllowNullValues:    false,
+			ExpectedJSONSchema: []string{testdata.Maps},
+			FilesToGenerate:    []string{"Maps.proto"},
+			ProtoFileName:      "Maps.proto",
+		},
+		"Comments": {
+			AllowNullValues:    false,
+			ExpectedJSONSchema: []string{testdata.MessageWithComments},
+			FilesToGenerate:    []string{"MessageWithComments.proto"},
+			ProtoFileName:      "MessageWithComments.proto",
+		},
+		"SelfReference": {
+			ExpectedJSONSchema: []string{testdata.SelfReference},
+			FilesToGenerate:    []string{"SelfReference.proto"},
+			ProtoFileName:      "SelfReference.proto",
+		},
+		"CyclicalReference": {
+			ExpectedJSONSchema: []string{testdata.CyclicalReferenceMessageM, testdata.CyclicalReferenceMessageFoo, testdata.CyclicalReferenceMessageBar, testdata.CyclicalReferenceMessageBaz},
+			FilesToGenerate:    []string{"CyclicalReference.proto"},
+			ProtoFileName:      "CyclicalReference.proto",
+		},
+		"WellKnown": {
+			ExpectedJSONSchema: []string{testdata.WellKnown},
+			FilesToGenerate:    []string{"WellKnown.proto"},
+			ProtoFileName:      "WellKnown.proto",
+		},
+		"Timestamp": {
+			ExpectedJSONSchema: []string{testdata.Timestamp},
+			FilesToGenerate:    []string{"Timestamp.proto"},
+			ProtoFileName:      "Timestamp.proto",
+		},
+		"NoPackage": {
+			ExpectedJSONSchema: []string{},
+			FilesToGenerate:    []string{},
+			ProtoFileName:      "NoPackage.proto",
+		},
+		"PackagePrefix": {
+			ExpectedJSONSchema:           []string{testdata.Timestamp},
+			FilesToGenerate:              []string{"Timestamp.proto"},
+			ProtoFileName:                "Timestamp.proto",
+			PrefixSchemaFilesWithPackage: true,
+		},
 	}
 }
 
