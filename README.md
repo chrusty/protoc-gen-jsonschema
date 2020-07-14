@@ -11,6 +11,7 @@ Installation
 ------------
 `GO111MODULE=on go get github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema && go install github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema`
 
+
 Links
 -----
 * [About JSON Schema](http://json-schema.org/)
@@ -20,6 +21,8 @@ Links
 
 Usage
 -----
+protoc-gen-jsonschema is designed to run like any other proto generator. The following examples show how to use options flags to enable different generator behaviours (more examples in the Makefile too).
+
 * Allow NULL values (by default, JSONSchemas will reject NULL values unless we explicitly allow them):
     `protoc --jsonschema_out=allow_null_values:. --proto_path=testdata/proto testdata/proto/ArrayOfPrimitives.proto`
 * Disallow additional properties (JSONSchemas won't validate JSON containing extra parameters):
@@ -28,6 +31,8 @@ Usage
     `protoc --jsonschema_out=disallow_bigints_as_strings:. --proto_path=testdata/proto testdata/proto/ArrayOfPrimitives.proto`
 * Prefix generated schema files with their package name (as a directory):
     `protoc --jsonschema_out=prefix_schema_files_with_package:. --proto_path=testdata/proto testdata/proto/ArrayOfPrimitives.proto`
+* Require all fields (because proto3 doesn't accommodate this):
+     `protoc --jsonschema_out=all_fields_required:. --proto_path=testdata/proto testdata/proto/ArrayOfPrimitives.proto`
 * Enable debug logging:
     `protoc --jsonschema_out=debug:. --proto_path=testdata/proto testdata/proto/ArrayOfPrimitives.proto`
 
