@@ -26,6 +26,8 @@ Usage
     `protoc --jsonschema_out=disallow_additional_properties:. --proto_path=testdata/proto testdata/proto/ArrayOfPrimitives.proto`
 * Disallow permissive validation of big-integers as strings (eg scientific notation):
     `protoc --jsonschema_out=disallow_bigints_as_strings:. --proto_path=testdata/proto testdata/proto/ArrayOfPrimitives.proto`
+* Prefix generated schema files with their package name (as a directory):
+    `protoc --jsonschema_out=prefix_schema_files_with_package:. --proto_path=testdata/proto testdata/proto/ArrayOfPrimitives.proto`
 * Enable debug logging:
     `protoc --jsonschema_out=debug:. --proto_path=testdata/proto testdata/proto/ArrayOfPrimitives.proto`
 
