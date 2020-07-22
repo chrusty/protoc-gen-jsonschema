@@ -75,6 +75,7 @@ componentLoop:
 
 // Convert a proto "field" (essentially a type-switch with some recursion):
 func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, msg *descriptor.DescriptorProto, duplicatedMessages map[*descriptor.DescriptorProto]string) (*jsonschema.Type, error) {
+
 	// Prepare a new jsonschema.Type for our eventual return value:
 	jsonSchemaType := &jsonschema.Type{}
 
@@ -254,13 +255,28 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			jsonSchemaType.Items = recursedJSONSchemaType
 			jsonSchemaType.Type = gojsonschema.TYPE_ARRAY
 
+			// Build up the list of required fields:
+			if c.AllFieldsRequired {
+				for _, property := range recursedJSONSchemaType.Properties.Keys() {
+					jsonSchemaType.Items.Required = append(jsonSchemaType.Items.Required, property)
+				}
+			}
+
 		// Objects:
 		default:
 			if recursedJSONSchemaType.OneOf != nil {
 				return recursedJSONSchemaType, nil
-			} else {
-				jsonSchemaType.Properties = recursedJSONSchemaType.Properties
-				jsonSchemaType.Ref = recursedJSONSchemaType.Ref
+			}
+
+			jsonSchemaType.Properties = recursedJSONSchemaType.Properties
+			jsonSchemaType.Ref = recursedJSONSchemaType.Ref
+			jsonSchemaType.Required = recursedJSONSchemaType.Required
+
+			// Build up the list of required fields:
+			if c.AllFieldsRequired {
+				for _, property := range recursedJSONSchemaType.Properties.Keys() {
+					jsonSchemaType.Required = append(jsonSchemaType.Required, property)
+				}
 			}
 		}
 
@@ -274,11 +290,14 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 		}
 	}
 
+	jsonSchemaType.Required = dedupe(jsonSchemaType.Required)
+
 	return jsonSchemaType, nil
 }
 
 // Converts a proto "MESSAGE" into a JSON-Schema:
 func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.DescriptorProto) (*jsonschema.Schema, error) {
+
 	// first, recursively find messages that appear more than once - in particular, that will break cycles
 	duplicatedMessages, err := c.findDuplicatedNestedMessages(curPkg, msg)
 	if err != nil {
@@ -293,7 +312,6 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.Des
 
 	// and then generate the sub-schema for each duplicated message
 	definitions := jsonschema.Definitions{}
-
 	for refMsg, name := range duplicatedMessages {
 		refType, err := c.recursiveConvertMessageType(curPkg, refMsg, "", duplicatedMessages, true)
 		if err != nil {
@@ -308,10 +326,21 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.Des
 		definitions[name] = refType
 	}
 
-	return &jsonschema.Schema{
+	newJSONSchema := &jsonschema.Schema{
 		Type:        rootType,
 		Definitions: definitions,
-	}, nil
+	}
+
+	// Look for required fields (either by proto2 required flag, or the AllFieldsRequired option):
+	for _, fieldDesc := range msg.GetField() {
+		if c.AllFieldsRequired || fieldDesc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REQUIRED {
+			newJSONSchema.Required = append(newJSONSchema.Required, fieldDesc.GetName())
+		}
+	}
+
+	newJSONSchema.Required = dedupe(newJSONSchema.Required)
+
+	return newJSONSchema, nil
 }
 
 // findDuplicatedNestedMessages takes a message, and returns a map mapping pointers to messages that appear more than once
@@ -443,10 +472,15 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 		if c.UseProtoAndJSONFieldnames && fieldDesc.GetName() != fieldDesc.GetJsonName() {
 			jsonSchemaType.Properties.Set(fieldDesc.GetJsonName(), recursedJSONSchemaType)
 		}
+
+		// Look for required fields (either by proto2 required flag, or the AllFieldsRequired option):
+		if fieldDesc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REQUIRED {
+			jsonSchemaType.Required = append(jsonSchemaType.Required, fieldDesc.GetName())
+		}
 	}
 
+	// Remove empty properties to keep the final output as clean as possible:
 	if len(jsonSchemaType.Properties.Keys()) == 0 {
-		// remove empty properties to clean the final output as clean as possible
 		jsonSchemaType.Properties = nil
 	}
 
@@ -467,4 +501,17 @@ func formatDescription(sl *descriptor.SourceCodeInfo_Location) string {
 		lines = append(lines, s)
 	}
 	return strings.Join(lines, "\n\n")
+}
+
+func dedupe(inputStrings []string) []string {
+	appended := make(map[string]bool)
+	outputStrings := []string{}
+
+	for _, inputString := range inputStrings {
+		if !appended[inputString] {
+			outputStrings = append(outputStrings, inputString)
+			appended[inputString] = true
+		}
+	}
+	return outputStrings
 }

@@ -21,6 +21,7 @@ const (
 )
 
 type sampleProto struct {
+	AllFieldsRequired            bool
 	AllowNullValues              bool
 	ExpectedJSONSchema           []string
 	FilesToGenerate              []string
@@ -49,6 +50,7 @@ func testConvertSampleProto(t *testing.T, sampleProto sampleProto) {
 
 	// Use the logger to make a Converter:
 	protoConverter := New(logger)
+	protoConverter.AllFieldsRequired = sampleProto.AllFieldsRequired
 	protoConverter.AllowNullValues = sampleProto.AllowNullValues
 	protoConverter.UseProtoAndJSONFieldnames = sampleProto.UseProtoAndJSONFieldNames
 	protoConverter.PrefixSchemaFilesWithPackage = sampleProto.PrefixSchemaFilesWithPackage
@@ -145,7 +147,6 @@ func configureSampleProtos() map[string]sampleProto {
 			FilesToGenerate:    []string{"PayloadMessage.proto"},
 			ProtoFileName:      "PayloadMessage.proto",
 		},
-
 		"SeveralEnums": {
 			AllowNullValues:    false,
 			ExpectedJSONSchema: []string{testdata.FirstEnum, testdata.SecondEnum},
@@ -206,6 +207,31 @@ func configureSampleProtos() map[string]sampleProto {
 			FilesToGenerate:              []string{"Timestamp.proto"},
 			ProtoFileName:                "Timestamp.proto",
 			PrefixSchemaFilesWithPackage: true,
+		},
+		"Proto2Required": {
+			ExpectedJSONSchema: []string{testdata.Proto2Required},
+			FilesToGenerate:    []string{"Proto2Required.proto"},
+			ProtoFileName:      "Proto2Required.proto",
+		},
+		"AllRequired": {
+			AllFieldsRequired:  true,
+			AllowNullValues:    false,
+			ExpectedJSONSchema: []string{testdata.PayloadMessage2},
+			FilesToGenerate:    []string{"PayloadMessage2.proto"},
+			ProtoFileName:      "PayloadMessage2.proto",
+		},
+		"Proto2NestedMessage": {
+			AllowNullValues:    false,
+			ExpectedJSONSchema: []string{testdata.Proto2PayloadMessage, testdata.Proto2NestedMessage},
+			FilesToGenerate:    []string{"Proto2PayloadMessage.proto", "Proto2NestedMessage.proto"},
+			ProtoFileName:      "Proto2NestedMessage.proto",
+		},
+		"Proto2NestedObject": {
+			AllFieldsRequired:  true,
+			AllowNullValues:    false,
+			ExpectedJSONSchema: []string{testdata.Proto2NestedObject},
+			FilesToGenerate:    []string{"Proto2NestedObject.proto"},
+			ProtoFileName:      "Proto2NestedObject.proto",
 		},
 	}
 }
