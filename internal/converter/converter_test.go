@@ -220,6 +220,19 @@ func configureSampleProtos() map[string]sampleProto {
 			FilesToGenerate:    []string{"PayloadMessage2.proto"},
 			ProtoFileName:      "PayloadMessage2.proto",
 		},
+		"Proto2NestedMessage": {
+			AllowNullValues:    false,
+			ExpectedJSONSchema: []string{testdata.Proto2PayloadMessage, testdata.Proto2NestedMessage},
+			FilesToGenerate:    []string{"Proto2PayloadMessage.proto", "Proto2NestedMessage.proto"},
+			ProtoFileName:      "Proto2NestedMessage.proto",
+		},
+		"Proto2NestedObject": {
+			AllFieldsRequired:  true,
+			AllowNullValues:    false,
+			ExpectedJSONSchema: []string{testdata.Proto2NestedObject},
+			FilesToGenerate:    []string{"Proto2NestedObject.proto"},
+			ProtoFileName:      "Proto2NestedObject.proto",
+		},
 	}
 }
 

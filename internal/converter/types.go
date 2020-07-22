@@ -503,20 +503,6 @@ func formatDescription(sl *descriptor.SourceCodeInfo_Location) string {
 	return strings.Join(lines, "\n\n")
 }
 
-// func dedupe2(strings []string) []string {
-// 	dedupeMap := make(map[string]bool)
-// 	outputStrings := []string{}
-
-// 	for _, inputString := range strings {
-// 		dedupeMap[inputString] = true
-// 	}
-
-// 	for outputString := range dedupeMap {
-// 		outputStrings = append(outputStrings, outputString)
-// 	}
-// 	return outputStrings
-// }
-
 func dedupe(inputStrings []string) []string {
 	appended := make(map[string]bool)
 	outputStrings := []string{}
