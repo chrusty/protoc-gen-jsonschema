@@ -16,7 +16,7 @@ type ProtoPackage struct {
 
 func (c *Converter) lookupType(pkg *ProtoPackage, name string) (*descriptor.DescriptorProto, string, bool) {
 	if strings.HasPrefix(name, ".") {
-		return c.relativelyLookupType(globalPkg, name[1:len(name)])
+		return c.relativelyLookupType(globalPkg, name[1:])
 	}
 
 	for ; pkg != nil; pkg = pkg.parent {

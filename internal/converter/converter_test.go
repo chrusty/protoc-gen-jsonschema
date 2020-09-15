@@ -8,12 +8,13 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/chrusty/protoc-gen-jsonschema/internal/converter/testdata"
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/chrusty/protoc-gen-jsonschema/internal/converter/testdata"
 )
 
 const (
@@ -28,6 +29,7 @@ type sampleProto struct {
 	PrefixSchemaFilesWithPackage bool
 	ProtoFileName                string
 	UseProtoAndJSONFieldNames    bool
+	TargetedMessages             []string
 }
 
 func TestGenerateJsonSchema(t *testing.T) {
@@ -65,6 +67,11 @@ func testConvertSampleProto(t *testing.T, sampleProto sampleProto) {
 		ProtoFile:      fileDescriptorSet.GetFile(),
 	}
 
+	if len(sampleProto.TargetedMessages) > 0 {
+		arg := fmt.Sprintf("messages=[%s]", strings.Join(sampleProto.TargetedMessages, messageDelimiter))
+		codeGeneratorRequest.Parameter = &arg
+	}
+
 	// Perform the conversion:
 	response, err := protoConverter.convert(&codeGeneratorRequest)
 	assert.NoError(t, err, "Unable to convert sample proto file (%v)", sampleProtoFileName)
@@ -73,7 +80,7 @@ func testConvertSampleProto(t *testing.T, sampleProto sampleProto) {
 		t.Fail()
 	} else {
 		for responseFileIndex, responseFile := range response.File {
-			assert.Equal(t, sampleProto.ExpectedJSONSchema[responseFileIndex], *responseFile.Content, "Incorrect JSON-Schema returned for sample proto file (%v)", sampleProtoFileName)
+			assert.Equal(t, strings.TrimSpace(sampleProto.ExpectedJSONSchema[responseFileIndex]), *responseFile.Content, "Incorrect JSON-Schema returned for sample proto file (%v)", sampleProtoFileName)
 		}
 	}
 
@@ -232,6 +239,12 @@ func configureSampleProtos() map[string]sampleProto {
 			ExpectedJSONSchema: []string{testdata.Proto2NestedObject},
 			FilesToGenerate:    []string{"Proto2NestedObject.proto"},
 			ProtoFileName:      "Proto2NestedObject.proto",
+		},
+		"TargetedMessages": {
+			TargetedMessages:   []string{"MessageKind10", "MessageKind11", "MessageKind12"},
+			ExpectedJSONSchema: []string{testdata.MessageKind10, testdata.MessageKind11, testdata.MessageKind12},
+			FilesToGenerate:    []string{"TwelveMessages.proto"},
+			ProtoFileName:      "TwelveMessages.proto",
 		},
 	}
 }
