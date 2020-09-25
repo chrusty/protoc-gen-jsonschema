@@ -233,6 +233,11 @@ func configureSampleProtos() map[string]sampleProto {
 			FilesToGenerate:    []string{"Proto2NestedObject.proto"},
 			ProtoFileName:      "Proto2NestedObject.proto",
 		},
+		"GoogleValue": {
+			ExpectedJSONSchema: []string{testdata.GoogleValue},
+			FilesToGenerate:    []string{"GoogleValue.proto"},
+			ProtoFileName:      "GoogleValue.proto",
+		},
 	}
 }
 
