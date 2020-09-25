@@ -1,0 +1,8 @@
+syntax = "proto3";
+package samples; 
+
+import "google/protobuf/struct.proto"; 
+
+message GoogleValue {
+  google.protobuf.Value arg = 1;
+}
