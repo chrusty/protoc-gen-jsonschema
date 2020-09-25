@@ -1,8 +1,9 @@
 package converter
 
 import (
-	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"testing"
+
+	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 )
 
 func TestSourceInfoLookup(t *testing.T) {
