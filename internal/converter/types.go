@@ -30,6 +30,7 @@ var (
 		"BoolValue":   true,
 		"StringValue": true,
 		"BytesValue":  true,
+		"Value":       true,
 	}
 )
 
@@ -420,6 +421,11 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 			schema.OneOf = []*jsonschema.Type{
 				{Type: gojsonschema.TYPE_NULL},
 				{Type: gojsonschema.TYPE_STRING},
+			}
+		case "Value":
+			schema.OneOf = []*jsonschema.Type{
+				{Type: gojsonschema.TYPE_NULL},
+				{Type: gojsonschema.TYPE_OBJECT},
 			}
 		}
 		return schema, nil
