@@ -1,18 +1,27 @@
 default: build
 
+.PHONY: build
 build:
 	@echo "Generating binary (protoc-gen-jsonschema) ..."
 	@mkdir -p bin
 	@go build -o bin/protoc-gen-jsonschema cmd/protoc-gen-jsonschema/main.go
 
+.PHONY: fmt
+fmt:
+	@gofmt -s -w .
+	@goimports -w -local github.com/chrusty/protoc-gen-jsonschema .
+
+.PHONY: install
 install:
 	@GO111MODULE=on go get github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema && go install github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema
 
+.PHONY: build_linux
 build_linux:
 	@echo "Generating Linux-amd64 binary (protoc-gen-jsonschema.linux-amd64) ..."
 	@GOOS=linux GOARCH=amd64 go build -o protoc-gen-jsonschema.linux-amd64
 
 PROTO_PATH ?= "internal/converter/testdata/proto"
+.PHONY: samples
 samples:
 	@echo "Generating sample JSON-Schemas ..."
 	@mkdir -p jsonschemas
@@ -37,6 +46,8 @@ samples:
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=all_fields_required:jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/Proto2NestedObject.proto || echo "No messages found (Proto2NestedObject.proto)"
 	@PATH=./bin:$$PATH; protoc -I /usr/include --jsonschema_out=jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/WellKnown.proto || echo "No messages found (WellKnown.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/NoPackage.proto
+	@PATH=./bin:$$PATH; protoc --jsonschema_out=messages=[MessageKind10+MessageKind11+MessageKind12]:jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/TwelveMessages.proto || echo "No messages found (TwelveMessages.proto)"
 
+.PHONY: test
 test:
 	@go test ./... -cover -v

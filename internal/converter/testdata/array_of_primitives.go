@@ -101,7 +101,6 @@ const ArrayOfPrimitives = `{
     ]
 }`
 
-
 const ArrayOfPrimitivesDouble = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "properties": {
@@ -215,4 +214,3 @@ const ArrayOfPrimitivesDouble = `{
         }
     ]
 }`
-
