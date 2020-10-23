@@ -1,75 +1,118 @@
-Protobuf to JSON-Schema compiler
-================================
+# Protobuf to JSON-Schema compiler
+
 This takes protobuf definitions and converts them into JSONSchemas, which can be used to dynamically validate JSON messages.
 
-This will hopefully be useful for people who define their data using ProtoBuf, but use JSON for the "wire" format.
+Useful for people who define their data using ProtoBuf, but use JSON for the "wire" format.
 
 "Heavily influenced" by [Google's protobuf-to-BigQuery-schema compiler](https://github.com/GoogleCloudPlatform/protoc-gen-bq-schema).
 
+## Installation
 
-Installation
-------------
-`GO111MODULE=on go get github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema && go install github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema`
+> Note: This tool requires Go 1.11+ to be installed.
 
+Install this plugin using Go:
 
-Links
------
-* [About JSON Schema](http://json-schema.org/)
-* [Popular GoLang JSON-Schema validation library](https://github.com/xeipuuv/gojsonschema)
-* [Another GoLang JSON-Schema validation library](https://github.com/lestrrat/go-jsschema)
-
-
-Usage
------
-protoc-gen-jsonschema is designed to run like any other proto generator. The following examples show how to use options flags to enable different generator behaviours (more examples in the Makefile too).
-
-* Allow NULL values (by default, JSONSchemas will reject NULL values unless we explicitly allow them):
-
-```shell script
-protoc --jsonschema_out=allow_null_values:. --proto_path=testdata/proto testdata/proto/ArrayOfPrimitives.proto
+```sh
+GO111MODULE=on \
+go get github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema &&
+go install github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema
 ```
 
-* Disallow additional properties (JSONSchemas won't validate JSON containing extra parameters):
+## Usage
+
+> Note: This plugin requires the [`protoc`](https://github.com/protocolbuffers/protobuf) CLI to be installed.
+
+**protoc-gen-jsonschema** is designed to run like any other proto generator. The following examples show how to use options flags to enable different generator behaviours (more examples in the Makefile too).
+
+```sh
+protoc \ # The protobuf compiler
+--jsonschema_out=. \ # jsonschema out directory
+--proto_path=testdata/proto testdata/proto/ArrayOfPrimitives.proto # proto input directories and folders
+```
+
+## Configuration
+
+| CONFIG | DESCRIPTION |
+|--------|-------------|
+|`all_fields_required`| Require all fields in schema |
+|`allow_null_values`| Allow null values in schema |
+|`debug`| Enable debug logging |
+|`disallow_additional_properties`| Disallow additional properties in schema |
+|`disallow_bigints_as_strings`| Disallow big integers as strings |
+|`prefix_schema_files_with_package`| Prefix the output filename with package |
+|`proto_and_json_fieldnames`| Use proto and json field names |
+
+## Examples
+
+### Require all fields
+
+> Because proto3 doesn't accommodate this.
+
+```sh
+protoc \
+--jsonschema_out=all_fields_required:. \
+--proto_path=testdata/proto testdata/proto/ArrayOfPrimitives.proto
+```
+
+### Allow NULL values
+
+> By default, JSONSchemas will reject NULL values unless we explicitly allow them
+
+```sh
+protoc \
+--jsonschema_out=allow_null_values:. \
+--proto_path=testdata/proto testdata/proto/ArrayOfPrimitives.proto
+```
+
+### Enable debug logging
+
+```sh
+protoc \
+--jsonschema_out=debug:. \
+--proto_path=testdata/proto testdata/proto/ArrayOfPrimitives.proto
+```
+
+### Disallow additional properties
+
+> JSONSchemas won't validate JSON containing extra parameters
     
-```shell script
-protoc --jsonschema_out=disallow_additional_properties:. --proto_path=testdata/proto testdata/proto/ArrayOfPrimitives.proto
+```sh
+protoc \
+--jsonschema_out=disallow_additional_properties:. \
+--proto_path=testdata/proto testdata/proto/ArrayOfPrimitives.proto
 ```
 
-* Disallow permissive validation of big-integers as strings (eg scientific notation):
+### Disallow permissive validation of big-integers as strings
 
-```shell script
-protoc --jsonschema_out=disallow_bigints_as_strings:. --proto_path=testdata/proto testdata/proto/ArrayOfPrimitives.proto
+> (eg scientific notation)
+
+```sh
+protoc \
+--jsonschema_out=disallow_bigints_as_strings:. \
+--proto_path=testdata/proto testdata/proto/ArrayOfPrimitives.proto
 ```
 
-* Prefix generated schema files with their package name (as a directory):
+### Prefix generated schema files with their package name (as a directory)
 
-```shell script
-protoc --jsonschema_out=prefix_schema_files_with_package:. --proto_path=testdata/proto testdata/proto/ArrayOfPrimitives.proto
+```sh
+protoc \
+--jsonschema_out=prefix_schema_files_with_package:. \
+--proto_path=testdata/proto testdata/proto/ArrayOfPrimitives.proto
 ```
 
-* Require all fields (because proto3 doesn't accommodate this):
+### Target specific messages within a proto file
 
-```shell script
-protoc --jsonschema_out=all_fields_required:. --proto_path=testdata/proto testdata/proto/ArrayOfPrimitives.proto
-```
-
-* Enable debug logging:
-
-```shell script
-protoc --jsonschema_out=debug:. --proto_path=testdata/proto testdata/proto/ArrayOfPrimitives.proto
-```
-
-* Target _specific_ messages within a proto file:
-
-```shell script
+```sh
 # Generates MessageKind10.jsonschema and MessageKind11.jsonschema
 # Use this to generate json schema from proto files with multiple messages
 # Separate schema names with '+'
-protoc --jsonschema_out=messages=[MessageKind10+MessageKind11]:. --proto_path=testdata/proto testdata/proto/TwelveMessages.proto
+protoc \
+--jsonschema_out=messages=[MessageKind10+MessageKind11]:. \
+--proto_path=testdata/proto testdata/proto/TwelveMessages.proto
 ```
 
-Sample protos (for testing)
----------------------------
+## Sample protos (for testing)
+
 * Proto with a simple (flat) structure: [samples.PayloadMessage](internal/converter/testdata/proto/PayloadMessage.proto)
 * Proto containing a nested object (defined internally): [samples.NestedObject](internal/converter/testdata/proto/NestedObject.proto)
 * Proto containing a nested message (defined in a different proto file): [samples.NestedMessage](internal/converter/testdata/proto/NestedMessage.proto)
@@ -81,3 +124,9 @@ Sample protos (for testing)
 * Proto containing 2 stand-alone enums: [samples.FirstEnum, samples.SecondEnum](internal/converter/testdata/proto/SeveralEnums.proto)
 * Proto containing 2 messages: [samples.FirstMessage, samples.SecondMessage](internal/converter/testdata/proto/SeveralMessages.proto)
 * Proto containing 12 messages: [samples.MessageKind1 - samples.MessageKind12](internal/converter/testdata/proto/TwelveMessages.proto)
+
+## Links
+
+* [About JSON Schema](http://json-schema.org/)
+* [Popular GoLang JSON-Schema validation library](https://github.com/xeipuuv/gojsonschema)
+* [Another GoLang JSON-Schema validation library](https://github.com/lestrrat/go-jsschema)
