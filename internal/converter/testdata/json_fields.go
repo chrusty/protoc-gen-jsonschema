@@ -6,13 +6,13 @@ const JSONFields = `{
         "name": {
             "type": "string"
         },
-        "time_stamp": {
+        "timestamp": {
             "type": "string"
         },
         "identifier": {
             "type": "integer"
         },
-        "rating": {
+        "someThing": {
             "type": "number"
         },
         "complete": {
