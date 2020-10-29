@@ -248,6 +248,11 @@ func configureSampleProtos() map[string]sampleProto {
 			FilesToGenerate:    []string{"TwelveMessages.proto"},
 			ProtoFileName:      "TwelveMessages.proto",
 		},
+		"GoogleValue": {
+			ExpectedJSONSchema: []string{testdata.GoogleValue},
+			FilesToGenerate:    []string{"GoogleValue.proto"},
+			ProtoFileName:      "GoogleValue.proto",
+		},
 		"JSONFields": {
 			ExpectedJSONSchema:    []string{testdata.JSONFields},
 			FilesToGenerate:       []string{"JSONFields.proto"},
