@@ -1,4 +1,6 @@
-{
+package testdata
+
+const JSONFields = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "properties": {
         "name": {
@@ -20,3 +22,4 @@
     "additionalProperties": true,
     "type": "object"
 }
+`
