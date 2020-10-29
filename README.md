@@ -39,8 +39,9 @@ protoc \ # The protobuf compiler
 |`debug`| Enable debug logging |
 |`disallow_additional_properties`| Disallow additional properties in schema |
 |`disallow_bigints_as_strings`| Disallow big integers as strings |
+|`json_fieldnames` | Use JSON field names only |
 |`prefix_schema_files_with_package`| Prefix the output filename with package |
-|`proto_and_json_fieldnames`| Use proto and json field names |
+|`proto_and_json_fieldnames`| Use proto and JSON field names |
 
 ## Examples
 
@@ -109,6 +110,14 @@ protoc \
 protoc \
 --jsonschema_out=messages=[MessageKind10+MessageKind11]:. \
 --proto_path=testdata/proto testdata/proto/TwelveMessages.proto
+```
+
+### Generate fields with JSON names
+
+```sh
+protoc \
+--jsonschema_out=json_fieldnames:. \
+--proto_path=testdata/proto testdata/proto/ArrayOfPrimitives.proto
 ```
 
 ## Sample protos (for testing)
