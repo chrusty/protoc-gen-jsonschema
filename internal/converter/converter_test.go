@@ -28,6 +28,7 @@ type sampleProto struct {
 	FilesToGenerate              []string
 	PrefixSchemaFilesWithPackage bool
 	ProtoFileName                string
+	UseJSONFieldnamesOnly        bool
 	UseProtoAndJSONFieldNames    bool
 	TargetedMessages             []string
 }
@@ -54,6 +55,7 @@ func testConvertSampleProto(t *testing.T, sampleProto sampleProto) {
 	protoConverter := New(logger)
 	protoConverter.AllFieldsRequired = sampleProto.AllFieldsRequired
 	protoConverter.AllowNullValues = sampleProto.AllowNullValues
+	protoConverter.UseJSONFieldnamesOnly = sampleProto.UseJSONFieldnamesOnly
 	protoConverter.UseProtoAndJSONFieldnames = sampleProto.UseProtoAndJSONFieldNames
 	protoConverter.PrefixSchemaFilesWithPackage = sampleProto.PrefixSchemaFilesWithPackage
 
@@ -250,6 +252,12 @@ func configureSampleProtos() map[string]sampleProto {
 			ExpectedJSONSchema: []string{testdata.GoogleValue},
 			FilesToGenerate:    []string{"GoogleValue.proto"},
 			ProtoFileName:      "GoogleValue.proto",
+		},
+		"JSONFields": {
+			ExpectedJSONSchema:    []string{testdata.JSONFields},
+			FilesToGenerate:       []string{"JSONFields.proto"},
+			ProtoFileName:         "JSONFields.proto",
+			UseJSONFieldnamesOnly: true,
 		},
 	}
 }

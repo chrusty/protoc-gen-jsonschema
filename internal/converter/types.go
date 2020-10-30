@@ -474,9 +474,16 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 			return nil, err
 		}
 		c.logger.WithField("field_name", fieldDesc.GetName()).WithField("type", recursedJSONSchemaType.Type).Trace("Converted field")
-		jsonSchemaType.Properties.Set(fieldDesc.GetName(), recursedJSONSchemaType)
-		if c.UseProtoAndJSONFieldnames && fieldDesc.GetName() != fieldDesc.GetJsonName() {
+
+		// Figure out which field names we want to use:
+		switch {
+		case c.UseJSONFieldnamesOnly:
 			jsonSchemaType.Properties.Set(fieldDesc.GetJsonName(), recursedJSONSchemaType)
+		case c.UseProtoAndJSONFieldnames:
+			jsonSchemaType.Properties.Set(fieldDesc.GetName(), recursedJSONSchemaType)
+			jsonSchemaType.Properties.Set(fieldDesc.GetJsonName(), recursedJSONSchemaType)
+		default:
+			jsonSchemaType.Properties.Set(fieldDesc.GetName(), recursedJSONSchemaType)
 		}
 
 		// Look for required fields (either by proto2 required flag, or the AllFieldsRequired option):

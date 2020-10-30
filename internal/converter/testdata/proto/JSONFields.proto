@@ -1,0 +1,11 @@
+syntax = "proto3";
+package samples;
+
+message JSONFields {
+    string name      = 1;
+    string timestamp = 2;
+    int32 id         = 3 [json_name="identifier"];
+    float some_thing = 4 [json_name="someThing"];
+    bool complete    = 5;
+    int64 snake_numb = 6;
+}

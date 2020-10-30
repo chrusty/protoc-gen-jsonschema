@@ -27,6 +27,7 @@ type Converter struct {
 	DisallowAdditionalProperties bool
 	DisallowBigIntsAsStrings     bool
 	PrefixSchemaFilesWithPackage bool
+	UseJSONFieldnamesOnly        bool
 	UseProtoAndJSONFieldnames    bool
 	logger                       *logrus.Logger
 	sourceInfo                   *sourceCodeInfo
@@ -73,6 +74,8 @@ func (c *Converter) parseGeneratorParameters(parameters string) {
 			c.DisallowAdditionalProperties = true
 		case "disallow_bigints_as_strings":
 			c.DisallowBigIntsAsStrings = true
+		case "json_fieldnames":
+			c.UseJSONFieldnamesOnly = true
 		case "prefix_schema_files_with_package":
 			c.PrefixSchemaFilesWithPackage = true
 		case "proto_and_json_fieldnames":

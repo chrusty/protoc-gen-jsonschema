@@ -37,6 +37,7 @@ samples:
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=disallow_bigints_as_strings:jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/SeveralMessages.proto || echo "No messages found (SeveralMessages.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=disallow_bigints_as_strings:jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/Timestamp.proto || echo "No messages found (Timestamp.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=all_fields_required:jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/PayloadMessage2.proto || echo "No messages found (PayloadMessage2.proto)"
+	@PATH=./bin:$$PATH; protoc --jsonschema_out=json_fieldnames:jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/JSONFields.proto || echo "No messages found (JSONFields.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/ArrayOfEnums.proto || echo "No messages found (SeveralMessages.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/Maps.proto || echo "No messages found (Maps.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/MessageWithComments.proto || echo "No messages found (MessageWithComments.proto)"
