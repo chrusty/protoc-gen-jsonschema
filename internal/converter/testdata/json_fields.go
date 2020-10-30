@@ -17,6 +17,16 @@ const JSONFields = `{
         },
         "complete": {
             "type": "boolean"
+        },
+        "snakeNumb": {
+            "oneOf": [
+                {
+                    "type": "integer"
+                },
+                {
+                    "type": "string"
+                }
+            ]
         }
     },
     "additionalProperties": true,
