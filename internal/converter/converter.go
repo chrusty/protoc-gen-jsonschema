@@ -229,6 +229,11 @@ func (c *Converter) convert(req *plugin.CodeGeneratorRequest) (*plugin.CodeGener
 			c.registerType(file.Package, msg)
 		}
 
+		for _, en := range file.GetEnumType() {
+			c.logger.WithField("enum_name", en.GetName()).WithField("package_name", file.GetPackage()).Debug("Loading an enum")
+			c.registerEnum(file.Package, en)
+		}
+
 		if _, ok := generateTargets[file.GetName()]; ok {
 			c.logger.WithField("filename", file.GetName()).Debug("Converting file")
 			converted, err := c.convertFile(file)
