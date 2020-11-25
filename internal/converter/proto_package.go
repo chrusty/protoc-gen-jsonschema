@@ -15,6 +15,21 @@ type ProtoPackage struct {
 	enums    map[string]*descriptor.EnumDescriptorProto
 }
 
+func newProtoPackage(parent *ProtoPackage, name string) *ProtoPackage {
+	pkgName := name
+	if parent != nil {
+		pkgName = parent.name + "." + name
+	}
+
+	return &ProtoPackage{
+		name:     pkgName,
+		parent:   parent,
+		children: make(map[string]*ProtoPackage),
+		types:    make(map[string]*descriptor.DescriptorProto),
+		enums:    make(map[string]*descriptor.EnumDescriptorProto),
+	}
+}
+
 func (c *Converter) lookupType(pkg *ProtoPackage, name string) (*descriptor.DescriptorProto, string, bool) {
 	if strings.HasPrefix(name, ".") {
 		return c.relativelyLookupType(globalPkg, name[1:])

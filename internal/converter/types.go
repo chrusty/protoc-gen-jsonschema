@@ -13,13 +13,7 @@ import (
 )
 
 var (
-	globalPkg = &ProtoPackage{
-		name:     "",
-		parent:   nil,
-		children: make(map[string]*ProtoPackage),
-		types:    make(map[string]*descriptor.DescriptorProto),
-		enums:    make(map[string]*descriptor.EnumDescriptorProto),
-	}
+	globalPkg = newProtoPackage(nil, "")
 
 	wellKnownTypes = map[string]bool{
 		"DoubleValue": true,
@@ -45,13 +39,7 @@ func (c *Converter) registerEnum(pkgName *string, enum *descriptor.EnumDescripto
 			}
 			child, ok := pkg.children[node]
 			if !ok {
-				child = &ProtoPackage{
-					name:     pkg.name + "." + node,
-					parent:   pkg,
-					children: make(map[string]*ProtoPackage),
-					types:    make(map[string]*descriptor.DescriptorProto),
-					enums:    make(map[string]*descriptor.EnumDescriptorProto),
-				}
+				child = newProtoPackage(pkg, node)
 				pkg.children[node] = child
 			}
 			pkg = child
@@ -70,13 +58,7 @@ func (c *Converter) registerType(pkgName *string, msg *descriptor.DescriptorProt
 			}
 			child, ok := pkg.children[node]
 			if !ok {
-				child = &ProtoPackage{
-					name:     pkg.name + "." + node,
-					parent:   pkg,
-					children: make(map[string]*ProtoPackage),
-					types:    make(map[string]*descriptor.DescriptorProto),
-					enums:    make(map[string]*descriptor.EnumDescriptorProto),
-				}
+				child = newProtoPackage(pkg, node)
 				pkg.children[node] = child
 			}
 			pkg = child
