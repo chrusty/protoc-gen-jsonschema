@@ -114,16 +114,44 @@ func (c *Converter) relativelyLookupEnum(pkg *ProtoPackage, name string) (*descr
 			found, pkgName, ok := c.relativelyLookupEnum(child, components[1])
 			return found, pkgName, ok
 		}
-		// if msg, ok := pkg.types[components[0]]; ok {
-		// 	found, ok := c.relativelyLookupNestedEnum(msg, components[1])
-		// 	return found, pkg.name, ok
-		// }
+		if msg, ok := pkg.types[components[0]]; ok {
+			found, ok := c.relativelyLookupNestedEnum(msg, components[1])
+			return found, pkg.name, ok
+		}
 		c.logger.WithField("component", components[0]).WithField("package_name", pkg.name).Info("No such package nor message in package")
 		return nil, "", false
 	default:
 		c.logger.Error("Failed to lookup type")
 		return nil, "", false
 	}
+}
+
+func (c *Converter) relativelyLookupNestedEnum(desc *descriptor.DescriptorProto, name string) (*descriptor.EnumDescriptorProto, bool) {
+	components := strings.Split(name, ".")
+
+	parent := desc
+
+	if len(components) > 1 {
+		// The enum is nested inside a potentially nested message definition.
+		msgComponents := strings.Join(components[0:len(components)-1], ".")
+		var found bool
+		parent, found = c.relativelyLookupNestedType(parent, msgComponents)
+		if !found {
+			return nil, false
+		}
+	}
+
+	// The enum is nested inside of a nested message. We need to dive down the
+	// tree to find the message the enum is nested in. Then we need to obtain the
+	// enum.
+	enumName := components[len(components)-1]
+	for _, enum := range parent.GetEnumType() {
+		if enum.GetName() == enumName {
+			return enum, true
+		}
+	}
+
+	return nil, false
 }
 
 func (c *Converter) relativelyLookupPackage(pkg *ProtoPackage, name string) (*ProtoPackage, bool) {
