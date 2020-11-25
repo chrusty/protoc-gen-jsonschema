@@ -391,29 +391,49 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 		schema.Type = ""
 		switch *msg.Name {
 		case "DoubleValue", "FloatValue":
-			schema.OneOf = []*jsonschema.Type{
-				{Type: gojsonschema.TYPE_NULL},
-				{Type: gojsonschema.TYPE_NUMBER},
+			if c.AllowNullValues {
+				schema.OneOf = []*jsonschema.Type{
+					{Type: gojsonschema.TYPE_NULL},
+					{Type: gojsonschema.TYPE_NUMBER},
+				}
+			} else {
+				schema.Type = gojsonschema.TYPE_NUMBER
 			}
 		case "Int32Value", "UInt32Value", "Int64Value", "UInt64Value":
-			schema.OneOf = []*jsonschema.Type{
-				{Type: gojsonschema.TYPE_NULL},
-				{Type: gojsonschema.TYPE_INTEGER},
+			if c.AllowNullValues {
+				schema.OneOf = []*jsonschema.Type{
+					{Type: gojsonschema.TYPE_NULL},
+					{Type: gojsonschema.TYPE_INTEGER},
+				}
+			} else {
+				schema.Type = gojsonschema.TYPE_INTEGER
 			}
 		case "BoolValue":
-			schema.OneOf = []*jsonschema.Type{
-				{Type: gojsonschema.TYPE_NULL},
-				{Type: gojsonschema.TYPE_BOOLEAN},
+			if c.AllowNullValues {
+				schema.OneOf = []*jsonschema.Type{
+					{Type: gojsonschema.TYPE_NULL},
+					{Type: gojsonschema.TYPE_BOOLEAN},
+				}
+			} else {
+				schema.Type = gojsonschema.TYPE_BOOLEAN
 			}
 		case "BytesValue", "StringValue":
-			schema.OneOf = []*jsonschema.Type{
-				{Type: gojsonschema.TYPE_NULL},
-				{Type: gojsonschema.TYPE_STRING},
+			if c.AllowNullValues {
+				schema.OneOf = []*jsonschema.Type{
+					{Type: gojsonschema.TYPE_NULL},
+					{Type: gojsonschema.TYPE_STRING},
+				}
+			} else {
+				schema.Type = gojsonschema.TYPE_STRING
 			}
 		case "Value":
-			schema.OneOf = []*jsonschema.Type{
-				{Type: gojsonschema.TYPE_NULL},
-				{Type: gojsonschema.TYPE_OBJECT},
+			if c.AllowNullValues {
+				schema.OneOf = []*jsonschema.Type{
+					{Type: gojsonschema.TYPE_NULL},
+					{Type: gojsonschema.TYPE_OBJECT},
+				}
+			} else {
+				schema.Type = gojsonschema.TYPE_OBJECT
 			}
 		}
 		return schema, nil
