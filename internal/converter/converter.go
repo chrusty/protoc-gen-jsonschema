@@ -135,6 +135,7 @@ func (c *Converter) convertFile(file *descriptor.FileDescriptorProto) ([]*plugin
 	if !genSpecificMessages && len(file.GetMessageType()) > 1 {
 		c.logger.WithField("schemas", len(file.GetMessageType())).WithField("proto_filename", protoFileName).Warn("protoc-gen-jsonschema will create multiple MESSAGE schemas from one proto file")
 	}
+
 	if len(file.GetEnumType()) > 1 {
 		c.logger.WithField("schemas", len(file.GetMessageType())).WithField("proto_filename", protoFileName).Warn("protoc-gen-jsonschema will create multiple ENUM schemas from one proto file")
 	}
@@ -172,8 +173,8 @@ func (c *Converter) convertFile(file *descriptor.FileDescriptorProto) ([]*plugin
 		if !ok {
 			return nil, fmt.Errorf("no such package found: %s", file.GetPackage())
 		}
-		for _, msg := range file.GetMessageType() {
 
+		for _, msg := range file.GetMessageType() {
 			// skip if we are only generating schema for specific messages
 			if genSpecificMessages && !contains(c.messageTargets, msg.GetName()) {
 				continue
@@ -227,6 +228,11 @@ func (c *Converter) convert(req *plugin.CodeGeneratorRequest) (*plugin.CodeGener
 		for _, msg := range file.GetMessageType() {
 			c.logger.WithField("msg_name", msg.GetName()).WithField("package_name", file.GetPackage()).Debug("Loading a message")
 			c.registerType(file.Package, msg)
+		}
+
+		for _, en := range file.GetEnumType() {
+			c.logger.WithField("enum_name", en.GetName()).WithField("package_name", file.GetPackage()).Debug("Loading an enum")
+			c.registerEnum(file.Package, en)
 		}
 
 		if _, ok := generateTargets[file.GetName()]; ok {

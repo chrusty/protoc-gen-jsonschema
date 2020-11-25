@@ -39,12 +39,15 @@ func TestGenerateJsonSchema(t *testing.T) {
 	sampleProtos := configureSampleProtos()
 
 	// Convert the protos, compare the results against the expected JSON-Schemas:
-	for _, sampleProto := range sampleProtos {
-		testConvertSampleProto(t, sampleProto)
+	for name, sampleProto := range sampleProtos {
+		t.Run(name, func(t *testing.T) {
+			testConvertSampleProto(t, sampleProto)
+		})
 	}
 }
 
 func testConvertSampleProto(t *testing.T, sampleProto sampleProto) {
+	t.Helper()
 
 	// Make a Logrus logger:
 	logger := logrus.New()
@@ -125,6 +128,24 @@ func configureSampleProtos() map[string]sampleProto {
 			FilesToGenerate:           []string{"ArrayOfPrimitives.proto"},
 			ProtoFileName:             "ArrayOfPrimitives.proto",
 			UseProtoAndJSONFieldNames: true,
+		},
+		"EnumNestedReference": {
+			AllowNullValues:    false,
+			ExpectedJSONSchema: []string{testdata.EnumNestedReference},
+			FilesToGenerate:    []string{"EnumNestedReference.proto"},
+			ProtoFileName:      "EnumNestedReference.proto",
+		},
+		"EnumWithMessage": {
+			AllowNullValues:    false,
+			ExpectedJSONSchema: []string{testdata.EnumWithMessage},
+			FilesToGenerate:    []string{"EnumWithMessage.proto"},
+			ProtoFileName:      "EnumWithMessage.proto",
+		},
+		"EnumImport": {
+			AllowNullValues:    false,
+			ExpectedJSONSchema: []string{testdata.EnumImport},
+			FilesToGenerate:    []string{"ImportEnum.proto"},
+			ProtoFileName:      "ImportEnum.proto",
 		},
 		"EnumCeption": {
 			AllowNullValues:    false,

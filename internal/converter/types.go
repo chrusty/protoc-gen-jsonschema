@@ -13,12 +13,7 @@ import (
 )
 
 var (
-	globalPkg = &ProtoPackage{
-		name:     "",
-		parent:   nil,
-		children: make(map[string]*ProtoPackage),
-		types:    make(map[string]*descriptor.DescriptorProto),
-	}
+	globalPkg = newProtoPackage(nil, "")
 
 	wellKnownTypes = map[string]bool{
 		"DoubleValue": true,
@@ -34,6 +29,25 @@ var (
 	}
 )
 
+func (c *Converter) registerEnum(pkgName *string, enum *descriptor.EnumDescriptorProto) {
+	pkg := globalPkg
+	if pkgName != nil {
+		for _, node := range strings.Split(*pkgName, ".") {
+			if pkg == globalPkg && node == "" {
+				// Skips leading "."
+				continue
+			}
+			child, ok := pkg.children[node]
+			if !ok {
+				child = newProtoPackage(pkg, node)
+				pkg.children[node] = child
+			}
+			pkg = child
+		}
+	}
+	pkg.enums[enum.GetName()] = enum
+}
+
 func (c *Converter) registerType(pkgName *string, msg *descriptor.DescriptorProto) {
 	pkg := globalPkg
 	if pkgName != nil {
@@ -44,12 +58,7 @@ func (c *Converter) registerType(pkgName *string, msg *descriptor.DescriptorProt
 			}
 			child, ok := pkg.children[node]
 			if !ok {
-				child = &ProtoPackage{
-					name:     pkg.name + "." + node,
-					parent:   pkg,
-					children: make(map[string]*ProtoPackage),
-					types:    make(map[string]*descriptor.DescriptorProto),
-				}
+				child = newProtoPackage(pkg, node)
 				pkg.children[node] = child
 			}
 			pkg = child
@@ -58,25 +67,8 @@ func (c *Converter) registerType(pkgName *string, msg *descriptor.DescriptorProt
 	pkg.types[msg.GetName()] = msg
 }
 
-func (c *Converter) relativelyLookupNestedType(desc *descriptor.DescriptorProto, name string) (*descriptor.DescriptorProto, bool) {
-	components := strings.Split(name, ".")
-componentLoop:
-	for _, component := range components {
-		for _, nested := range desc.GetNestedType() {
-			if nested.GetName() == component {
-				desc = nested
-				continue componentLoop
-			}
-		}
-		c.logger.WithField("component", component).WithField("description", desc.GetName()).Info("no such nested message")
-		return nil, false
-	}
-	return desc, true
-}
-
 // Convert a proto "field" (essentially a type-switch with some recursion):
 func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, msg *descriptor.DescriptorProto, duplicatedMessages map[*descriptor.DescriptorProto]string) (*jsonschema.Type, error) {
-
 	// Prepare a new jsonschema.Type for our eventual return value:
 	jsonSchemaType := &jsonschema.Type{}
 
@@ -143,21 +135,17 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: gojsonschema.TYPE_NULL})
 		}
 
-		// Go through all the enums we have, see if we can match any to this field by name:
-		for _, enumDescriptor := range msg.GetEnumType() {
+		// Go through all the enums we have, see if we can match any to this field.
+		fullEnumIdentifier := strings.TrimPrefix(desc.GetTypeName(), ".")
+		matchedEnum, _, ok := c.lookupEnum(curPkg, fullEnumIdentifier)
+		if !ok {
+			return nil, fmt.Errorf("unable to resolve enum type: %s", desc.GetType().String())
+		}
 
-			// Each one has several values:
-			for _, enumValue := range enumDescriptor.Value {
-
-				// Figure out the entire name of this field:
-				fullFieldName := fmt.Sprintf(".%v.%v", *msg.Name, *enumDescriptor.Name)
-
-				// If we find ENUM values for this field then put them into the JSONSchema list of allowed ENUM values:
-				if strings.HasSuffix(desc.GetTypeName(), fullFieldName) {
-					jsonSchemaType.Enum = append(jsonSchemaType.Enum, enumValue.Name)
-					jsonSchemaType.Enum = append(jsonSchemaType.Enum, enumValue.Number)
-				}
-			}
+		// We have found an enum, append its values.
+		for _, value := range matchedEnum.Value {
+			jsonSchemaType.Enum = append(jsonSchemaType.Enum, value.Name)
+			jsonSchemaType.Enum = append(jsonSchemaType.Enum, value.Number)
 		}
 
 	case descriptor.FieldDescriptorProto_TYPE_BOOL:
