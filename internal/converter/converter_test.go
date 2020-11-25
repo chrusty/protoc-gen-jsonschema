@@ -51,7 +51,7 @@ func testConvertSampleProto(t *testing.T, sampleProto sampleProto) {
 
 	// Make a Logrus logger:
 	logger := logrus.New()
-	logger.SetLevel(logrus.DebugLevel)
+	logger.SetLevel(logrus.ErrorLevel)
 	logger.SetOutput(os.Stderr)
 
 	// Use the logger to make a Converter:
