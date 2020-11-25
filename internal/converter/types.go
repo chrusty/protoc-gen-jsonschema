@@ -136,32 +136,16 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 		}
 
 		// Go through all the enums we have, see if we can match any to this field.
-
-		var matchedEnum *descriptor.EnumDescriptorProto
-		// Start with the package scope to capture standalone enums.
-		for _, enumDescriptor := range curPkg.enums {
-			if strings.HasSuffix(desc.GetTypeName(), *enumDescriptor.Name) {
-				matchedEnum = enumDescriptor
-			}
+		fullEnumIdentifier := strings.TrimPrefix(desc.GetTypeName(), ".")
+		matchedEnum, _, ok := c.lookupEnum(curPkg, fullEnumIdentifier)
+		if !ok {
+			return nil, fmt.Errorf("unable to resolve enum type: %s", desc.GetType().String())
 		}
 
-		// Continue with message scope, overwriting
-		for _, enumDescriptor := range msg.GetEnumType() {
-			// Figure out the entire name of this field:
-			fullFieldName := fmt.Sprintf(".%v.%v", *msg.Name, *enumDescriptor.Name)
-
-			// If we find ENUM values for this field then put them into the JSONSchema list of allowed ENUM values:
-			if strings.HasSuffix(desc.GetTypeName(), fullFieldName) {
-				matchedEnum = enumDescriptor
-			}
-		}
-
-		if matchedEnum != nil {
-			// We have found an enum, append its values.
-			for _, value := range matchedEnum.Value {
-				jsonSchemaType.Enum = append(jsonSchemaType.Enum, value.Name)
-				jsonSchemaType.Enum = append(jsonSchemaType.Enum, value.Number)
-			}
+		// We have found an enum, append its values.
+		for _, value := range matchedEnum.Value {
+			jsonSchemaType.Enum = append(jsonSchemaType.Enum, value.Name)
+			jsonSchemaType.Enum = append(jsonSchemaType.Enum, value.Number)
 		}
 
 	case descriptor.FieldDescriptorProto_TYPE_BOOL:
