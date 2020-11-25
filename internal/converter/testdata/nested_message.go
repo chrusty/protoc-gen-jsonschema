@@ -1,7 +1,7 @@
 package testdata
 
 const NestedMessage = `{
-  "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "properties": {
         "payload": {
             "properties": {
