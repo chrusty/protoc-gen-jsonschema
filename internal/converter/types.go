@@ -85,22 +85,6 @@ func (c *Converter) registerType(pkgName *string, msg *descriptor.DescriptorProt
 	pkg.types[msg.GetName()] = msg
 }
 
-func (c *Converter) relativelyLookupNestedType(desc *descriptor.DescriptorProto, name string) (*descriptor.DescriptorProto, bool) {
-	components := strings.Split(name, ".")
-componentLoop:
-	for _, component := range components {
-		for _, nested := range desc.GetNestedType() {
-			if nested.GetName() == component {
-				desc = nested
-				continue componentLoop
-			}
-		}
-		c.logger.WithField("component", component).WithField("description", desc.GetName()).Info("no such nested message")
-		return nil, false
-	}
-	return desc, true
-}
-
 // Convert a proto "field" (essentially a type-switch with some recursion):
 func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, msg *descriptor.DescriptorProto, duplicatedMessages map[*descriptor.DescriptorProto]string) (*jsonschema.Type, error) {
 	// Prepare a new jsonschema.Type for our eventual return value:

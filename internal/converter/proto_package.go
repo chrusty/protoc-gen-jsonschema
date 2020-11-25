@@ -68,6 +68,22 @@ func (c *Converter) relativelyLookupType(pkg *ProtoPackage, name string) (*descr
 	}
 }
 
+func (c *Converter) relativelyLookupNestedType(desc *descriptor.DescriptorProto, name string) (*descriptor.DescriptorProto, bool) {
+	components := strings.Split(name, ".")
+componentLoop:
+	for _, component := range components {
+		for _, nested := range desc.GetNestedType() {
+			if nested.GetName() == component {
+				desc = nested
+				continue componentLoop
+			}
+		}
+		c.logger.WithField("component", component).WithField("description", desc.GetName()).Info("no such nested message")
+		return nil, false
+	}
+	return desc, true
+}
+
 func (c *Converter) relativelyLookupEnum(pkg *ProtoPackage, name string) (*descriptor.EnumDescriptorProto, string, bool) {
 	components := strings.SplitN(name, ".", 2)
 	switch len(components) {
