@@ -274,7 +274,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			jsonSchemaType.Required = recursedJSONSchemaType.Required
 
 			// Build up the list of required fields:
-			if c.AllFieldsRequired {
+			if c.AllFieldsRequired && recursedJSONSchemaType.Properties != nil {
 				for _, property := range recursedJSONSchemaType.Properties.Keys() {
 					jsonSchemaType.Required = append(jsonSchemaType.Required, property)
 				}
