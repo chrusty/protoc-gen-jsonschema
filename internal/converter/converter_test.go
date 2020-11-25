@@ -126,6 +126,24 @@ func configureSampleProtos() map[string]sampleProto {
 			ProtoFileName:             "ArrayOfPrimitives.proto",
 			UseProtoAndJSONFieldNames: true,
 		},
+		"EnumNestedReference": {
+			AllowNullValues:    false,
+			ExpectedJSONSchema: []string{testdata.EnumNestedReference},
+			FilesToGenerate:    []string{"EnumNestedReference.proto"},
+			ProtoFileName:      "EnumNestedReference.proto",
+		},
+		"EnumWithMessage": {
+			AllowNullValues:    false,
+			ExpectedJSONSchema: []string{testdata.EnumWithMessage},
+			FilesToGenerate:    []string{"EnumWithMessage.proto"},
+			ProtoFileName:      "EnumWithMessage.proto",
+		},
+		"EnumImport": {
+			AllowNullValues:    false,
+			ExpectedJSONSchema: []string{testdata.EnumImport},
+			FilesToGenerate:    []string{"ImportEnum.proto"},
+			ProtoFileName:      "ImportEnum.proto",
+		},
 		"EnumCeption": {
 			AllowNullValues:    false,
 			ExpectedJSONSchema: []string{testdata.PayloadMessage, testdata.ImportedEnum, testdata.EnumCeption},
