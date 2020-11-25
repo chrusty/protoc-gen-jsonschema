@@ -39,16 +39,19 @@ func TestGenerateJsonSchema(t *testing.T) {
 	sampleProtos := configureSampleProtos()
 
 	// Convert the protos, compare the results against the expected JSON-Schemas:
-	for _, sampleProto := range sampleProtos {
-		testConvertSampleProto(t, sampleProto)
+	for name, sampleProto := range sampleProtos {
+		t.Run(name, func(t *testing.T) {
+			testConvertSampleProto(t, sampleProto)
+		})
 	}
 }
 
 func testConvertSampleProto(t *testing.T, sampleProto sampleProto) {
+	t.Helper()
 
 	// Make a Logrus logger:
 	logger := logrus.New()
-	logger.SetLevel(logrus.ErrorLevel)
+	logger.SetLevel(logrus.DebugLevel)
 	logger.SetOutput(os.Stderr)
 
 	// Use the logger to make a Converter:
