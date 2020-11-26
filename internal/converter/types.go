@@ -251,12 +251,20 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 				}
 			}
 
-		// Objects:
+		// Not maps, not arrays:
 		default:
+
+			// If we've got optional types then just take those:
 			if recursedJSONSchemaType.OneOf != nil {
 				return recursedJSONSchemaType, nil
 			}
 
+			// If we're not an object then set the type from whatever we recursed:
+			if recursedJSONSchemaType.Type != gojsonschema.TYPE_OBJECT {
+				jsonSchemaType.Type = recursedJSONSchemaType.Type
+			}
+
+			// Assume the attrbutes of the recursed value:
 			jsonSchemaType.Properties = recursedJSONSchemaType.Properties
 			jsonSchemaType.Ref = recursedJSONSchemaType.Ref
 			jsonSchemaType.Required = recursedJSONSchemaType.Required
@@ -386,37 +394,37 @@ func (c *Converter) recursiveFindDuplicatedNestedMessages(curPkg *ProtoPackage, 
 }
 
 func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descriptor.DescriptorProto, pkgName string, duplicatedMessages map[*descriptor.DescriptorProto]string, ignoreDuplicatedMessages bool) (*jsonschema.Type, error) {
+
+	// Handle google's well-known types:
 	if msg.Name != nil && wellKnownTypes[*msg.Name] && pkgName == ".google.protobuf" {
-		schema := &jsonschema.Type{}
-		schema.Type = ""
+		var schemaType string
 		switch *msg.Name {
 		case "DoubleValue", "FloatValue":
-			schema.OneOf = []*jsonschema.Type{
-				{Type: gojsonschema.TYPE_NULL},
-				{Type: gojsonschema.TYPE_NUMBER},
-			}
+			schemaType = gojsonschema.TYPE_NUMBER
 		case "Int32Value", "UInt32Value", "Int64Value", "UInt64Value":
-			schema.OneOf = []*jsonschema.Type{
-				{Type: gojsonschema.TYPE_NULL},
-				{Type: gojsonschema.TYPE_INTEGER},
-			}
+			schemaType = gojsonschema.TYPE_INTEGER
 		case "BoolValue":
-			schema.OneOf = []*jsonschema.Type{
-				{Type: gojsonschema.TYPE_NULL},
-				{Type: gojsonschema.TYPE_BOOLEAN},
-			}
+			schemaType = gojsonschema.TYPE_BOOLEAN
 		case "BytesValue", "StringValue":
-			schema.OneOf = []*jsonschema.Type{
-				{Type: gojsonschema.TYPE_NULL},
-				{Type: gojsonschema.TYPE_STRING},
-			}
+			schemaType = gojsonschema.TYPE_STRING
 		case "Value":
-			schema.OneOf = []*jsonschema.Type{
-				{Type: gojsonschema.TYPE_NULL},
-				{Type: gojsonschema.TYPE_OBJECT},
-			}
+			schemaType = gojsonschema.TYPE_OBJECT
 		}
-		return schema, nil
+
+		// If we're allowing nulls then prepare a OneOf:
+		if c.AllowNullValues {
+			return &jsonschema.Type{
+				OneOf: []*jsonschema.Type{
+					{Type: gojsonschema.TYPE_NULL},
+					{Type: schemaType},
+				},
+			}, nil
+		}
+
+		// Otherwise just return this simple type:
+		return &jsonschema.Type{
+			Type: schemaType,
+		}, nil
 	}
 
 	if refName, ok := duplicatedMessages[msg]; ok && !ignoreDuplicatedMessages {

@@ -4,25 +4,13 @@ const WellKnown = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "properties": {
         "string_value": {
-            "oneOf": [
-                {
-                    "type": "null"
-                },
-                {
-                    "type": "string"
-                }
-            ]
+            "additionalProperties": true,
+            "type": "string"
         },
         "map_of_integers": {
             "additionalProperties": {
-                "oneOf": [
-                    {
-                        "type": "null"
-                    },
-                    {
-                        "type": "integer"
-                    }
-                ]
+                "additionalProperties": true,
+                "type": "integer"
             },
             "type": "object"
         },
@@ -34,14 +22,7 @@ const WellKnown = `{
         },
         "list_of_integers": {
             "items": {
-                "oneOf": [
-                    {
-                        "type": "null"
-                    },
-                    {
-                        "type": "integer"
-                    }
-                ]
+                "type": "integer"
             },
             "type": "array"
         }
