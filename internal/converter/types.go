@@ -251,12 +251,20 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 				}
 			}
 
-		// Objects:
+		// Not maps, not arrays:
 		default:
+
+			// If we've got optional types then just take those:
 			if recursedJSONSchemaType.OneOf != nil {
 				return recursedJSONSchemaType, nil
 			}
 
+			// If we're not an object then set the type from whatever we recursed:
+			if recursedJSONSchemaType.Type != gojsonschema.TYPE_OBJECT {
+				jsonSchemaType.Type = recursedJSONSchemaType.Type
+			}
+
+			// Assume the attrbutes of the recursed value:
 			jsonSchemaType.Properties = recursedJSONSchemaType.Properties
 			jsonSchemaType.Ref = recursedJSONSchemaType.Ref
 			jsonSchemaType.Required = recursedJSONSchemaType.Required
