@@ -6,8 +6,7 @@ const (
     "properties": {
         "foo": {
             "$ref": "samples.Foo",
-            "additionalProperties": true,
-            "type": "object"
+            "additionalProperties": true
         }
     },
     "additionalProperties": true,
@@ -33,8 +32,7 @@ const (
                                     },
                                     "foo": {
                                         "$ref": "samples.Foo",
-                                        "additionalProperties": true,
-                                        "type": "object"
+                                        "additionalProperties": true
                                     }
                                 },
                                 "additionalProperties": true,
@@ -78,8 +76,7 @@ const (
                                     },
                                     "foo": {
                                         "$ref": "Foo",
-                                        "additionalProperties": true,
-                                        "type": "object"
+                                        "additionalProperties": true
                                     }
                                 },
                                 "additionalProperties": true,
@@ -166,8 +163,7 @@ const (
                                     },
                                     "baz": {
                                         "$ref": "Baz",
-                                        "additionalProperties": true,
-                                        "type": "object"
+                                        "additionalProperties": true
                                     }
                                 },
                                 "additionalProperties": true,

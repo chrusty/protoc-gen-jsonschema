@@ -36,8 +36,7 @@ const EnumCeption = `{
         },
         "payload": {
             "$ref": "samples.PayloadMessage",
-            "additionalProperties": true,
-            "type": "object"
+            "additionalProperties": true
         },
         "payloads": {
             "items": {
