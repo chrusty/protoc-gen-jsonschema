@@ -109,12 +109,17 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 		descriptor.FieldDescriptorProto_TYPE_FIXED64,
 		descriptor.FieldDescriptorProto_TYPE_SFIXED64,
 		descriptor.FieldDescriptorProto_TYPE_SINT64:
-		jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: gojsonschema.TYPE_INTEGER})
-		if !c.DisallowBigIntsAsStrings {
-			jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: gojsonschema.TYPE_STRING})
-		}
 		if c.AllowNullValues {
-			jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: gojsonschema.TYPE_NULL})
+			jsonSchemaType.OneOf = []*jsonschema.Type{
+				{Type: gojsonschema.TYPE_STRING},
+				{Type: gojsonschema.TYPE_NULL},
+			}
+		} else {
+			jsonSchemaType.Type = gojsonschema.TYPE_STRING
+		}
+
+		if c.DisallowBigIntsAsStrings {
+			jsonSchemaType.Type = gojsonschema.TYPE_INTEGER
 		}
 
 	case descriptor.FieldDescriptorProto_TYPE_STRING,
