@@ -181,14 +181,7 @@ const MessageKind12 = `{
                     "type": "boolean"
                 },
                 "baz": {
-                    "oneOf": [
-                        {
-                            "type": "integer"
-                        },
-                        {
-                            "type": "string"
-                        }
-                    ]
+                    "type": "string"
                 }
             },
             "additionalProperties": true,
