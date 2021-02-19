@@ -141,6 +141,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 		} else {
 			jsonSchemaType.Type = gojsonschema.TYPE_STRING
 			jsonSchemaType.Format = "binary"
+			jsonSchemaType.BinaryEncoding = "base64"
 		}
 
 	case descriptor.FieldDescriptorProto_TYPE_ENUM:
