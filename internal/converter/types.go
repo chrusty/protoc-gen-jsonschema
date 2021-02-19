@@ -136,7 +136,11 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 		if c.AllowNullValues {
 			jsonSchemaType.OneOf = []*jsonschema.Type{
 				{Type: gojsonschema.TYPE_NULL},
-				{Type: gojsonschema.TYPE_STRING},
+				{
+					Type:           gojsonschema.TYPE_STRING,
+					Format:         "binary",
+					BinaryEncoding: "base64",
+				},
 			}
 		} else {
 			jsonSchemaType.Type = gojsonschema.TYPE_STRING
