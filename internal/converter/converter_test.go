@@ -122,6 +122,11 @@ func configureSampleProtos() map[string]sampleProto {
 			FilesToGenerate:    []string{"ArrayOfPrimitives.proto"},
 			ProtoFileName:      "ArrayOfPrimitives.proto",
 		},
+		"BytesPayload": {
+			ExpectedJSONSchema: []string{testdata.BytesPayload},
+			FilesToGenerate:    []string{"BytesPayload.proto"},
+			ProtoFileName:      "BytesPayload.proto",
+		},
 		"ArrayOfPrimitivesDouble": {
 			AllowNullValues:           true,
 			ExpectedJSONSchema:        []string{testdata.ArrayOfPrimitivesDouble},

@@ -122,8 +122,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			jsonSchemaType.Type = gojsonschema.TYPE_INTEGER
 		}
 
-	case descriptor.FieldDescriptorProto_TYPE_STRING,
-		descriptor.FieldDescriptorProto_TYPE_BYTES:
+	case descriptor.FieldDescriptorProto_TYPE_STRING:
 		if c.AllowNullValues {
 			jsonSchemaType.OneOf = []*jsonschema.Type{
 				{Type: gojsonschema.TYPE_NULL},
@@ -131,6 +130,22 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			}
 		} else {
 			jsonSchemaType.Type = gojsonschema.TYPE_STRING
+		}
+
+	case descriptor.FieldDescriptorProto_TYPE_BYTES:
+		if c.AllowNullValues {
+			jsonSchemaType.OneOf = []*jsonschema.Type{
+				{Type: gojsonschema.TYPE_NULL},
+				{
+					Type:           gojsonschema.TYPE_STRING,
+					Format:         "binary",
+					BinaryEncoding: "base64",
+				},
+			}
+		} else {
+			jsonSchemaType.Type = gojsonschema.TYPE_STRING
+			jsonSchemaType.Format = "binary"
+			jsonSchemaType.BinaryEncoding = "base64"
 		}
 
 	case descriptor.FieldDescriptorProto_TYPE_ENUM:
