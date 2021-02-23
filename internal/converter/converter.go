@@ -133,11 +133,11 @@ func (c *Converter) convertFile(file *descriptor.FileDescriptorProto) ([]*plugin
 
 	// Warn about multiple messages / enums in files:
 	if !genSpecificMessages && len(file.GetMessageType()) > 1 {
-		c.logger.WithField("schemas", len(file.GetMessageType())).WithField("proto_filename", protoFileName).Warn("protoc-gen-jsonschema will create multiple MESSAGE schemas from one proto file")
+		c.logger.WithField("schemas", len(file.GetMessageType())).WithField("proto_filename", protoFileName).Debug("protoc-gen-jsonschema will create multiple MESSAGE schemas from one proto file")
 	}
 
 	if len(file.GetEnumType()) > 1 {
-		c.logger.WithField("schemas", len(file.GetMessageType())).WithField("proto_filename", protoFileName).Warn("protoc-gen-jsonschema will create multiple ENUM schemas from one proto file")
+		c.logger.WithField("schemas", len(file.GetMessageType())).WithField("proto_filename", protoFileName).Debug("protoc-gen-jsonschema will create multiple ENUM schemas from one proto file")
 	}
 
 	// Generate standalone ENUMs:
