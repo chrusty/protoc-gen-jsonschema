@@ -75,7 +75,7 @@ func (c *Converter) relativelyLookupType(pkg *ProtoPackage, name string) (*descr
 			found, ok := c.relativelyLookupNestedType(msg, components[1])
 			return found, pkg.name, ok
 		}
-		c.logger.WithField("component", components[0]).WithField("package_name", pkg.name).Info("No such package nor message in package")
+		c.logger.WithField("component", components[0]).WithField("package_name", pkg.name).Debug("No such package nor message in package")
 		return nil, "", false
 	default:
 		c.logger.Error("Failed to lookup type")
@@ -118,7 +118,7 @@ func (c *Converter) relativelyLookupEnum(pkg *ProtoPackage, name string) (*descr
 			found, ok := c.relativelyLookupNestedEnum(msg, components[1])
 			return found, pkg.name, ok
 		}
-		c.logger.WithField("component", components[0]).WithField("package_name", pkg.name).Info("No such package nor message in package")
+		c.logger.WithField("component", components[0]).WithField("package_name", pkg.name).Debug("No such package nor message in package")
 		return nil, "", false
 	default:
 		c.logger.Error("Failed to lookup type")
