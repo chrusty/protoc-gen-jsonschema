@@ -4,10 +4,19 @@
         "arg": {
             "oneOf": [
                 {
-                    "type": "null"
+                    "type": "array"
+                },
+                {
+                    "type": "boolean"
+                },
+                {
+                    "type": "number"
                 },
                 {
                     "type": "object"
+                },
+                {
+                    "type": "string"
                 }
             ]
         }

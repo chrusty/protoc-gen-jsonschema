@@ -417,34 +417,34 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 
 	// Handle google's well-known types:
 	if msg.Name != nil && wellKnownTypes[*msg.Name] && pkgName == ".google.protobuf" {
-		var schemaType string
+		var wellKnownSchema = new(jsonschema.Type)
 		switch *msg.Name {
 		case "DoubleValue", "FloatValue":
-			schemaType = gojsonschema.TYPE_NUMBER
+			wellKnownSchema.Type = gojsonschema.TYPE_NUMBER
 		case "Int32Value", "UInt32Value", "Int64Value", "UInt64Value":
-			schemaType = gojsonschema.TYPE_INTEGER
+			wellKnownSchema.Type = gojsonschema.TYPE_INTEGER
 		case "BoolValue":
-			schemaType = gojsonschema.TYPE_BOOLEAN
+			wellKnownSchema.Type = gojsonschema.TYPE_BOOLEAN
 		case "BytesValue", "StringValue":
-			schemaType = gojsonschema.TYPE_STRING
+			wellKnownSchema.Type = gojsonschema.TYPE_STRING
 		case "Value":
-			schemaType = gojsonschema.TYPE_OBJECT
+			wellKnownSchema.OneOf = []*jsonschema.Type{
+				{Type: gojsonschema.TYPE_ARRAY},
+				{Type: gojsonschema.TYPE_BOOLEAN},
+				{Type: gojsonschema.TYPE_NUMBER},
+				{Type: gojsonschema.TYPE_OBJECT},
+				{Type: gojsonschema.TYPE_STRING},
+			}
 		}
 
 		// If we're allowing nulls then prepare a OneOf:
 		if c.AllowNullValues {
-			return &jsonschema.Type{
-				OneOf: []*jsonschema.Type{
-					{Type: gojsonschema.TYPE_NULL},
-					{Type: schemaType},
-				},
-			}, nil
+			wellKnownSchema.OneOf = append(wellKnownSchema.OneOf, &jsonschema.Type{Type: gojsonschema.TYPE_NULL}, &jsonschema.Type{Type: wellKnownSchema.Type})
+			return wellKnownSchema, nil
 		}
 
 		// Otherwise just return this simple type:
-		return &jsonschema.Type{
-			Type: schemaType,
-		}, nil
+		return wellKnownSchema, nil
 	}
 
 	if refName, ok := duplicatedMessages[msg]; ok && !ignoreDuplicatedMessages {
