@@ -1,0 +1,17 @@
+syntax="proto3";
+package samples;
+
+message OneOf {
+	oneof choice {
+		Bar bar = 1;
+		Baz baz = 2;
+	}
+
+	message Bar {
+		int32 foo = 1;
+	}
+	
+	message Baz {
+		string foo = 1;
+	}
+}

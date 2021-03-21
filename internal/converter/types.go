@@ -491,6 +491,11 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 		}
 		c.logger.WithField("field_name", fieldDesc.GetName()).WithField("type", recursedJSONSchemaType.Type).Trace("Converted field")
 
+		// If this field is part of a OneOf declaration then build that here:
+		if fieldDesc.OneofIndex != nil {
+			jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Required: []string{fieldDesc.GetName()}})
+		}
+
 		// Figure out which field names we want to use:
 		switch {
 		case c.UseJSONFieldnamesOnly:
