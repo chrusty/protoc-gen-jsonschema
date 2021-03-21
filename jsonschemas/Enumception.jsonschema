@@ -34,8 +34,7 @@
         },
         "payload": {
             "$ref": "samples.PayloadMessage",
-            "additionalProperties": true,
-            "type": "object"
+            "additionalProperties": true
         },
         "payloads": {
             "items": {
@@ -45,6 +44,16 @@
             "type": "array"
         },
         "importedEnum": {
+            "enum": [
+                "VALUE_0",
+                0,
+                "VALUE_1",
+                1,
+                "VALUE_2",
+                2,
+                "VALUE_3",
+                3
+            ],
             "oneOf": [
                 {
                     "type": "string"

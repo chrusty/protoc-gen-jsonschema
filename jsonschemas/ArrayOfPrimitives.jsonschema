@@ -35,9 +35,6 @@
             "items": {
                 "oneOf": [
                     {
-                        "type": "integer"
-                    },
-                    {
                         "type": "string"
                     },
                     {
@@ -76,9 +73,6 @@
         },
         "big_number": {
             "oneOf": [
-                {
-                    "type": "integer"
-                },
                 {
                     "type": "string"
                 },
