@@ -285,6 +285,11 @@ func configureSampleProtos() map[string]sampleProto {
 			ProtoFileName:         "JSONFields.proto",
 			UseJSONFieldnamesOnly: true,
 		},
+		"OneOf": {
+			ExpectedJSONSchema: []string{testdata.OneOf},
+			FilesToGenerate:    []string{"OneOf.proto"},
+			ProtoFileName:      "OneOf.proto",
+		},
 	}
 }
 
