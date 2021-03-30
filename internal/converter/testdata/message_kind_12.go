@@ -7,7 +7,6 @@ const MessageKind12 = `{
             "type": "string"
         },
         "f": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"
@@ -114,24 +113,7 @@ const MessageKind12 = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "oneOf": [
-                {
-                    "required": [
-                        "kind2"
-                    ]
-                },
-                {
-                    "required": [
-                        "kind3"
-                    ]
-                },
-                {
-                    "required": [
-                        "kind4"
-                    ]
-                }
-            ]
+            "type": "object"
         },
         "kind5": {
             "properties": {
@@ -207,23 +189,6 @@ const MessageKind12 = `{
         }
     },
     "additionalProperties": true,
-    "type": "object",
-    "oneOf": [
-        {
-            "required": [
-                "kind5"
-            ]
-        },
-        {
-            "required": [
-                "kind6"
-            ]
-        },
-        {
-            "required": [
-                "kind7"
-            ]
-        }
-    ]
+    "type": "object"
 }
 `

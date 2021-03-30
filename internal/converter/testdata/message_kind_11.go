@@ -108,23 +108,6 @@ const MessageKind11 = `{
         }
     },
     "additionalProperties": true,
-    "type": "object",
-    "oneOf": [
-        {
-            "required": [
-                "kind2"
-            ]
-        },
-        {
-            "required": [
-                "kind3"
-            ]
-        },
-        {
-            "required": [
-                "kind4"
-            ]
-        }
-    ]
+    "type": "object"
 }
 `
