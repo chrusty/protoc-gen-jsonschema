@@ -81,7 +81,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 	switch desc.GetType() {
 	case descriptor.FieldDescriptorProto_TYPE_DOUBLE,
 		descriptor.FieldDescriptorProto_TYPE_FLOAT:
-		if c.AllowNullValues {
+		if c.Flags.AllowNullValues {
 			jsonSchemaType.OneOf = []*jsonschema.Type{
 				{Type: gojsonschema.TYPE_NULL},
 				{Type: gojsonschema.TYPE_NUMBER},
@@ -95,7 +95,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 		descriptor.FieldDescriptorProto_TYPE_FIXED32,
 		descriptor.FieldDescriptorProto_TYPE_SFIXED32,
 		descriptor.FieldDescriptorProto_TYPE_SINT32:
-		if c.AllowNullValues {
+		if c.Flags.AllowNullValues {
 			jsonSchemaType.OneOf = []*jsonschema.Type{
 				{Type: gojsonschema.TYPE_NULL},
 				{Type: gojsonschema.TYPE_INTEGER},
@@ -109,7 +109,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 		descriptor.FieldDescriptorProto_TYPE_FIXED64,
 		descriptor.FieldDescriptorProto_TYPE_SFIXED64,
 		descriptor.FieldDescriptorProto_TYPE_SINT64:
-		if c.AllowNullValues {
+		if c.Flags.AllowNullValues {
 			jsonSchemaType.OneOf = []*jsonschema.Type{
 				{Type: gojsonschema.TYPE_STRING},
 				{Type: gojsonschema.TYPE_NULL},
@@ -118,12 +118,12 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			jsonSchemaType.Type = gojsonschema.TYPE_STRING
 		}
 
-		if c.DisallowBigIntsAsStrings {
+		if c.Flags.DisallowBigIntsAsStrings {
 			jsonSchemaType.Type = gojsonschema.TYPE_INTEGER
 		}
 
 	case descriptor.FieldDescriptorProto_TYPE_STRING:
-		if c.AllowNullValues {
+		if c.Flags.AllowNullValues {
 			jsonSchemaType.OneOf = []*jsonschema.Type{
 				{Type: gojsonschema.TYPE_NULL},
 				{Type: gojsonschema.TYPE_STRING},
@@ -133,7 +133,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 		}
 
 	case descriptor.FieldDescriptorProto_TYPE_BYTES:
-		if c.AllowNullValues {
+		if c.Flags.AllowNullValues {
 			jsonSchemaType.OneOf = []*jsonschema.Type{
 				{Type: gojsonschema.TYPE_NULL},
 				{
@@ -151,7 +151,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 	case descriptor.FieldDescriptorProto_TYPE_ENUM:
 		jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: gojsonschema.TYPE_STRING})
 		jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: gojsonschema.TYPE_INTEGER})
-		if c.AllowNullValues {
+		if c.Flags.AllowNullValues {
 			jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: gojsonschema.TYPE_NULL})
 		}
 
@@ -169,7 +169,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 		}
 
 	case descriptor.FieldDescriptorProto_TYPE_BOOL:
-		if c.AllowNullValues {
+		if c.Flags.AllowNullValues {
 			jsonSchemaType.OneOf = []*jsonschema.Type{
 				{Type: gojsonschema.TYPE_NULL},
 				{Type: gojsonschema.TYPE_BOOLEAN},
@@ -210,7 +210,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			jsonSchemaType.Items.OneOf = jsonSchemaType.OneOf
 		}
 
-		if c.AllowNullValues {
+		if c.Flags.AllowNullValues {
 			jsonSchemaType.OneOf = []*jsonschema.Type{
 				{Type: gojsonschema.TYPE_NULL},
 				{Type: gojsonschema.TYPE_ARRAY},
@@ -265,7 +265,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			jsonSchemaType.Type = gojsonschema.TYPE_ARRAY
 
 			// Build up the list of required fields:
-			if c.AllFieldsRequired && recursedJSONSchemaType.Properties != nil {
+			if c.Flags.AllFieldsRequired && recursedJSONSchemaType.Properties != nil {
 				for _, property := range recursedJSONSchemaType.Properties.Keys() {
 					jsonSchemaType.Items.Required = append(jsonSchemaType.Items.Required, property)
 				}
@@ -290,7 +290,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			jsonSchemaType.Required = recursedJSONSchemaType.Required
 
 			// Build up the list of required fields:
-			if c.AllFieldsRequired && recursedJSONSchemaType.Properties != nil {
+			if c.Flags.AllFieldsRequired && recursedJSONSchemaType.Properties != nil {
 				for _, property := range recursedJSONSchemaType.Properties.Keys() {
 					jsonSchemaType.Required = append(jsonSchemaType.Required, property)
 				}
@@ -298,7 +298,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 		}
 
 		// Optionally allow NULL values:
-		if c.AllowNullValues {
+		if c.Flags.AllowNullValues {
 			jsonSchemaType.OneOf = []*jsonschema.Type{
 				{Type: gojsonschema.TYPE_NULL},
 				{Type: jsonSchemaType.Type},
@@ -350,7 +350,7 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.Des
 
 	// Look for required fields (either by proto2 required flag, or the AllFieldsRequired option):
 	for _, fieldDesc := range msg.GetField() {
-		if c.AllFieldsRequired || fieldDesc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REQUIRED {
+		if c.Flags.AllFieldsRequired || fieldDesc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REQUIRED {
 			newJSONSchema.Required = append(newJSONSchema.Required, fieldDesc.GetName())
 		}
 	}
@@ -438,7 +438,7 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 		}
 
 		// If we're allowing nulls then prepare a OneOf:
-		if c.AllowNullValues {
+		if c.Flags.AllowNullValues {
 			wellKnownSchema.OneOf = append(wellKnownSchema.OneOf, &jsonschema.Type{Type: gojsonschema.TYPE_NULL}, &jsonschema.Type{Type: wellKnownSchema.Type})
 			return wellKnownSchema, nil
 		}
@@ -466,7 +466,7 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 	}
 
 	// Optionally allow NULL values:
-	if c.AllowNullValues {
+	if c.Flags.AllowNullValues {
 		jsonSchemaType.OneOf = []*jsonschema.Type{
 			{Type: gojsonschema.TYPE_NULL},
 			{Type: gojsonschema.TYPE_OBJECT},
@@ -476,7 +476,7 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 	}
 
 	// disallowAdditionalProperties will prevent validation where extra fields are found (outside of the schema):
-	if c.DisallowAdditionalProperties {
+	if c.Flags.DisallowAdditionalProperties {
 		jsonSchemaType.AdditionalProperties = []byte("false")
 	} else {
 		jsonSchemaType.AdditionalProperties = []byte("true")
@@ -492,15 +492,15 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 		c.logger.WithField("field_name", fieldDesc.GetName()).WithField("type", recursedJSONSchemaType.Type).Trace("Converted field")
 
 		// If this field is part of a OneOf declaration then build that here:
-		if fieldDesc.OneofIndex != nil {
+		if c.Flags.EnforceOneOf && fieldDesc.OneofIndex != nil {
 			jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Required: []string{fieldDesc.GetName()}})
 		}
 
 		// Figure out which field names we want to use:
 		switch {
-		case c.UseJSONFieldnamesOnly:
+		case c.Flags.UseJSONFieldnamesOnly:
 			jsonSchemaType.Properties.Set(fieldDesc.GetJsonName(), recursedJSONSchemaType)
-		case c.UseProtoAndJSONFieldnames:
+		case c.Flags.UseProtoAndJSONFieldNames:
 			jsonSchemaType.Properties.Set(fieldDesc.GetName(), recursedJSONSchemaType)
 			jsonSchemaType.Properties.Set(fieldDesc.GetJsonName(), recursedJSONSchemaType)
 		default:

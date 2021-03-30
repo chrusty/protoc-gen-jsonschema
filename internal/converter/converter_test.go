@@ -22,15 +22,11 @@ const (
 )
 
 type sampleProto struct {
-	AllFieldsRequired            bool
-	AllowNullValues              bool
-	ExpectedJSONSchema           []string
-	FilesToGenerate              []string
-	PrefixSchemaFilesWithPackage bool
-	ProtoFileName                string
-	UseJSONFieldnamesOnly        bool
-	UseProtoAndJSONFieldNames    bool
-	TargetedMessages             []string
+	Flags              ConverterFlags
+	ExpectedJSONSchema []string
+	FilesToGenerate    []string
+	ProtoFileName      string
+	TargetedMessages   []string
 }
 
 func TestGenerateJsonSchema(t *testing.T) {
@@ -56,11 +52,7 @@ func testConvertSampleProto(t *testing.T, sampleProto sampleProto) {
 
 	// Use the logger to make a Converter:
 	protoConverter := New(logger)
-	protoConverter.AllFieldsRequired = sampleProto.AllFieldsRequired
-	protoConverter.AllowNullValues = sampleProto.AllowNullValues
-	protoConverter.UseJSONFieldnamesOnly = sampleProto.UseJSONFieldnamesOnly
-	protoConverter.UseProtoAndJSONFieldnames = sampleProto.UseProtoAndJSONFieldNames
-	protoConverter.PrefixSchemaFilesWithPackage = sampleProto.PrefixSchemaFilesWithPackage
+	protoConverter.Flags = sampleProto.Flags
 
 	// Open the sample proto file:
 	sampleProtoFileName := fmt.Sprintf("%v/%v", sampleProtoDirectory, sampleProto.ProtoFileName)
@@ -95,7 +87,7 @@ func testConvertSampleProto(t *testing.T, sampleProto sampleProto) {
 	}
 
 	// Check for the correct prefix:
-	if protoConverter.PrefixSchemaFilesWithPackage {
+	if protoConverter.Flags.PrefixSchemaFilesWithPackage {
 		assert.Contains(t, response.File[0].GetName(), "samples")
 	} else {
 		assert.NotContains(t, response.File[0].GetName(), "samples")
@@ -105,19 +97,18 @@ func testConvertSampleProto(t *testing.T, sampleProto sampleProto) {
 func configureSampleProtos() map[string]sampleProto {
 	return map[string]sampleProto{
 		"ArrayOfMessages": {
-			AllowNullValues:    false,
 			ExpectedJSONSchema: []string{testdata.PayloadMessage, testdata.ArrayOfMessages},
 			FilesToGenerate:    []string{"ArrayOfMessages.proto", "PayloadMessage.proto"},
 			ProtoFileName:      "ArrayOfMessages.proto",
 		},
 		"ArrayOfObjects": {
-			AllowNullValues:    true,
+			Flags:              ConverterFlags{AllowNullValues: true},
 			ExpectedJSONSchema: []string{testdata.ArrayOfObjects},
 			FilesToGenerate:    []string{"ArrayOfObjects.proto"},
 			ProtoFileName:      "ArrayOfObjects.proto",
 		},
 		"ArrayOfPrimitives": {
-			AllowNullValues:    true,
+			Flags:              ConverterFlags{AllowNullValues: true},
 			ExpectedJSONSchema: []string{testdata.ArrayOfPrimitives},
 			FilesToGenerate:    []string{"ArrayOfPrimitives.proto"},
 			ProtoFileName:      "ArrayOfPrimitives.proto",
@@ -128,86 +119,75 @@ func configureSampleProtos() map[string]sampleProto {
 			ProtoFileName:      "BytesPayload.proto",
 		},
 		"ArrayOfPrimitivesDouble": {
-			AllowNullValues:           true,
-			ExpectedJSONSchema:        []string{testdata.ArrayOfPrimitivesDouble},
-			FilesToGenerate:           []string{"ArrayOfPrimitives.proto"},
-			ProtoFileName:             "ArrayOfPrimitives.proto",
-			UseProtoAndJSONFieldNames: true,
+			Flags: ConverterFlags{
+				AllowNullValues:           true,
+				UseProtoAndJSONFieldNames: true,
+			},
+			ExpectedJSONSchema: []string{testdata.ArrayOfPrimitivesDouble},
+			FilesToGenerate:    []string{"ArrayOfPrimitives.proto"},
+			ProtoFileName:      "ArrayOfPrimitives.proto",
 		},
 		"EnumNestedReference": {
-			AllowNullValues:    false,
 			ExpectedJSONSchema: []string{testdata.EnumNestedReference},
 			FilesToGenerate:    []string{"EnumNestedReference.proto"},
 			ProtoFileName:      "EnumNestedReference.proto",
 		},
 		"EnumWithMessage": {
-			AllowNullValues:    false,
 			ExpectedJSONSchema: []string{testdata.EnumWithMessage},
 			FilesToGenerate:    []string{"EnumWithMessage.proto"},
 			ProtoFileName:      "EnumWithMessage.proto",
 		},
 		"EnumImport": {
-			AllowNullValues:    false,
 			ExpectedJSONSchema: []string{testdata.EnumImport},
 			FilesToGenerate:    []string{"ImportEnum.proto"},
 			ProtoFileName:      "ImportEnum.proto",
 		},
 		"EnumCeption": {
-			AllowNullValues:    false,
 			ExpectedJSONSchema: []string{testdata.PayloadMessage, testdata.ImportedEnum, testdata.EnumCeption},
 			FilesToGenerate:    []string{"Enumception.proto", "PayloadMessage.proto", "ImportedEnum.proto"},
 			ProtoFileName:      "Enumception.proto",
 		},
 		"ImportedEnum": {
-			AllowNullValues:    false,
 			ExpectedJSONSchema: []string{testdata.ImportedEnum},
 			FilesToGenerate:    []string{"ImportedEnum.proto"},
 			ProtoFileName:      "ImportedEnum.proto",
 		},
 		"NestedMessage": {
-			AllowNullValues:    false,
 			ExpectedJSONSchema: []string{testdata.PayloadMessage, testdata.NestedMessage},
 			FilesToGenerate:    []string{"NestedMessage.proto", "PayloadMessage.proto"},
 			ProtoFileName:      "NestedMessage.proto",
 		},
 		"NestedObject": {
-			AllowNullValues:    false,
 			ExpectedJSONSchema: []string{testdata.NestedObject},
 			FilesToGenerate:    []string{"NestedObject.proto"},
 			ProtoFileName:      "NestedObject.proto",
 		},
 		"PayloadMessage": {
-			AllowNullValues:    false,
 			ExpectedJSONSchema: []string{testdata.PayloadMessage},
 			FilesToGenerate:    []string{"PayloadMessage.proto"},
 			ProtoFileName:      "PayloadMessage.proto",
 		},
 		"SeveralEnums": {
-			AllowNullValues:    false,
 			ExpectedJSONSchema: []string{testdata.FirstEnum, testdata.SecondEnum},
 			FilesToGenerate:    []string{"SeveralEnums.proto"},
 			ProtoFileName:      "SeveralEnums.proto",
 		},
 		"SeveralMessages": {
-			AllowNullValues:    false,
 			ExpectedJSONSchema: []string{testdata.FirstMessage, testdata.SecondMessage},
 			FilesToGenerate:    []string{"SeveralMessages.proto"},
 			ProtoFileName:      "SeveralMessages.proto",
 		},
 		"ArrayOfEnums": {
-			AllowNullValues:    false,
 			ExpectedJSONSchema: []string{testdata.ArrayOfEnums},
 			FilesToGenerate:    []string{"ArrayOfEnums.proto"},
 			ProtoFileName:      "ArrayOfEnums.proto",
 		},
 		"Maps": {
-			AllowNullValues:    false,
 			ExpectedJSONSchema: []string{testdata.Maps},
 			FilesToGenerate:    []string{"Maps.proto"},
 			ProtoFileName:      "Maps.proto",
 		},
 		"Comments": {
-			AllowNullValues:    false,
 			ExpectedJSONSchema: []string{testdata.MessageWithComments},
 			FilesToGenerate:    []string{"MessageWithComments.proto"},
 			ProtoFileName:      "MessageWithComments.proto",
@@ -238,10 +218,10 @@ func configureSampleProtos() map[string]sampleProto {
 			ProtoFileName:      "NoPackage.proto",
 		},
 		"PackagePrefix": {
-			ExpectedJSONSchema:           []string{testdata.Timestamp},
-			FilesToGenerate:              []string{"Timestamp.proto"},
-			ProtoFileName:                "Timestamp.proto",
-			PrefixSchemaFilesWithPackage: true,
+			Flags:              ConverterFlags{PrefixSchemaFilesWithPackage: true},
+			ExpectedJSONSchema: []string{testdata.Timestamp},
+			FilesToGenerate:    []string{"Timestamp.proto"},
+			ProtoFileName:      "Timestamp.proto",
 		},
 		"Proto2Required": {
 			ExpectedJSONSchema: []string{testdata.Proto2Required},
@@ -249,21 +229,18 @@ func configureSampleProtos() map[string]sampleProto {
 			ProtoFileName:      "Proto2Required.proto",
 		},
 		"AllRequired": {
-			AllFieldsRequired:  true,
-			AllowNullValues:    false,
+			Flags:              ConverterFlags{AllFieldsRequired: true},
 			ExpectedJSONSchema: []string{testdata.PayloadMessage2},
 			FilesToGenerate:    []string{"PayloadMessage2.proto"},
 			ProtoFileName:      "PayloadMessage2.proto",
 		},
 		"Proto2NestedMessage": {
-			AllowNullValues:    false,
 			ExpectedJSONSchema: []string{testdata.Proto2PayloadMessage, testdata.Proto2NestedMessage},
 			FilesToGenerate:    []string{"Proto2PayloadMessage.proto", "Proto2NestedMessage.proto"},
 			ProtoFileName:      "Proto2NestedMessage.proto",
 		},
 		"Proto2NestedObject": {
-			AllFieldsRequired:  true,
-			AllowNullValues:    false,
+			Flags:              ConverterFlags{AllFieldsRequired: true},
 			ExpectedJSONSchema: []string{testdata.Proto2NestedObject},
 			FilesToGenerate:    []string{"Proto2NestedObject.proto"},
 			ProtoFileName:      "Proto2NestedObject.proto",
@@ -280,12 +257,13 @@ func configureSampleProtos() map[string]sampleProto {
 			ProtoFileName:      "GoogleValue.proto",
 		},
 		"JSONFields": {
-			ExpectedJSONSchema:    []string{testdata.JSONFields},
-			FilesToGenerate:       []string{"JSONFields.proto"},
-			ProtoFileName:         "JSONFields.proto",
-			UseJSONFieldnamesOnly: true,
+			Flags:              ConverterFlags{UseJSONFieldnamesOnly: true},
+			ExpectedJSONSchema: []string{testdata.JSONFields},
+			FilesToGenerate:    []string{"JSONFields.proto"},
+			ProtoFileName:      "JSONFields.proto",
 		},
 		"OneOf": {
+			Flags:              ConverterFlags{EnforceOneOf: true},
 			ExpectedJSONSchema: []string{testdata.OneOf},
 			FilesToGenerate:    []string{"OneOf.proto"},
 			ProtoFileName:      "OneOf.proto",
