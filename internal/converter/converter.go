@@ -80,6 +80,8 @@ func (c *Converter) parseGeneratorParameters(parameters string) {
 			c.Flags.DisallowAdditionalProperties = true
 		case "disallow_bigints_as_strings":
 			c.Flags.DisallowBigIntsAsStrings = true
+		case "enforce_oneof":
+			c.Flags.EnforceOneOf = true
 		case "json_fieldnames":
 			c.Flags.UseJSONFieldnamesOnly = true
 		case "prefix_schema_files_with_package":
