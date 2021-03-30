@@ -22,16 +22,22 @@ const (
 
 // Converter is everything you need to convert protos to JSONSchemas:
 type Converter struct {
+	Flags          ConverterFlags
+	logger         *logrus.Logger
+	sourceInfo     *sourceCodeInfo
+	messageTargets []string
+}
+
+// ConverterFlags control the behaviour of the converter:
+type ConverterFlags struct {
 	AllFieldsRequired            bool
 	AllowNullValues              bool
 	DisallowAdditionalProperties bool
 	DisallowBigIntsAsStrings     bool
+	EnforceOneOf                 bool
 	PrefixSchemaFilesWithPackage bool
 	UseJSONFieldnamesOnly        bool
-	UseProtoAndJSONFieldnames    bool
-	logger                       *logrus.Logger
-	sourceInfo                   *sourceCodeInfo
-	messageTargets               []string
+	UseProtoAndJSONFieldNames    bool
 }
 
 // New returns a configured *Converter:
@@ -65,21 +71,21 @@ func (c *Converter) parseGeneratorParameters(parameters string) {
 	for _, parameter := range strings.Split(parameters, ",") {
 		switch parameter {
 		case "all_fields_required":
-			c.AllFieldsRequired = true
+			c.Flags.AllFieldsRequired = true
 		case "allow_null_values":
-			c.AllowNullValues = true
+			c.Flags.AllowNullValues = true
 		case "debug":
 			c.logger.SetLevel(logrus.DebugLevel)
 		case "disallow_additional_properties":
-			c.DisallowAdditionalProperties = true
+			c.Flags.DisallowAdditionalProperties = true
 		case "disallow_bigints_as_strings":
-			c.DisallowBigIntsAsStrings = true
+			c.Flags.DisallowBigIntsAsStrings = true
 		case "json_fieldnames":
-			c.UseJSONFieldnamesOnly = true
+			c.Flags.UseJSONFieldnamesOnly = true
 		case "prefix_schema_files_with_package":
-			c.PrefixSchemaFilesWithPackage = true
+			c.Flags.PrefixSchemaFilesWithPackage = true
 		case "proto_and_json_fieldnames":
-			c.UseProtoAndJSONFieldnames = true
+			c.Flags.UseProtoAndJSONFieldNames = true
 		}
 
 		// look for specific message targets
@@ -249,7 +255,7 @@ func (c *Converter) convert(req *plugin.CodeGeneratorRequest) (*plugin.CodeGener
 }
 
 func (c *Converter) generateSchemaFilename(file *descriptor.FileDescriptorProto, protoName string) string {
-	if c.PrefixSchemaFilesWithPackage {
+	if c.Flags.PrefixSchemaFilesWithPackage {
 		return fmt.Sprintf("%s/%s.jsonschema", file.GetPackage(), protoName)
 	}
 	return fmt.Sprintf("%s.jsonschema", protoName)

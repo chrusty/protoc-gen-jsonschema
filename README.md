@@ -39,6 +39,7 @@ protoc \ # The protobuf compiler
 |`debug`| Enable debug logging |
 |`disallow_additional_properties`| Disallow additional properties in schema |
 |`disallow_bigints_as_strings`| Disallow big integers as strings |
+|`enforce_oneof` | Interpret Proto "oneOf" clauses |
 |`json_fieldnames` | Use JSON field names only |
 |`prefix_schema_files_with_package`| Prefix the output filename with package |
 |`proto_and_json_fieldnames`| Use proto and JSON field names |
