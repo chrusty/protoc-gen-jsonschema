@@ -438,7 +438,6 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 			}
 		case "Duration":
 			wellKnownSchema.Type = gojsonschema.TYPE_STRING
-			// wellKnownSchema.Properties = nil
 		}
 
 		// If we're allowing nulls then prepare a OneOf:
