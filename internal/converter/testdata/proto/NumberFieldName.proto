@@ -1,0 +1,7 @@
+syntax = "proto3";
+package samples;
+
+message NumberField {
+    string crc32c    = 1;
+    string timestamp = 2;
+}
