@@ -25,6 +25,10 @@ const WellKnown = `{
                 "type": "integer"
             },
             "type": "array"
+        },
+        "duration": {
+            "additionalProperties": true,
+            "type": "string"
         }
     },
     "additionalProperties": true,

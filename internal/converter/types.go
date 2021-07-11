@@ -26,6 +26,7 @@ var (
 		"StringValue": true,
 		"BytesValue":  true,
 		"Value":       true,
+		"Duration":    true,
 	}
 )
 
@@ -435,6 +436,8 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 				{Type: gojsonschema.TYPE_OBJECT},
 				{Type: gojsonschema.TYPE_STRING},
 			}
+		case "Duration":
+			wellKnownSchema.Type = gojsonschema.TYPE_STRING
 		}
 
 		// If we're allowing nulls then prepare a OneOf:
