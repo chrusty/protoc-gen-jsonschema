@@ -181,6 +181,10 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 
 	case descriptor.FieldDescriptorProto_TYPE_GROUP, descriptor.FieldDescriptorProto_TYPE_MESSAGE:
 		switch desc.GetTypeName() {
+		case ".google.protobuf.Duration":
+			jsonSchemaType.Type = gojsonschema.TYPE_STRING
+			jsonSchemaType.Format = "regex"
+			jsonSchemaType.Pattern = `^([0-9]+\.?[0-9]*|\.[0-9]+)(ns|ms|s|m|h|d)$`
 		case ".google.protobuf.Timestamp":
 			jsonSchemaType.Type = gojsonschema.TYPE_STRING
 			jsonSchemaType.Format = "date-time"

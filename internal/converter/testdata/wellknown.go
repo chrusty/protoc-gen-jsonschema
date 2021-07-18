@@ -28,9 +28,10 @@ const WellKnown = `{
             "type": "array"
         },
         "duration": {
-            "additionalProperties": true,
+            "pattern": "^([0-9]+\\.?[0-9]*|\\.[0-9]+)(ns|ms|s|m|h|d)$",
             "type": "string",
-            "description": "This is a duration:"
+            "description": "This is a duration:",
+            "format": "regex"
         }
     },
     "additionalProperties": true,
