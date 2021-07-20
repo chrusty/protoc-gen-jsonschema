@@ -416,20 +416,27 @@ func (c *Converter) recursiveFindDuplicatedNestedMessages(curPkg *ProtoPackage, 
 
 func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descriptor.DescriptorProto, pkgName string, duplicatedMessages map[*descriptor.DescriptorProto]string, ignoreDuplicatedMessages bool) (*jsonschema.Type, error) {
 
+	// Prepare a new jsonschema:
+	jsonSchemaType := new(jsonschema.Type)
+
+	// Generate a description from src comments (if available)
+	if src := c.sourceInfo.GetMessage(msg); src != nil {
+		jsonSchemaType.Description = formatDescription(src)
+	}
+
 	// Handle google's well-known types:
 	if msg.Name != nil && wellKnownTypes[*msg.Name] && pkgName == ".google.protobuf" {
-		var wellKnownSchema = new(jsonschema.Type)
 		switch *msg.Name {
 		case "DoubleValue", "FloatValue":
-			wellKnownSchema.Type = gojsonschema.TYPE_NUMBER
+			jsonSchemaType.Type = gojsonschema.TYPE_NUMBER
 		case "Int32Value", "UInt32Value", "Int64Value", "UInt64Value":
-			wellKnownSchema.Type = gojsonschema.TYPE_INTEGER
+			jsonSchemaType.Type = gojsonschema.TYPE_INTEGER
 		case "BoolValue":
-			wellKnownSchema.Type = gojsonschema.TYPE_BOOLEAN
+			jsonSchemaType.Type = gojsonschema.TYPE_BOOLEAN
 		case "BytesValue", "StringValue":
-			wellKnownSchema.Type = gojsonschema.TYPE_STRING
+			jsonSchemaType.Type = gojsonschema.TYPE_STRING
 		case "Value":
-			wellKnownSchema.OneOf = []*jsonschema.Type{
+			jsonSchemaType.OneOf = []*jsonschema.Type{
 				{Type: gojsonschema.TYPE_ARRAY},
 				{Type: gojsonschema.TYPE_BOOLEAN},
 				{Type: gojsonschema.TYPE_NUMBER},
@@ -437,35 +444,28 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 				{Type: gojsonschema.TYPE_STRING},
 			}
 		case "Duration":
-			wellKnownSchema.Type = gojsonschema.TYPE_STRING
+			jsonSchemaType.Type = gojsonschema.TYPE_STRING
 		}
 
 		// If we're allowing nulls then prepare a OneOf:
 		if c.Flags.AllowNullValues {
-			wellKnownSchema.OneOf = append(wellKnownSchema.OneOf, &jsonschema.Type{Type: gojsonschema.TYPE_NULL}, &jsonschema.Type{Type: wellKnownSchema.Type})
-			return wellKnownSchema, nil
+			jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: gojsonschema.TYPE_NULL}, &jsonschema.Type{Type: jsonSchemaType.Type})
+			return jsonSchemaType, nil
 		}
 
 		// Otherwise just return this simple type:
-		return wellKnownSchema, nil
+		return jsonSchemaType, nil
 	}
+
+	// Set defaults:
+	jsonSchemaType.Properties = orderedmap.New()
+	jsonSchemaType.Version = jsonschema.Version
 
 	if refName, ok := duplicatedMessages[msg]; ok && !ignoreDuplicatedMessages {
 		return &jsonschema.Type{
 			Version: jsonschema.Version,
 			Ref:     refName,
 		}, nil
-	}
-
-	// Prepare a new jsonschema:
-	jsonSchemaType := &jsonschema.Type{
-		Properties: orderedmap.New(),
-		Version:    jsonschema.Version,
-	}
-
-	// Generate a description from src comments (if available)
-	if src := c.sourceInfo.GetMessage(msg); src != nil {
-		jsonSchemaType.Description = formatDescription(src)
 	}
 
 	// Optionally allow NULL values:
@@ -537,6 +537,7 @@ func formatDescription(sl *descriptor.SourceCodeInfo_Location) string {
 	if s := strings.TrimSpace(sl.GetTrailingComments()); s != "" {
 		lines = append(lines, s)
 	}
+
 	return strings.Join(lines, "\n\n")
 }
 

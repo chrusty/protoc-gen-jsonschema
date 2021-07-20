@@ -22,13 +22,15 @@ const WellKnown = `{
         },
         "list_of_integers": {
             "items": {
-                "type": "integer"
+                "type": "integer",
+                "description": "Wrapper message for ` + "`int32`" + `.\n\n The JSON representation for ` + "`Int32Value`" + ` is JSON number."
             },
             "type": "array"
         },
         "duration": {
             "additionalProperties": true,
-            "type": "string"
+            "type": "string",
+            "description": "This is a duration:"
         }
     },
     "additionalProperties": true,
