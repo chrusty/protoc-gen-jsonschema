@@ -197,6 +197,9 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			if desc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REQUIRED {
 				jsonSchemaType.AdditionalProperties = []byte("false")
 			}
+			if c.Flags.DisallowAdditionalProperties {
+				jsonSchemaType.AdditionalProperties = []byte("false")
+			}
 		}
 
 	default:
