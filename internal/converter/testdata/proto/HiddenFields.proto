@@ -1,0 +1,10 @@
+syntax = "proto3";
+package samples;
+import "proto/options/options.proto";
+
+message HiddenFields {
+    string visible1 = 1 [(proto.options.ignore) = false];
+    string visible2 = 2;
+    string hidden1  = 3 [(proto.options.ignore) = true];
+    string hidden2  = 4 [(proto.options.ignore) = true];
+}
