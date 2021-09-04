@@ -268,6 +268,12 @@ func configureSampleProtos() map[string]sampleProto {
 			FilesToGenerate:    []string{"OneOf.proto"},
 			ProtoFileName:      "OneOf.proto",
 		},
+		"HiddenFields": {
+			Flags:              ConverterFlags{ExcludeIgnoredFields: true},
+			ExpectedJSONSchema: []string{testdata.HiddenFields},
+			FilesToGenerate:    []string{"options.proto", "HiddenFields.proto"},
+			ProtoFileName:      "HiddenFields.proto",
+		},
 	}
 }
 
@@ -284,6 +290,7 @@ func mustReadProtoFiles(t *testing.T, includePath string, filenames ...string) *
 	args = append(args, "--descriptor_set_out=/dev/stdout")
 	args = append(args, "--include_source_info")
 	args = append(args, "--include_imports")
+	args = append(args, "-I../../")
 	args = append(args, "--proto_path="+includePath)
 	args = append(args, filenames...)
 	cmd := exec.Command(protocBinary, args...)
