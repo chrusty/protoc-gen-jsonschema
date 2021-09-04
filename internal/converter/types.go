@@ -497,8 +497,8 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 	for _, fieldDesc := range msg.GetField() {
 
 		// Look for our custom "ignore" field-option (and hope that nobody else happens to be using our number):
-		if strings.Contains(fieldDesc.GetOptions().String(), c.ignoredFieldOption) {
-			c.logger.WithField("field_name", fieldDesc.GetName()).WithField("message_name", msg.GetName()).Debug("Omitting hidden field")
+		if c.Flags.ExcludeIgnoredFields && strings.Contains(fieldDesc.GetOptions().String(), c.ignoredFieldOption) {
+			c.logger.WithField("field_name", fieldDesc.GetName()).WithField("message_name", msg.GetName()).Debug("Omitting ignored field")
 			continue
 		}
 

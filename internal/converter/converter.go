@@ -37,6 +37,7 @@ type ConverterFlags struct {
 	DisallowAdditionalProperties bool
 	DisallowBigIntsAsStrings     bool
 	EnforceOneOf                 bool
+	ExcludeIgnoredFields         bool
 	PrefixSchemaFilesWithPackage bool
 	UseJSONFieldnamesOnly        bool
 	UseProtoAndJSONFieldNames    bool
@@ -85,6 +86,8 @@ func (c *Converter) parseGeneratorParameters(parameters string) {
 			c.Flags.DisallowBigIntsAsStrings = true
 		case "enforce_oneof":
 			c.Flags.EnforceOneOf = true
+		case "exclude_ignored_fields":
+			c.Flags.ExcludeIgnoredFields = true
 		case "json_fieldnames":
 			c.Flags.UseJSONFieldnamesOnly = true
 		case "prefix_schema_files_with_package":
