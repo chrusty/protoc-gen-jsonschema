@@ -34,13 +34,14 @@
         },
         "payload": {
             "$ref": "samples.PayloadMessage",
-            "additionalProperties": true
+            "additionalProperties": false
         },
         "payloads": {
             "items": {
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "$ref": "samples.PayloadMessage"
             },
+            "additionalProperties": false,
             "type": "array"
         },
         "importedEnum": {
