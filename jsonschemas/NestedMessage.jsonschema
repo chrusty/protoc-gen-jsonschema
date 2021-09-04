@@ -43,7 +43,7 @@
                     ]
                 }
             },
-            "additionalProperties": true,
+            "additionalProperties": false,
             "type": "object"
         },
         "description": {

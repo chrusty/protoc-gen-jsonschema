@@ -495,6 +495,13 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 
 	c.logger.WithField("message_str", proto.MarshalTextString(msg)).Trace("Converting message")
 	for _, fieldDesc := range msg.GetField() {
+
+		// Look for our custom "ignore" field-option (and hope that nobody else happens to be using our number):
+		if c.Flags.ExcludeIgnoredFields && strings.Contains(fieldDesc.GetOptions().String(), c.ignoredFieldOption) {
+			c.logger.WithField("field_name", fieldDesc.GetName()).WithField("message_name", msg.GetName()).Debug("Omitting ignored field")
+			continue
+		}
+
 		recursedJSONSchemaType, err := c.convertField(curPkg, fieldDesc, msg, duplicatedMessages)
 		if err != nil {
 			c.logger.WithError(err).WithField("field_name", fieldDesc.GetName()).WithField("message_name", msg.GetName()).Error("Failed to convert field")

@@ -17,15 +17,17 @@ import (
 )
 
 const (
-	messageDelimiter = "+"
+	ignoredFieldOption = "50505:1"
+	messageDelimiter   = "+"
 )
 
 // Converter is everything you need to convert protos to JSONSchemas:
 type Converter struct {
-	Flags          ConverterFlags
-	logger         *logrus.Logger
-	sourceInfo     *sourceCodeInfo
-	messageTargets []string
+	Flags              ConverterFlags
+	ignoredFieldOption string
+	logger             *logrus.Logger
+	sourceInfo         *sourceCodeInfo
+	messageTargets     []string
 }
 
 // ConverterFlags control the behaviour of the converter:
@@ -35,6 +37,7 @@ type ConverterFlags struct {
 	DisallowAdditionalProperties bool
 	DisallowBigIntsAsStrings     bool
 	EnforceOneOf                 bool
+	ExcludeIgnoredFields         bool
 	PrefixSchemaFilesWithPackage bool
 	UseJSONFieldnamesOnly        bool
 	UseProtoAndJSONFieldNames    bool
@@ -43,7 +46,8 @@ type ConverterFlags struct {
 // New returns a configured *Converter:
 func New(logger *logrus.Logger) *Converter {
 	return &Converter{
-		logger: logger,
+		ignoredFieldOption: ignoredFieldOption,
+		logger:             logger,
 	}
 }
 
@@ -82,6 +86,8 @@ func (c *Converter) parseGeneratorParameters(parameters string) {
 			c.Flags.DisallowBigIntsAsStrings = true
 		case "enforce_oneof":
 			c.Flags.EnforceOneOf = true
+		case "exclude_ignored_fields":
+			c.Flags.ExcludeIgnoredFields = true
 		case "json_fieldnames":
 			c.Flags.UseJSONFieldnamesOnly = true
 		case "prefix_schema_files_with_package":
