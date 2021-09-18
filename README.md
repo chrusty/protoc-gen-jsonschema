@@ -122,6 +122,15 @@ protoc \
 --proto_path=testdata/proto testdata/proto/ArrayOfPrimitives.proto
 ```
 
+### Custom option to ignore specific fields
+
+Use the custom 'ignore' option on the fields you'd like to omit from generated schemas, then use the "exclude_ignored_fields" flag with your protoc command.
+
+### Custom option to mark fields as required
+
+Use the custom 'required' option on the fields you'd like to mark as required in generated schemas.
+
+
 ## Sample protos (for testing)
 
 * Proto with a simple (flat) structure: [samples.PayloadMessage](internal/converter/testdata/proto/PayloadMessage.proto)
