@@ -1,13 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "required": [
-        "something"
-    ],
     "properties": {
         "bar": {
-            "required": [
-                "foo"
-            ],
             "properties": {
                 "foo": {
                     "type": "integer"
@@ -17,9 +11,6 @@
             "type": "object"
         },
         "baz": {
-            "required": [
-                "foo"
-            ],
             "properties": {
                 "foo": {
                     "type": "string"
