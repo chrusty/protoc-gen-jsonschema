@@ -274,11 +274,23 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			jsonSchemaType.Type = gojsonschema.TYPE_ARRAY
 
 			// Build up the list of required fields:
+			// if c.Flags.AllFieldsRequired && recursedJSONSchemaType.Properties != nil {
+			// 	for _, property := range recursedJSONSchemaType.Properties.Keys() {
+			// 		jsonSchemaType.Items.Required = append(jsonSchemaType.Items.Required, property)
+			// 	}
+			// }
+
+			// Build up the list of required fields:
 			if c.Flags.AllFieldsRequired && recursedJSONSchemaType.Properties != nil {
-				for _, property := range recursedJSONSchemaType.Properties.Keys() {
-					jsonSchemaType.Items.Required = append(jsonSchemaType.Items.Required, property)
+				for _, propertyKey := range recursedJSONSchemaType.Properties.Keys() {
+					property, _ := recursedJSONSchemaType.Properties.Get(propertyKey)
+					assertedProperty := property.(*jsonschema.Type)
+					if len(assertedProperty.OneOf) == 0 || assertedProperty.Enum != nil {
+						jsonSchemaType.Items.Required = append(jsonSchemaType.Items.Required, propertyKey)
+					}
 				}
 			}
+			// HERE!
 
 		// Not maps, not arrays:
 		default:
@@ -296,14 +308,21 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			// Assume the attrbutes of the recursed value:
 			jsonSchemaType.Properties = recursedJSONSchemaType.Properties
 			jsonSchemaType.Ref = recursedJSONSchemaType.Ref
+			// if jsonSchemaType.OneOf == nil || len(jsonSchemaType.OneOf) == 0 {
 			jsonSchemaType.Required = recursedJSONSchemaType.Required
+			// }
 
 			// Build up the list of required fields:
 			if c.Flags.AllFieldsRequired && recursedJSONSchemaType.Properties != nil {
-				for _, property := range recursedJSONSchemaType.Properties.Keys() {
-					jsonSchemaType.Required = append(jsonSchemaType.Required, property)
+				for _, propertyKey := range recursedJSONSchemaType.Properties.Keys() {
+					property, _ := recursedJSONSchemaType.Properties.Get(propertyKey)
+					assertedProperty := property.(*jsonschema.Type)
+					if len(assertedProperty.OneOf) == 0 || assertedProperty.Enum != nil {
+						jsonSchemaType.Required = append(jsonSchemaType.Required, propertyKey)
+					}
 				}
 			}
+			// HERE!
 		}
 
 		// Optionally allow NULL values:
@@ -359,7 +378,7 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.Des
 
 	// Look for required fields (either by proto2 required flag, or the AllFieldsRequired option):
 	for _, fieldDesc := range msg.GetField() {
-		if c.Flags.AllFieldsRequired || fieldDesc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REQUIRED {
+		if (c.Flags.AllFieldsRequired && fieldDesc.OneofIndex == nil) || fieldDesc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REQUIRED {
 			newJSONSchema.Required = append(newJSONSchema.Required, fieldDesc.GetName())
 		}
 	}
@@ -525,8 +544,8 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 			jsonSchemaType.Properties.Set(fieldDesc.GetName(), recursedJSONSchemaType)
 		}
 
-		// Look for required fields (either by proto2 required flag, or the AllFieldsRequired option):
-		if fieldDesc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REQUIRED {
+		// Look for required fields by the proto2 "required" flag:
+		if fieldDesc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REQUIRED && fieldDesc.OneofIndex == nil {
 			jsonSchemaType.Required = append(jsonSchemaType.Required, fieldDesc.GetName())
 		}
 	}

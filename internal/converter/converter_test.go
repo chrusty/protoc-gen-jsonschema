@@ -263,7 +263,7 @@ func configureSampleProtos() map[string]sampleProto {
 			ProtoFileName:      "JSONFields.proto",
 		},
 		"OneOf": {
-			Flags:              ConverterFlags{EnforceOneOf: true},
+			Flags:              ConverterFlags{AllFieldsRequired: true, EnforceOneOf: true},
 			ExpectedJSONSchema: []string{testdata.OneOf},
 			FilesToGenerate:    []string{"OneOf.proto"},
 			ProtoFileName:      "OneOf.proto",

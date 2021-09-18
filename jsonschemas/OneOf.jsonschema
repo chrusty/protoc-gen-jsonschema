@@ -1,8 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
     "required": [
-        "bar",
-        "baz"
+        "something"
     ],
     "properties": {
         "bar": {
@@ -28,6 +27,9 @@
             },
             "additionalProperties": true,
             "type": "object"
+        },
+        "something": {
+            "type": "boolean"
         }
     },
     "additionalProperties": true,
