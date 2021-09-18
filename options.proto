@@ -3,5 +3,5 @@ package protoc.gen.jsonschema;
 import "google/protobuf/descriptor.proto";
 
 extend google.protobuf.FieldOptions {
-  optional bool ignore = 50505;
+  bool ignore = 50505;
 }
