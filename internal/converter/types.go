@@ -502,6 +502,7 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 			continue
 		}
 
+		// Convert the field into a JSONSchema type:
 		recursedJSONSchemaType, err := c.convertField(curPkg, fieldDesc, msg, duplicatedMessages)
 		if err != nil {
 			c.logger.WithError(err).WithField("field_name", fieldDesc.GetName()).WithField("message_name", msg.GetName()).Error("Failed to convert field")
@@ -527,6 +528,12 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 
 		// Look for required fields by the proto2 "required" flag:
 		if fieldDesc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REQUIRED && fieldDesc.OneofIndex == nil {
+			jsonSchemaType.Required = append(jsonSchemaType.Required, fieldDesc.GetName())
+		}
+
+		// Look for our custom proto3 "required" field-option (and hope that nobody else happens to be using our number):
+		if strings.Contains(fieldDesc.GetOptions().String(), c.requiredFieldOption) {
+			c.logger.WithField("field_name", fieldDesc.GetName()).WithField("message_name", msg.GetName()).Debug("Marking required field")
 			jsonSchemaType.Required = append(jsonSchemaType.Required, fieldDesc.GetName())
 		}
 	}

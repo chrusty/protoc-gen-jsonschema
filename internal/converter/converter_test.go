@@ -274,6 +274,11 @@ func configureSampleProtos() map[string]sampleProto {
 			FilesToGenerate:    []string{"options.proto", "HiddenFields.proto"},
 			ProtoFileName:      "HiddenFields.proto",
 		},
+		"Proto3Required": {
+			ExpectedJSONSchema: []string{testdata.Proto3Required},
+			FilesToGenerate:    []string{"options.proto", "Proto3Required.proto"},
+			ProtoFileName:      "Proto3Required.proto",
+		},
 	}
 }
 

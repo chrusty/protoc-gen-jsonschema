@@ -17,17 +17,19 @@ import (
 )
 
 const (
-	ignoredFieldOption = "50505:1"
-	messageDelimiter   = "+"
+	ignoredFieldOption  = "50505:1"
+	messageDelimiter    = "+"
+	requiredFieldOption = "50515:1"
 )
 
 // Converter is everything you need to convert protos to JSONSchemas:
 type Converter struct {
-	Flags              ConverterFlags
-	ignoredFieldOption string
-	logger             *logrus.Logger
-	sourceInfo         *sourceCodeInfo
-	messageTargets     []string
+	Flags               ConverterFlags
+	ignoredFieldOption  string
+	logger              *logrus.Logger
+	requiredFieldOption string
+	sourceInfo          *sourceCodeInfo
+	messageTargets      []string
 }
 
 // ConverterFlags control the behaviour of the converter:
@@ -46,8 +48,9 @@ type ConverterFlags struct {
 // New returns a configured *Converter:
 func New(logger *logrus.Logger) *Converter {
 	return &Converter{
-		ignoredFieldOption: ignoredFieldOption,
-		logger:             logger,
+		ignoredFieldOption:  ignoredFieldOption,
+		logger:              logger,
+		requiredFieldOption: requiredFieldOption,
 	}
 }
 
