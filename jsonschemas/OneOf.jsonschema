@@ -18,6 +18,9 @@
             },
             "additionalProperties": true,
             "type": "object"
+        },
+        "something": {
+            "type": "boolean"
         }
     },
     "additionalProperties": true,

@@ -2,8 +2,14 @@ package testdata
 
 const OneOf = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
+    "required": [
+        "something"
+    ],
     "properties": {
         "bar": {
+            "required": [
+                "foo"
+            ],
             "properties": {
                 "foo": {
                     "type": "integer"
@@ -13,6 +19,9 @@ const OneOf = `{
             "type": "object"
         },
         "baz": {
+            "required": [
+                "foo"
+            ],
             "properties": {
                 "foo": {
                     "type": "string"
@@ -20,6 +29,9 @@ const OneOf = `{
             },
             "additionalProperties": true,
             "type": "object"
+        },
+        "something": {
+            "type": "boolean"
         }
     },
     "additionalProperties": true,
