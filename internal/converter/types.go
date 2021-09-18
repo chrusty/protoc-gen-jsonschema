@@ -274,23 +274,11 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			jsonSchemaType.Type = gojsonschema.TYPE_ARRAY
 
 			// Build up the list of required fields:
-			// if c.Flags.AllFieldsRequired && recursedJSONSchemaType.Properties != nil {
-			// 	for _, property := range recursedJSONSchemaType.Properties.Keys() {
-			// 		jsonSchemaType.Items.Required = append(jsonSchemaType.Items.Required, property)
-			// 	}
-			// }
-
-			// Build up the list of required fields:
 			if c.Flags.AllFieldsRequired && recursedJSONSchemaType.Properties != nil {
-				for _, propertyKey := range recursedJSONSchemaType.Properties.Keys() {
-					property, _ := recursedJSONSchemaType.Properties.Get(propertyKey)
-					assertedProperty := property.(*jsonschema.Type)
-					if len(assertedProperty.OneOf) == 0 || assertedProperty.Enum != nil {
-						jsonSchemaType.Items.Required = append(jsonSchemaType.Items.Required, propertyKey)
-					}
+				for _, property := range recursedJSONSchemaType.Properties.Keys() {
+					jsonSchemaType.Items.Required = append(jsonSchemaType.Items.Required, property)
 				}
 			}
-			// HERE!
 
 		// Not maps, not arrays:
 		default:
@@ -308,21 +296,14 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			// Assume the attrbutes of the recursed value:
 			jsonSchemaType.Properties = recursedJSONSchemaType.Properties
 			jsonSchemaType.Ref = recursedJSONSchemaType.Ref
-			// if jsonSchemaType.OneOf == nil || len(jsonSchemaType.OneOf) == 0 {
 			jsonSchemaType.Required = recursedJSONSchemaType.Required
-			// }
 
 			// Build up the list of required fields:
 			if c.Flags.AllFieldsRequired && recursedJSONSchemaType.Properties != nil {
-				for _, propertyKey := range recursedJSONSchemaType.Properties.Keys() {
-					property, _ := recursedJSONSchemaType.Properties.Get(propertyKey)
-					assertedProperty := property.(*jsonschema.Type)
-					if len(assertedProperty.OneOf) == 0 || assertedProperty.Enum != nil {
-						jsonSchemaType.Required = append(jsonSchemaType.Required, propertyKey)
-					}
+				for _, property := range recursedJSONSchemaType.Properties.Keys() {
+					jsonSchemaType.Required = append(jsonSchemaType.Required, property)
 				}
 			}
-			// HERE!
 		}
 
 		// Optionally allow NULL values:
