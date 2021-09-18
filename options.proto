@@ -4,4 +4,5 @@ import "google/protobuf/descriptor.proto";
 
 extend google.protobuf.FieldOptions {
   bool ignore = 50505;
+  bool required = 50515;
 }
