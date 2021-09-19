@@ -6,30 +6,52 @@
         },
         "ones": {
             "items": {
-                "$schema": "http://json-schema.org/draft-04/schema#",
-                "properties": {
-                    "name": {
-                        "type": "string"
-                    },
-                    "timestamp": {
-                        "type": "string"
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "rating": {
-                        "type": "number"
-                    },
-                    "complete": {
-                        "type": "boolean"
-                    }
-                },
-                "additionalProperties": true,
-                "type": "object"
+                "$ref": "samples.MessageKind1"
             },
             "type": "array"
         },
         "kind2": {
+            "$ref": "samples.MessageKind2",
+            "additionalProperties": true
+        },
+        "kind3": {
+            "$ref": "samples.MessageKind3",
+            "additionalProperties": true
+        },
+        "kind4": {
+            "$ref": "samples.MessageKind4",
+            "additionalProperties": true
+        }
+    },
+    "additionalProperties": true,
+    "type": "object",
+    "id": "MessageKind11",
+    "definitions": {
+        "samples.MessageKind1": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "rating": {
+                    "type": "number"
+                },
+                "complete": {
+                    "type": "boolean"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "id": "samples.MessageKind1"
+        },
+        "samples.MessageKind2": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"
@@ -54,9 +76,11 @@
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "id": "samples.MessageKind2"
         },
-        "kind3": {
+        "samples.MessageKind3": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"
@@ -78,9 +102,11 @@
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "id": "samples.MessageKind3"
         },
-        "kind4": {
+        "samples.MessageKind4": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"
@@ -102,9 +128,8 @@
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "id": "samples.MessageKind4"
         }
-    },
-    "additionalProperties": true,
-    "type": "object"
+    }
 }

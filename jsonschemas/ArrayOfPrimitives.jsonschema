@@ -90,5 +90,6 @@
         {
             "type": "object"
         }
-    ]
+    ],
+    "id": "ArrayOfPrimitives"
 }

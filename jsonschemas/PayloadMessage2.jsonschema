@@ -50,5 +50,6 @@
         }
     },
     "additionalProperties": true,
-    "type": "object"
+    "type": "object",
+    "id": "PayloadMessage2"
 }

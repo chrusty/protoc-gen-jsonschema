@@ -38,7 +38,6 @@
         },
         "payloads": {
             "items": {
-                "$schema": "http://json-schema.org/draft-04/schema#",
                 "$ref": "samples.PayloadMessage"
             },
             "additionalProperties": false,
@@ -67,6 +66,7 @@
     },
     "additionalProperties": false,
     "type": "object",
+    "id": "Enumception",
     "definitions": {
         "samples.PayloadMessage": {
             "$schema": "http://json-schema.org/draft-04/schema#",

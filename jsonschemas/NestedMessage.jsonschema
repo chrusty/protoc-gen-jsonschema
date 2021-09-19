@@ -2,6 +2,19 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "properties": {
         "payload": {
+            "$ref": "samples.PayloadMessage",
+            "additionalProperties": false
+        },
+        "description": {
+            "type": "string"
+        }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "id": "NestedMessage",
+    "definitions": {
+        "samples.PayloadMessage": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"
@@ -44,12 +57,8 @@
                 }
             },
             "additionalProperties": false,
-            "type": "object"
-        },
-        "description": {
-            "type": "string"
+            "type": "object",
+            "id": "samples.PayloadMessage"
         }
-    },
-    "additionalProperties": false,
-    "type": "object"
+    }
 }

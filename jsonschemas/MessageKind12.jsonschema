@@ -5,115 +5,161 @@
             "type": "string"
         },
         "f": {
+            "$ref": "samples.MessageKind11",
+            "additionalProperties": true
+        },
+        "kind5": {
+            "$ref": "samples.MessageKind5",
+            "additionalProperties": true
+        },
+        "kind6": {
+            "$ref": "samples.MessageKind6",
+            "additionalProperties": true
+        },
+        "kind7": {
+            "$ref": "samples.MessageKind7",
+            "additionalProperties": true
+        }
+    },
+    "additionalProperties": true,
+    "type": "object",
+    "id": "MessageKind12",
+    "definitions": {
+        "samples.MessageKind1": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "rating": {
+                    "type": "number"
+                },
+                "complete": {
+                    "type": "boolean"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "id": "samples.MessageKind1"
+        },
+        "samples.MessageKind11": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"
                 },
                 "ones": {
                     "items": {
-                        "$schema": "http://json-schema.org/draft-04/schema#",
-                        "properties": {
-                            "name": {
-                                "type": "string"
-                            },
-                            "timestamp": {
-                                "type": "string"
-                            },
-                            "id": {
-                                "type": "integer"
-                            },
-                            "rating": {
-                                "type": "number"
-                            },
-                            "complete": {
-                                "type": "boolean"
-                            }
-                        },
-                        "additionalProperties": true,
-                        "type": "object"
+                        "$ref": "samples.MessageKind1"
                     },
                     "type": "array"
                 },
                 "kind2": {
-                    "properties": {
-                        "name": {
-                            "type": "string"
-                        },
-                        "timestamp": {
-                            "type": "string"
-                        },
-                        "id": {
-                            "type": "integer"
-                        },
-                        "rating": {
-                            "type": "number"
-                        },
-                        "complete": {
-                            "type": "boolean"
-                        },
-                        "isa": {
-                            "type": "boolean"
-                        },
-                        "hasa": {
-                            "type": "boolean"
-                        }
-                    },
-                    "additionalProperties": true,
-                    "type": "object"
+                    "$ref": "samples.MessageKind2",
+                    "additionalProperties": true
                 },
                 "kind3": {
-                    "properties": {
-                        "name": {
-                            "type": "string"
-                        },
-                        "timestamp": {
-                            "type": "string"
-                        },
-                        "id": {
-                            "type": "integer"
-                        },
-                        "rating": {
-                            "type": "number"
-                        },
-                        "complete": {
-                            "type": "boolean"
-                        },
-                        "someProp": {
-                            "type": "string"
-                        }
-                    },
-                    "additionalProperties": true,
-                    "type": "object"
+                    "$ref": "samples.MessageKind3",
+                    "additionalProperties": true
                 },
                 "kind4": {
-                    "properties": {
-                        "name": {
-                            "type": "string"
-                        },
-                        "timestamp": {
-                            "type": "string"
-                        },
-                        "id": {
-                            "type": "integer"
-                        },
-                        "rating": {
-                            "type": "number"
-                        },
-                        "complete": {
-                            "type": "boolean"
-                        },
-                        "special": {
-                            "type": "string"
-                        }
-                    },
-                    "additionalProperties": true,
-                    "type": "object"
+                    "$ref": "samples.MessageKind4",
+                    "additionalProperties": true
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "id": "samples.MessageKind11"
         },
-        "kind5": {
+        "samples.MessageKind2": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "rating": {
+                    "type": "number"
+                },
+                "complete": {
+                    "type": "boolean"
+                },
+                "isa": {
+                    "type": "boolean"
+                },
+                "hasa": {
+                    "type": "boolean"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "id": "samples.MessageKind2"
+        },
+        "samples.MessageKind3": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "rating": {
+                    "type": "number"
+                },
+                "complete": {
+                    "type": "boolean"
+                },
+                "someProp": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "id": "samples.MessageKind3"
+        },
+        "samples.MessageKind4": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "rating": {
+                    "type": "number"
+                },
+                "complete": {
+                    "type": "boolean"
+                },
+                "special": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "id": "samples.MessageKind4"
+        },
+        "samples.MessageKind5": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"
@@ -135,9 +181,11 @@
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "id": "samples.MessageKind5"
         },
-        "kind6": {
+        "samples.MessageKind6": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"
@@ -159,9 +207,11 @@
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "id": "samples.MessageKind6"
         },
-        "kind7": {
+        "samples.MessageKind7": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"
@@ -183,9 +233,8 @@
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "id": "samples.MessageKind7"
         }
-    },
-    "additionalProperties": true,
-    "type": "object"
+    }
 }

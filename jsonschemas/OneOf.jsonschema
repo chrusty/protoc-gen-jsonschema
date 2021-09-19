@@ -2,22 +2,12 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "properties": {
         "bar": {
-            "properties": {
-                "foo": {
-                    "type": "integer"
-                }
-            },
-            "additionalProperties": true,
-            "type": "object"
+            "$ref": "samples.OneOf.Bar",
+            "additionalProperties": true
         },
         "baz": {
-            "properties": {
-                "foo": {
-                    "type": "string"
-                }
-            },
-            "additionalProperties": true,
-            "type": "object"
+            "$ref": "samples.OneOf.Baz",
+            "additionalProperties": true
         },
         "something": {
             "type": "boolean"
@@ -36,5 +26,30 @@
                 "baz"
             ]
         }
-    ]
+    ],
+    "id": "OneOf",
+    "definitions": {
+        "samples.OneOf.Bar": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "properties": {
+                "foo": {
+                    "type": "integer"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "id": "samples.OneOf.Bar"
+        },
+        "samples.OneOf.Baz": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "properties": {
+                "foo": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "id": "samples.OneOf.Baz"
+        }
+    }
 }
