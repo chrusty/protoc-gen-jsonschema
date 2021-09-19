@@ -256,6 +256,10 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 				WithField("msg_name", *msg.Name).
 				Tracef("Is a map")
 
+			if recursedJSONSchemaType.Properties == nil {
+				return nil, fmt.Errorf("Unable to find properties of MAP type")
+			}
+
 			// Make sure we have a "value":
 			value, valuePresent := recursedJSONSchemaType.Properties.Get("value")
 			if !valuePresent {
@@ -383,8 +387,6 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.Des
 // (typically because they're part of a reference cycle) to the sub-schema name that we give them.
 func (c *Converter) findDuplicatedNestedMessages(curPkg *ProtoPackage, msg *descriptor.DescriptorProto) (map[*descriptor.DescriptorProto]string, error) {
 
-	c.logger.Errorf("msg.name: %v", msg.GetName())
-
 	// Get a list of all nested messages, and how often they occur:
 	all := make(map[*descriptor.DescriptorProto]*nameAndCounter)
 	if err := c.recursiveFindDuplicatedNestedMessages(curPkg, msg, msg.GetName(), all); err != nil {
@@ -394,7 +396,7 @@ func (c *Converter) findDuplicatedNestedMessages(curPkg *ProtoPackage, msg *desc
 	// Now filter them:
 	result := make(map[*descriptor.DescriptorProto]string)
 	for m, nameAndCounter := range all {
-		if !strings.HasPrefix(nameAndCounter.name, ".google.protobuf.") {
+		if !m.GetOptions().GetMapEntry() && !strings.HasPrefix(nameAndCounter.name, ".google.protobuf.") {
 			result[m] = strings.TrimLeft(nameAndCounter.name, ".")
 		}
 	}
@@ -487,7 +489,6 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 	// Look up references:
 	if refName, ok := duplicatedMessages[msg]; ok && !ignoreDuplicatedMessages {
 		return &jsonschema.Type{
-			// Version: jsonschema.Version,
 			Ref: refName,
 		}, nil
 	}
