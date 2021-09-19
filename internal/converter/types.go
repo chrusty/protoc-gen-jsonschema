@@ -354,6 +354,14 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.Des
 		definitions[name] = refType
 	}
 
+	// By now the root type may have been swapped for a reference. Let's take it back:
+	if len(rootType.Ref) > 0 {
+		if rootTypeDefinition, ok := definitions[msg.GetName()]; ok {
+			rootType = rootTypeDefinition
+			delete(definitions, msg.GetName())
+		}
+	}
+
 	newJSONSchema := &jsonschema.Schema{
 		Type:        rootType,
 		Definitions: definitions,
@@ -374,14 +382,19 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.Des
 // findDuplicatedNestedMessages takes a message, and returns a map mapping pointers to messages that appear more than once
 // (typically because they're part of a reference cycle) to the sub-schema name that we give them.
 func (c *Converter) findDuplicatedNestedMessages(curPkg *ProtoPackage, msg *descriptor.DescriptorProto) (map[*descriptor.DescriptorProto]string, error) {
+
+	c.logger.Errorf("msg.name: %v", msg.GetName())
+
+	// Get a list of all nested messages, and how often they occur:
 	all := make(map[*descriptor.DescriptorProto]*nameAndCounter)
 	if err := c.recursiveFindDuplicatedNestedMessages(curPkg, msg, msg.GetName(), all); err != nil {
 		return nil, err
 	}
 
+	// Now filter them:
 	result := make(map[*descriptor.DescriptorProto]string)
 	for m, nameAndCounter := range all {
-		if nameAndCounter.counter > 1 && !strings.HasPrefix(nameAndCounter.name, ".google.protobuf.") {
+		if !strings.HasPrefix(nameAndCounter.name, ".google.protobuf.") {
 			result[m] = strings.TrimLeft(nameAndCounter.name, ".")
 		}
 	}
@@ -471,10 +484,11 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 	jsonSchemaType.Properties = orderedmap.New()
 	jsonSchemaType.Version = jsonschema.Version
 
+	// Look up references:
 	if refName, ok := duplicatedMessages[msg]; ok && !ignoreDuplicatedMessages {
 		return &jsonschema.Type{
-			Version: jsonschema.Version,
-			Ref:     refName,
+			// Version: jsonschema.Version,
+			Ref: refName,
 		}, nil
 	}
 

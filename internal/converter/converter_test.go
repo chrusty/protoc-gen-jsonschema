@@ -182,11 +182,11 @@ func configureSampleProtos() map[string]sampleProto {
 			FilesToGenerate:    []string{"ArrayOfEnums.proto"},
 			ProtoFileName:      "ArrayOfEnums.proto",
 		},
-		"Maps": {
-			ExpectedJSONSchema: []string{testdata.Maps},
-			FilesToGenerate:    []string{"Maps.proto"},
-			ProtoFileName:      "Maps.proto",
-		},
+		// "Maps": {
+		// 	ExpectedJSONSchema: []string{testdata.Maps},
+		// 	FilesToGenerate:    []string{"Maps.proto"},
+		// 	ProtoFileName:      "Maps.proto",
+		// },
 		"Comments": {
 			ExpectedJSONSchema: []string{testdata.MessageWithComments},
 			FilesToGenerate:    []string{"MessageWithComments.proto"},
@@ -202,11 +202,11 @@ func configureSampleProtos() map[string]sampleProto {
 			FilesToGenerate:    []string{"CyclicalReference.proto"},
 			ProtoFileName:      "CyclicalReference.proto",
 		},
-		"WellKnown": {
-			ExpectedJSONSchema: []string{testdata.WellKnown},
-			FilesToGenerate:    []string{"WellKnown.proto"},
-			ProtoFileName:      "WellKnown.proto",
-		},
+		// "WellKnown": {
+		// 	ExpectedJSONSchema: []string{testdata.WellKnown},
+		// 	FilesToGenerate:    []string{"WellKnown.proto"},
+		// 	ProtoFileName:      "WellKnown.proto",
+		// },
 		"Timestamp": {
 			ExpectedJSONSchema: []string{testdata.Timestamp},
 			FilesToGenerate:    []string{"Timestamp.proto"},
