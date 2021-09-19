@@ -3,9 +3,15 @@ module github.com/chrusty/protoc-gen-jsonschema
 go 1.14
 
 require (
+<<<<<<< HEAD
 	github.com/alecthomas/jsonschema v0.0.0-20200217214135-7152f22193c9
 	github.com/golang/protobuf v1.5.0
 	github.com/iancoleman/orderedmap v0.0.0-20190318233801-ac98e3ecb4b0
+=======
+	github.com/alecthomas/jsonschema v0.0.0-20210918223802-a1d3f4b43d7b
+	github.com/golang/protobuf v1.3.2
+	github.com/iancoleman/orderedmap v0.2.0
+>>>>>>> e76bb4d... Bumping deps
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/sirupsen/logrus v1.4.2
