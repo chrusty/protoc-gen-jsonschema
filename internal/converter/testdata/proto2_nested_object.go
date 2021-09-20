@@ -10,8 +10,8 @@ const Proto2NestedObject = `{
         "payload": {
             "required": [
                 "name",
-                "id",
                 "timestamp",
+                "id",
                 "rating",
                 "complete",
                 "topology"
