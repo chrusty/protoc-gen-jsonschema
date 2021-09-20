@@ -282,9 +282,9 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 
 		// Not maps, not arrays:
 		default:
+
 			// If we've got optional types then just take those:
-			if len(recursedJSONSchemaType.OneOf) == 0 || recursedJSONSchemaType.OneOf != nil {
-				recursedJSONSchemaType.Required = []string{}
+			if recursedJSONSchemaType.OneOf != nil {
 				return recursedJSONSchemaType, nil
 			}
 
@@ -299,7 +299,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			jsonSchemaType.Required = recursedJSONSchemaType.Required
 
 			// Build up the list of required fields:
-			if c.Flags.AllFieldsRequired && len(jsonSchemaType.OneOf) == 0 && recursedJSONSchemaType.Properties != nil {
+			if c.Flags.AllFieldsRequired && len(recursedJSONSchemaType.OneOf) == 0 && recursedJSONSchemaType.Properties != nil {
 				for _, property := range recursedJSONSchemaType.Properties.Keys() {
 					jsonSchemaType.Required = append(jsonSchemaType.Required, property)
 				}
@@ -317,10 +317,6 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 	}
 
 	jsonSchemaType.Required = dedupe(jsonSchemaType.Required)
-
-	if len(jsonSchemaType.OneOf) == 0 || jsonSchemaType.OneOf != nil {
-		jsonSchemaType.Required = []string{}
-	}
 
 	return jsonSchemaType, nil
 }
@@ -536,7 +532,7 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 		}
 
 		// Look for our custom proto3 "required" field-option (and hope that nobody else happens to be using our number):
-		if strings.Contains(fieldDesc.GetOptions().String(), c.requiredFieldOption) && fieldDesc.OneofIndex == nil {
+		if strings.Contains(fieldDesc.GetOptions().String(), c.requiredFieldOption) {
 			c.logger.WithField("field_name", fieldDesc.GetName()).WithField("message_name", msg.GetName()).Debug("Marking required field")
 			jsonSchemaType.Required = append(jsonSchemaType.Required, fieldDesc.GetName())
 		}
