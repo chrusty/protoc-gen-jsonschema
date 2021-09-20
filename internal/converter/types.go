@@ -279,6 +279,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 					jsonSchemaType.Items.Required = append(jsonSchemaType.Items.Required, property)
 				}
 			}
+			jsonSchemaType.Items.Required = dedupe(jsonSchemaType.Items.Required)
 
 		// Not maps, not arrays:
 		default:
@@ -526,6 +527,13 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 			jsonSchemaType.Properties.Set(fieldDesc.GetName(), recursedJSONSchemaType)
 		}
 
+		// Enforce all_fields_required:
+		if c.Flags.AllFieldsRequired && len(jsonSchemaType.OneOf) == 0 && jsonSchemaType.Properties != nil {
+			for _, property := range jsonSchemaType.Properties.Keys() {
+				jsonSchemaType.Required = append(jsonSchemaType.Required, property)
+			}
+		}
+
 		// Look for required fields by the proto2 "required" flag:
 		if fieldDesc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REQUIRED && fieldDesc.OneofIndex == nil {
 			jsonSchemaType.Required = append(jsonSchemaType.Required, fieldDesc.GetName())
@@ -542,6 +550,9 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 	if len(jsonSchemaType.Properties.Keys()) == 0 {
 		jsonSchemaType.Properties = nil
 	}
+
+	// Dedupe required fields:
+	jsonSchemaType.Required = dedupe(jsonSchemaType.Required)
 
 	return jsonSchemaType, nil
 }
