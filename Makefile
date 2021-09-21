@@ -11,6 +11,10 @@ fmt:
 	@gofmt -s -w .
 	@goimports -w -local github.com/chrusty/protoc-gen-jsonschema .
 
+.PHONY: generate
+generate:
+	@protoc --go_out=internal --proto_path=. options.proto
+
 .PHONY: install
 install:
 	@GO111MODULE=on go get github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema && go install github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema
@@ -44,7 +48,7 @@ samples:
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/Proto2Required.proto || echo "No messages found (Proto2Required.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/Proto2NestedMessage.proto || echo "No messages found (Proto2NestedMessage.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/GoogleValue.proto || echo "No messages found (GoogleValue.proto)"
-	@PATH=./bin:$$PATH; protoc --jsonschema_out=exclude_ignored_fields:jsonschemas -I. --proto_path=${PROTO_PATH} ${PROTO_PATH}/HiddenFields.proto || echo "No messages found (HiddenFields.proto)"
+	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas -I. --proto_path=${PROTO_PATH} ${PROTO_PATH}/HiddenFields.proto || echo "No messages found (HiddenFields.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=enforce_oneof:jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/OneOf.proto || echo "No messages found (OneOf.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=all_fields_required:jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/Proto2NestedObject.proto || echo "No messages found (Proto2NestedObject.proto)"
 	@PATH=./bin:$$PATH; protoc -I /usr/include --jsonschema_out=jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/WellKnown.proto || echo "No messages found (WellKnown.proto)"
