@@ -96,6 +96,17 @@ func testConvertSampleProto(t *testing.T, sampleProto sampleProto) {
 
 func configureSampleProtos() map[string]sampleProto {
 	return map[string]sampleProto{
+		"AllRequired": {
+			Flags:              ConverterFlags{AllFieldsRequired: true},
+			ExpectedJSONSchema: []string{testdata.PayloadMessage2},
+			FilesToGenerate:    []string{"PayloadMessage2.proto"},
+			ProtoFileName:      "PayloadMessage2.proto",
+		},
+		"ArrayOfEnums": {
+			ExpectedJSONSchema: []string{testdata.ArrayOfEnums},
+			FilesToGenerate:    []string{"ArrayOfEnums.proto"},
+			ProtoFileName:      "ArrayOfEnums.proto",
+		},
 		"ArrayOfMessages": {
 			ExpectedJSONSchema: []string{testdata.PayloadMessage, testdata.ArrayOfMessages},
 			FilesToGenerate:    []string{"ArrayOfMessages.proto", "PayloadMessage.proto"},
@@ -113,11 +124,6 @@ func configureSampleProtos() map[string]sampleProto {
 			FilesToGenerate:    []string{"ArrayOfPrimitives.proto"},
 			ProtoFileName:      "ArrayOfPrimitives.proto",
 		},
-		"BytesPayload": {
-			ExpectedJSONSchema: []string{testdata.BytesPayload},
-			FilesToGenerate:    []string{"BytesPayload.proto"},
-			ProtoFileName:      "BytesPayload.proto",
-		},
 		"ArrayOfPrimitivesDouble": {
 			Flags: ConverterFlags{
 				AllowNullValues:           true,
@@ -126,6 +132,21 @@ func configureSampleProtos() map[string]sampleProto {
 			ExpectedJSONSchema: []string{testdata.ArrayOfPrimitivesDouble},
 			FilesToGenerate:    []string{"ArrayOfPrimitives.proto"},
 			ProtoFileName:      "ArrayOfPrimitives.proto",
+		},
+		"BytesPayload": {
+			ExpectedJSONSchema: []string{testdata.BytesPayload},
+			FilesToGenerate:    []string{"BytesPayload.proto"},
+			ProtoFileName:      "BytesPayload.proto",
+		},
+		"Comments": {
+			ExpectedJSONSchema: []string{testdata.MessageWithComments},
+			FilesToGenerate:    []string{"MessageWithComments.proto"},
+			ProtoFileName:      "MessageWithComments.proto",
+		},
+		"CyclicalReference": {
+			ExpectedJSONSchema: []string{testdata.CyclicalReferenceMessageM, testdata.CyclicalReferenceMessageFoo, testdata.CyclicalReferenceMessageBar, testdata.CyclicalReferenceMessageBaz},
+			FilesToGenerate:    []string{"CyclicalReference.proto"},
+			ProtoFileName:      "CyclicalReference.proto",
 		},
 		"EnumNestedReference": {
 			ExpectedJSONSchema: []string{testdata.EnumNestedReference},
@@ -147,10 +168,31 @@ func configureSampleProtos() map[string]sampleProto {
 			FilesToGenerate:    []string{"Enumception.proto", "PayloadMessage.proto", "ImportedEnum.proto"},
 			ProtoFileName:      "Enumception.proto",
 		},
+		"GoogleValue": {
+			ExpectedJSONSchema: []string{testdata.GoogleValue},
+			FilesToGenerate:    []string{"GoogleValue.proto"},
+			ProtoFileName:      "GoogleValue.proto",
+		},
+		"HiddenFields": {
+			ExpectedJSONSchema: []string{testdata.FieldOptions, testdata.HiddenFields},
+			FilesToGenerate:    []string{"options.proto", "HiddenFields.proto"},
+			ProtoFileName:      "HiddenFields.proto",
+		},
 		"ImportedEnum": {
 			ExpectedJSONSchema: []string{testdata.ImportedEnum},
 			FilesToGenerate:    []string{"ImportedEnum.proto"},
 			ProtoFileName:      "ImportedEnum.proto",
+		},
+		"JSONFields": {
+			Flags:              ConverterFlags{UseJSONFieldnamesOnly: true},
+			ExpectedJSONSchema: []string{testdata.JSONFields},
+			FilesToGenerate:    []string{"JSONFields.proto"},
+			ProtoFileName:      "JSONFields.proto",
+		},
+		"Maps": {
+			ExpectedJSONSchema: []string{testdata.Maps},
+			FilesToGenerate:    []string{"Maps.proto"},
+			ProtoFileName:      "Maps.proto",
 		},
 		"NestedMessage": {
 			ExpectedJSONSchema: []string{testdata.PayloadMessage, testdata.NestedMessage},
@@ -162,60 +204,16 @@ func configureSampleProtos() map[string]sampleProto {
 			FilesToGenerate:    []string{"NestedObject.proto"},
 			ProtoFileName:      "NestedObject.proto",
 		},
-		"PayloadMessage": {
-			ExpectedJSONSchema: []string{testdata.PayloadMessage},
-			FilesToGenerate:    []string{"PayloadMessage.proto"},
-			ProtoFileName:      "PayloadMessage.proto",
-		},
-		"SeveralEnums": {
-			ExpectedJSONSchema: []string{testdata.FirstEnum, testdata.SecondEnum},
-			FilesToGenerate:    []string{"SeveralEnums.proto"},
-			ProtoFileName:      "SeveralEnums.proto",
-		},
-		"SeveralMessages": {
-			ExpectedJSONSchema: []string{testdata.FirstMessage, testdata.SecondMessage},
-			FilesToGenerate:    []string{"SeveralMessages.proto"},
-			ProtoFileName:      "SeveralMessages.proto",
-		},
-		"ArrayOfEnums": {
-			ExpectedJSONSchema: []string{testdata.ArrayOfEnums},
-			FilesToGenerate:    []string{"ArrayOfEnums.proto"},
-			ProtoFileName:      "ArrayOfEnums.proto",
-		},
-		"Maps": {
-			ExpectedJSONSchema: []string{testdata.Maps},
-			FilesToGenerate:    []string{"Maps.proto"},
-			ProtoFileName:      "Maps.proto",
-		},
-		"Comments": {
-			ExpectedJSONSchema: []string{testdata.MessageWithComments},
-			FilesToGenerate:    []string{"MessageWithComments.proto"},
-			ProtoFileName:      "MessageWithComments.proto",
-		},
-		"SelfReference": {
-			ExpectedJSONSchema: []string{testdata.SelfReference},
-			FilesToGenerate:    []string{"SelfReference.proto"},
-			ProtoFileName:      "SelfReference.proto",
-		},
-		"CyclicalReference": {
-			ExpectedJSONSchema: []string{testdata.CyclicalReferenceMessageM, testdata.CyclicalReferenceMessageFoo, testdata.CyclicalReferenceMessageBar, testdata.CyclicalReferenceMessageBaz},
-			FilesToGenerate:    []string{"CyclicalReference.proto"},
-			ProtoFileName:      "CyclicalReference.proto",
-		},
-		"WellKnown": {
-			ExpectedJSONSchema: []string{testdata.WellKnown},
-			FilesToGenerate:    []string{"WellKnown.proto"},
-			ProtoFileName:      "WellKnown.proto",
-		},
-		"Timestamp": {
-			ExpectedJSONSchema: []string{testdata.Timestamp},
-			FilesToGenerate:    []string{"Timestamp.proto"},
-			ProtoFileName:      "Timestamp.proto",
-		},
 		"NoPackage": {
 			ExpectedJSONSchema: []string{},
 			FilesToGenerate:    []string{},
 			ProtoFileName:      "NoPackage.proto",
+		},
+		"OneOf": {
+			Flags:              ConverterFlags{AllFieldsRequired: true, EnforceOneOf: true},
+			ExpectedJSONSchema: []string{testdata.OneOf},
+			FilesToGenerate:    []string{"OneOf.proto"},
+			ProtoFileName:      "OneOf.proto",
 		},
 		"PackagePrefix": {
 			Flags:              ConverterFlags{PrefixSchemaFilesWithPackage: true},
@@ -223,16 +221,10 @@ func configureSampleProtos() map[string]sampleProto {
 			FilesToGenerate:    []string{"Timestamp.proto"},
 			ProtoFileName:      "Timestamp.proto",
 		},
-		"Proto2Required": {
-			ExpectedJSONSchema: []string{testdata.Proto2Required},
-			FilesToGenerate:    []string{"Proto2Required.proto"},
-			ProtoFileName:      "Proto2Required.proto",
-		},
-		"AllRequired": {
-			Flags:              ConverterFlags{AllFieldsRequired: true},
-			ExpectedJSONSchema: []string{testdata.PayloadMessage2},
-			FilesToGenerate:    []string{"PayloadMessage2.proto"},
-			ProtoFileName:      "PayloadMessage2.proto",
+		"PayloadMessage": {
+			ExpectedJSONSchema: []string{testdata.PayloadMessage},
+			FilesToGenerate:    []string{"PayloadMessage.proto"},
+			ProtoFileName:      "PayloadMessage.proto",
 		},
 		"Proto2NestedMessage": {
 			ExpectedJSONSchema: []string{testdata.Proto2PayloadMessage, testdata.Proto2NestedMessage},
@@ -245,38 +237,46 @@ func configureSampleProtos() map[string]sampleProto {
 			FilesToGenerate:    []string{"Proto2NestedObject.proto"},
 			ProtoFileName:      "Proto2NestedObject.proto",
 		},
+		"Proto2Required": {
+			ExpectedJSONSchema: []string{testdata.Proto2Required},
+			FilesToGenerate:    []string{"Proto2Required.proto"},
+			ProtoFileName:      "Proto2Required.proto",
+		},
+		"Proto3Required": {
+			ExpectedJSONSchema: []string{testdata.FieldOptions, testdata.Proto3Required},
+			FilesToGenerate:    []string{"options.proto", "Proto3Required.proto"},
+			ProtoFileName:      "Proto3Required.proto",
+		},
+		"SelfReference": {
+			ExpectedJSONSchema: []string{testdata.SelfReference},
+			FilesToGenerate:    []string{"SelfReference.proto"},
+			ProtoFileName:      "SelfReference.proto",
+		},
+		"SeveralEnums": {
+			ExpectedJSONSchema: []string{testdata.FirstEnum, testdata.SecondEnum},
+			FilesToGenerate:    []string{"SeveralEnums.proto"},
+			ProtoFileName:      "SeveralEnums.proto",
+		},
+		"SeveralMessages": {
+			ExpectedJSONSchema: []string{testdata.FirstMessage, testdata.SecondMessage},
+			FilesToGenerate:    []string{"SeveralMessages.proto"},
+			ProtoFileName:      "SeveralMessages.proto",
+		},
 		"TargetedMessages": {
 			TargetedMessages:   []string{"MessageKind10", "MessageKind11", "MessageKind12"},
 			ExpectedJSONSchema: []string{testdata.MessageKind10, testdata.MessageKind11, testdata.MessageKind12},
 			FilesToGenerate:    []string{"TwelveMessages.proto"},
 			ProtoFileName:      "TwelveMessages.proto",
 		},
-		"GoogleValue": {
-			ExpectedJSONSchema: []string{testdata.GoogleValue},
-			FilesToGenerate:    []string{"GoogleValue.proto"},
-			ProtoFileName:      "GoogleValue.proto",
+		"Timestamp": {
+			ExpectedJSONSchema: []string{testdata.Timestamp},
+			FilesToGenerate:    []string{"Timestamp.proto"},
+			ProtoFileName:      "Timestamp.proto",
 		},
-		"JSONFields": {
-			Flags:              ConverterFlags{UseJSONFieldnamesOnly: true},
-			ExpectedJSONSchema: []string{testdata.JSONFields},
-			FilesToGenerate:    []string{"JSONFields.proto"},
-			ProtoFileName:      "JSONFields.proto",
-		},
-		"OneOf": {
-			Flags:              ConverterFlags{AllFieldsRequired: true, EnforceOneOf: true},
-			ExpectedJSONSchema: []string{testdata.OneOf},
-			FilesToGenerate:    []string{"OneOf.proto"},
-			ProtoFileName:      "OneOf.proto",
-		},
-		"HiddenFields": {
-			ExpectedJSONSchema: []string{testdata.FieldOptions, testdata.HiddenFields},
-			FilesToGenerate:    []string{"options.proto", "HiddenFields.proto"},
-			ProtoFileName:      "HiddenFields.proto",
-		},
-		"Proto3Required": {
-			ExpectedJSONSchema: []string{testdata.FieldOptions, testdata.Proto3Required},
-			FilesToGenerate:    []string{"options.proto", "Proto3Required.proto"},
-			ProtoFileName:      "Proto3Required.proto",
+		"WellKnown": {
+			ExpectedJSONSchema: []string{testdata.WellKnown},
+			FilesToGenerate:    []string{"WellKnown.proto"},
+			ProtoFileName:      "WellKnown.proto",
 		},
 	}
 }
