@@ -1,8 +1,21 @@
 syntax = "proto3";
 package protoc.gen.jsonschema;
 import "google/protobuf/descriptor.proto";
+option go_package = "./protos";
 
+// Custom FieldOptions for protoc-gen-jsonschema:
+message FieldOptions {
+
+  // Fields tagged with this will be omitted from generated schemas:
+  bool ignore = 1;
+
+  // Fields tagged with this will be marked as "required" in generated schemas:
+  bool required = 2;
+}
+
+
+// Custom FieldOptions using our legitimate registered number:
+// https://github.com/protocolbuffers/protobuf/blob/master/docs/options.md
 extend google.protobuf.FieldOptions {
-  bool ignore = 50505;
-  bool required = 50515;
+  FieldOptions options = 1125;
 }
