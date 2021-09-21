@@ -520,12 +520,6 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 			}
 		}
 
-		// Look for our custom "ignore" field-option (and hope that nobody else happens to be using our number):
-		if c.Flags.ExcludeIgnoredFields && strings.Contains(fieldDesc.GetOptions().String(), c.ignoredFieldOption) {
-			c.logger.WithField("field_name", fieldDesc.GetName()).WithField("message_name", msg.GetName()).Debug("Omitting ignored field")
-			continue
-		}
-
 		// Convert the field into a JSONSchema type:
 		recursedJSONSchemaType, err := c.convertField(curPkg, fieldDesc, msg, duplicatedMessages)
 		if err != nil {
