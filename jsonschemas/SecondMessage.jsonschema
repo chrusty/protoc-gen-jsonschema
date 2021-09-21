@@ -18,6 +18,5 @@
         }
     },
     "additionalProperties": true,
-    "type": "object",
-    "id": "SecondMessage"
+    "type": "object"
 }

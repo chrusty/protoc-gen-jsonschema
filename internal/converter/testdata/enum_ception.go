@@ -40,7 +40,6 @@ const EnumCeption = `{
         },
         "payloads": {
             "items": {
-                "$schema": "http://json-schema.org/draft-04/schema#",
                 "$ref": "samples.PayloadMessage"
             },
             "type": "array"

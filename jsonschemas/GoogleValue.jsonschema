@@ -23,6 +23,5 @@
         }
     },
     "additionalProperties": true,
-    "type": "object",
-    "id": "GoogleValue"
+    "type": "object"
 }

@@ -42,6 +42,5 @@
         }
     },
     "additionalProperties": true,
-    "type": "object",
-    "id": "PayloadMessage"
+    "type": "object"
 }

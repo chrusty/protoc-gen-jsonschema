@@ -8,6 +8,18 @@ const Proto2NestedObject = `{
     ],
     "properties": {
         "payload": {
+            "$ref": "samples.Proto2NestedObject.NestedPayload",
+            "additionalProperties": false
+        },
+        "description": {
+            "type": "string"
+        }
+    },
+    "additionalProperties": true,
+    "type": "object",
+    "definitions": {
+        "samples.Proto2NestedObject.NestedPayload": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
             "required": [
                 "name",
                 "timestamp",
@@ -57,13 +69,9 @@ const Proto2NestedObject = `{
                     ]
                 }
             },
-            "additionalProperties": false,
-            "type": "object"
-        },
-        "description": {
-            "type": "string"
+            "additionalProperties": true,
+            "type": "object",
+            "id": "samples.Proto2NestedObject.NestedPayload"
         }
-    },
-    "additionalProperties": true,
-    "type": "object"
+    }
 }`

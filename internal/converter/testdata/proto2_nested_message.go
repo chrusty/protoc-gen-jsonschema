@@ -7,6 +7,18 @@ const Proto2NestedMessage = `{
     ],
     "properties": {
         "payload": {
+            "$ref": "samples.Proto2PayloadMessage",
+            "additionalProperties": false
+        },
+        "description": {
+            "type": "string"
+        }
+    },
+    "additionalProperties": true,
+    "type": "object",
+    "definitions": {
+        "samples.Proto2PayloadMessage": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
             "required": [
                 "name",
                 "id"
@@ -52,13 +64,9 @@ const Proto2NestedMessage = `{
                     ]
                 }
             },
-            "additionalProperties": false,
-            "type": "object"
-        },
-        "description": {
-            "type": "string"
+            "additionalProperties": true,
+            "type": "object",
+            "id": "samples.Proto2PayloadMessage"
         }
-    },
-    "additionalProperties": true,
-    "type": "object"
+    }
 }`

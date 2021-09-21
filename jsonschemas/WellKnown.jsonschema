@@ -33,6 +33,5 @@
         }
     },
     "additionalProperties": true,
-    "type": "object",
-    "id": "WellKnown"
+    "type": "object"
 }

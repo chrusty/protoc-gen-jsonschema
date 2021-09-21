@@ -21,6 +21,5 @@
         }
     },
     "additionalProperties": true,
-    "type": "object",
-    "id": "ArrayOfEnums"
+    "type": "object"
 }

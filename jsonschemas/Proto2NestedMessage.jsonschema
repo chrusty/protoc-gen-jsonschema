@@ -14,7 +14,6 @@
     },
     "additionalProperties": true,
     "type": "object",
-    "id": "Proto2NestedMessage",
     "definitions": {
         "samples.Proto2PayloadMessage": {
             "$schema": "http://json-schema.org/draft-04/schema#",

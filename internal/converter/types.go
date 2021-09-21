@@ -362,6 +362,7 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.Des
 	if len(rootType.Ref) > 0 {
 		if rootTypeDefinition, ok := definitions[msg.GetName()]; ok {
 			rootType = rootTypeDefinition
+			delete(rootType.Extras, "id")
 			delete(definitions, msg.GetName())
 		}
 	}

@@ -34,7 +34,6 @@
             "type": "object"
         }
     ],
-    "id": "ArrayOfObjects",
     "definitions": {
         "samples.ArrayOfObjects.RepeatedPayload": {
             "$schema": "http://json-schema.org/draft-04/schema#",

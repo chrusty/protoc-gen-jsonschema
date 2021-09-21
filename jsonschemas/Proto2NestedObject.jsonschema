@@ -15,7 +15,6 @@
     },
     "additionalProperties": true,
     "type": "object",
-    "id": "Proto2NestedObject",
     "definitions": {
         "samples.Proto2NestedObject.NestedPayload": {
             "$schema": "http://json-schema.org/draft-04/schema#",

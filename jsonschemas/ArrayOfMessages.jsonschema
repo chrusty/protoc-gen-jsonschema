@@ -34,7 +34,6 @@
             "type": "object"
         }
     ],
-    "id": "ArrayOfMessages",
     "definitions": {
         "samples.PayloadMessage": {
             "$schema": "http://json-schema.org/draft-04/schema#",

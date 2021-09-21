@@ -9,6 +9,5 @@
         }
     },
     "additionalProperties": true,
-    "type": "object",
-    "id": "HiddenFields"
+    "type": "object"
 }

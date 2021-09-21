@@ -46,6 +46,5 @@
         }
     },
     "additionalProperties": true,
-    "type": "object",
-    "id": "Proto2PayloadMessage"
+    "type": "object"
 }

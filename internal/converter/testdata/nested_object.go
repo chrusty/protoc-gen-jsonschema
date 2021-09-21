@@ -4,6 +4,18 @@ const NestedObject = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "properties": {
         "payload": {
+            "$ref": "samples.NestedObject.NestedPayload",
+            "additionalProperties": true
+        },
+        "description": {
+            "type": "string"
+        }
+    },
+    "additionalProperties": true,
+    "type": "object",
+    "definitions": {
+        "samples.NestedObject.NestedPayload": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"
@@ -46,12 +58,8 @@ const NestedObject = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
-        },
-        "description": {
-            "type": "string"
+            "type": "object",
+            "id": "samples.NestedObject.NestedPayload"
         }
-    },
-    "additionalProperties": true,
-    "type": "object"
+    }
 }`

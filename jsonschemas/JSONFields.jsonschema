@@ -21,6 +21,5 @@
         }
     },
     "additionalProperties": true,
-    "type": "object",
-    "id": "JSONFields"
+    "type": "object"
 }

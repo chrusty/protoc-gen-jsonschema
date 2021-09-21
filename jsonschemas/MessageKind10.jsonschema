@@ -18,6 +18,5 @@
         }
     },
     "additionalProperties": true,
-    "type": "object",
-    "id": "MessageKind10"
+    "type": "object"
 }

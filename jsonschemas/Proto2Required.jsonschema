@@ -15,6 +15,5 @@
         }
     },
     "additionalProperties": true,
-    "type": "object",
-    "id": "Proto2Required"
+    "type": "object"
 }

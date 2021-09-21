@@ -23,7 +23,6 @@
     },
     "additionalProperties": true,
     "type": "object",
-    "id": "Maps",
     "definitions": {
         "samples.PayloadMessage": {
             "$schema": "http://json-schema.org/draft-04/schema#",

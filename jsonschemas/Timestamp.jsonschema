@@ -7,6 +7,5 @@
         }
     },
     "additionalProperties": true,
-    "type": "object",
-    "id": "Timestamp"
+    "type": "object"
 }

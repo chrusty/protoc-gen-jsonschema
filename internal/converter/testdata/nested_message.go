@@ -4,6 +4,18 @@ const NestedMessage = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "properties": {
         "payload": {
+            "$ref": "samples.PayloadMessage",
+            "additionalProperties": false
+        },
+        "description": {
+            "type": "string"
+        }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "definitions": {
+        "samples.PayloadMessage": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"
@@ -45,13 +57,9 @@ const NestedMessage = `{
                     ]
                 }
             },
-            "additionalProperties": true,
-            "type": "object"
-        },
-        "description": {
-            "type": "string"
+            "additionalProperties": false,
+            "type": "object",
+            "id": "samples.PayloadMessage"
         }
-    },
-    "additionalProperties": true,
-    "type": "object"
+    }
 }`

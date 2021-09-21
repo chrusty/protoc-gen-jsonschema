@@ -11,7 +11,6 @@
     },
     "additionalProperties": true,
     "type": "object",
-    "id": "NestedObject",
     "definitions": {
         "samples.NestedObject.NestedPayload": {
             "$schema": "http://json-schema.org/draft-04/schema#",
