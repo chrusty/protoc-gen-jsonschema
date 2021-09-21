@@ -358,14 +358,14 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.Des
 		definitions[name] = refType
 	}
 
-	// By now the root type may have been swapped for a reference. Let's take it back:
-	if len(rootType.Ref) > 0 {
-		if rootTypeDefinition, ok := definitions[msg.GetName()]; ok {
-			rootType = rootTypeDefinition
-			delete(rootType.Extras, "id")
-			delete(definitions, msg.GetName())
-		}
-	}
+	// // By now the root type may have been swapped for a reference. Let's take it back:
+	// if len(rootType.Ref) > 0 {
+	// 	if rootTypeDefinition, ok := definitions[msg.GetName()]; ok {
+	// 		rootType = rootTypeDefinition
+	// 		delete(rootType.Extras, "id")
+	// 		delete(definitions, msg.GetName())
+	// 	}
+	// }
 
 	newJSONSchema := &jsonschema.Schema{
 		Type:        rootType,
