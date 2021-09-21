@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/alecthomas/jsonschema"
+	"github.com/chrusty/protoc-gen-jsonschema/internal/protos"
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/iancoleman/orderedmap"
@@ -497,6 +498,28 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 	c.logger.WithField("message_str", proto.MarshalTextString(msg)).Trace("Converting message")
 	for _, fieldDesc := range msg.GetField() {
 
+		// Check for our custom field options:
+		opts := fieldDesc.GetOptions()
+		if opts != nil && proto.HasExtension(opts, protos.E_Options) {
+			opt, err := proto.GetExtension(opts, protos.E_Options)
+			if err == nil {
+				if fieldOptions, ok := opt.(*protos.FieldOptions); ok {
+
+					// "Ignored" fields are simply skipped:
+					if fieldOptions.GetIgnore() {
+						c.logger.WithField("field_name", fieldDesc.GetName()).WithField("message_name", msg.GetName()).Debug("Skipping ignored field")
+						continue
+					}
+
+					// "Required" fields are added to the list of required attributes in our schema:
+					if fieldOptions.GetRequired() {
+						c.logger.WithField("field_name", fieldDesc.GetName()).WithField("message_name", msg.GetName()).Debug("Marking required field")
+						jsonSchemaType.Required = append(jsonSchemaType.Required, fieldDesc.GetName())
+					}
+				}
+			}
+		}
+
 		// Look for our custom "ignore" field-option (and hope that nobody else happens to be using our number):
 		if c.Flags.ExcludeIgnoredFields && strings.Contains(fieldDesc.GetOptions().String(), c.ignoredFieldOption) {
 			c.logger.WithField("field_name", fieldDesc.GetName()).WithField("message_name", msg.GetName()).Debug("Omitting ignored field")
@@ -536,12 +559,6 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 
 		// Look for required fields by the proto2 "required" flag:
 		if fieldDesc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REQUIRED && fieldDesc.OneofIndex == nil {
-			jsonSchemaType.Required = append(jsonSchemaType.Required, fieldDesc.GetName())
-		}
-
-		// Look for our custom proto3 "required" field-option (and hope that nobody else happens to be using our number):
-		if strings.Contains(fieldDesc.GetOptions().String(), c.requiredFieldOption) {
-			c.logger.WithField("field_name", fieldDesc.GetName()).WithField("message_name", msg.GetName()).Debug("Marking required field")
 			jsonSchemaType.Required = append(jsonSchemaType.Required, fieldDesc.GetName())
 		}
 	}
