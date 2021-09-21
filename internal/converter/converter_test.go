@@ -270,12 +270,12 @@ func configureSampleProtos() map[string]sampleProto {
 		},
 		"HiddenFields": {
 			Flags:              ConverterFlags{ExcludeIgnoredFields: true},
-			ExpectedJSONSchema: []string{testdata.HiddenFields},
+			ExpectedJSONSchema: []string{testdata.FieldOptions, testdata.HiddenFields},
 			FilesToGenerate:    []string{"options.proto", "HiddenFields.proto"},
 			ProtoFileName:      "HiddenFields.proto",
 		},
 		"Proto3Required": {
-			ExpectedJSONSchema: []string{testdata.Proto3Required},
+			ExpectedJSONSchema: []string{testdata.FieldOptions, testdata.Proto3Required},
 			FilesToGenerate:    []string{"options.proto", "Proto3Required.proto"},
 			ProtoFileName:      "Proto3Required.proto",
 		},
