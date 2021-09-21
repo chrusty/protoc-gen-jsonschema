@@ -40,7 +40,6 @@ protoc \ # The protobuf compiler
 |`disallow_additional_properties`| Disallow additional properties in schema |
 |`disallow_bigints_as_strings`| Disallow big integers as strings |
 |`enforce_oneof`| Interpret Proto "oneOf" clauses |
-|`exclude_ignored_fields`| Omit fields marked with the custom "ignore" option |
 |`json_fieldnames`| Use JSON field names only |
 |`prefix_schema_files_with_package`| Prefix the output filename with package |
 |`proto_and_json_fieldnames`| Use proto and JSON field names |
@@ -124,11 +123,36 @@ protoc \
 
 ### Custom option to ignore specific fields
 
-Use the custom 'ignore' option on the fields you'd like to omit from generated schemas, then use the "exclude_ignored_fields" flag with your protoc command.
+Use the custom 'ignore' option on the fields you'd like to omit from generated schemas.
+
+```proto
+syntax = "proto3";
+package samples;
+import "options.proto";
+
+message HiddenFields {
+    string visible1 = 1 [(protoc.gen.jsonschema.options).ignore = false];
+    string visible2 = 2;
+    string hidden1  = 3 [(protoc.gen.jsonschema.options).ignore = true];
+    string hidden2  = 4 [deprecated = true, (protoc.gen.jsonschema.options).ignore = true];
+}
+```
 
 ### Custom option to mark fields as required
 
 Use the custom 'required' option on the fields you'd like to mark as required in generated schemas.
+
+```proto
+syntax = "proto3";
+package samples;
+import "options.proto";
+
+message Proto3Required {
+  string query = 1 [(protoc.gen.jsonschema.options).required = true];
+  int32 page_number = 2 [deprecated = true, (protoc.gen.jsonschema.options).required = true];
+  int32 result_per_page = 3;
+}
+```
 
 
 ## Sample protos (for testing)
