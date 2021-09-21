@@ -1,94 +1,42 @@
 package testdata
 
 const ArrayOfMessages = `{
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "properties": {
-        "description": {
-            "oneOf": [
-                {
-                    "type": "null"
-                },
-                {
+    "$ref": "ArrayOfMessages",
+    "definitions": {
+        "ArrayOfMessages": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "properties": {
+                "description": {
                     "type": "string"
-                }
-            ]
-        },
-        "payload": {
-            "items": {
-                "$ref": "samples.PayloadMessage"
-            },
-            "oneOf": [
-                {
-                    "type": "null"
                 },
-                {
+                "payload": {
+                    "items": {
+                        "$ref": "samples.PayloadMessage"
+                    },
                     "type": "array"
                 }
-            ]
-        }
-    },
-    "additionalProperties": true,
-    "oneOf": [
-        {
-            "type": "null"
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "id": "ArrayOfMessages"
         },
-        {
-            "type": "object"
-        }
-    ],
-    "definitions": {
         "samples.PayloadMessage": {
             "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
-                    "oneOf": [
-                        {
-                            "type": "null"
-                        },
-                        {
-                            "type": "string"
-                        }
-                    ]
+                    "type": "string"
                 },
                 "timestamp": {
-                    "oneOf": [
-                        {
-                            "type": "null"
-                        },
-                        {
-                            "type": "string"
-                        }
-                    ]
+                    "type": "string"
                 },
                 "id": {
-                    "oneOf": [
-                        {
-                            "type": "null"
-                        },
-                        {
-                            "type": "integer"
-                        }
-                    ]
+                    "type": "integer"
                 },
                 "rating": {
-                    "oneOf": [
-                        {
-                            "type": "null"
-                        },
-                        {
-                            "type": "number"
-                        }
-                    ]
+                    "type": "number"
                 },
                 "complete": {
-                    "oneOf": [
-                        {
-                            "type": "null"
-                        },
-                        {
-                            "type": "boolean"
-                        }
-                    ]
+                    "type": "boolean"
                 },
                 "topology": {
                     "enum": [
@@ -111,22 +59,12 @@ const ArrayOfMessages = `{
                         },
                         {
                             "type": "integer"
-                        },
-                        {
-                            "type": "null"
                         }
                     ]
                 }
             },
             "additionalProperties": true,
-            "oneOf": [
-                {
-                    "type": "null"
-                },
-                {
-                    "type": "object"
-                }
-            ],
+            "type": "object",
             "id": "samples.PayloadMessage"
         }
     }

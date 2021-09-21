@@ -372,14 +372,14 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.Des
 		Definitions: definitions,
 	}
 
-	// Look for required fields (either by proto2 required flag, or the AllFieldsRequired option):
-	for _, fieldDesc := range msg.GetField() {
-		if (c.Flags.AllFieldsRequired && fieldDesc.OneofIndex == nil) || fieldDesc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REQUIRED {
-			newJSONSchema.Required = append(newJSONSchema.Required, fieldDesc.GetName())
-		}
-	}
+	// // Look for required fields (either by proto2 required flag, or the AllFieldsRequired option):
+	// for _, fieldDesc := range msg.GetField() {
+	// 	if (c.Flags.AllFieldsRequired && fieldDesc.OneofIndex == nil) || fieldDesc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REQUIRED {
+	// 		newJSONSchema.Required = append(newJSONSchema.Required, fieldDesc.GetName())
+	// 	}
+	// }
 
-	newJSONSchema.Required = dedupe(newJSONSchema.Required)
+	// newJSONSchema.Required = dedupe(newJSONSchema.Required)
 
 	return newJSONSchema, nil
 }

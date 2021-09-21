@@ -96,106 +96,112 @@ const ArrayOfPrimitives = `{
 }`
 
 const ArrayOfPrimitivesDouble = `{
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "properties": {
-        "description": {
-            "oneOf": [
-                {
-                    "type": "null"
+    "$ref": "ArrayOfPrimitives",
+    "definitions": {
+        "ArrayOfPrimitives": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "properties": {
+                "description": {
+                    "oneOf": [
+                        {
+                            "type": "null"
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ]
                 },
-                {
-                    "type": "string"
-                }
-            ]
-        },
-        "luckyNumbers": {
-            "items": {
-                "oneOf": [
-                    {
-                        "type": "null"
+                "luckyNumbers": {
+                    "items": {
+                        "oneOf": [
+                            {
+                                "type": "null"
+                            },
+                            {
+                                "type": "integer"
+                            }
+                        ]
                     },
-                    {
-                        "type": "integer"
-                    }
-                ]
-            },
-            "oneOf": [
-                {
-                    "type": "null"
+                    "oneOf": [
+                        {
+                            "type": "null"
+                        },
+                        {
+                            "type": "array"
+                        }
+                    ]
                 },
-                {
-                    "type": "array"
-                }
-            ]
-        },
-        "luckyBigNumbers": {
-            "items": {
-                "oneOf": [
-                    {
-                        "type": "string"
+                "luckyBigNumbers": {
+                    "items": {
+                        "oneOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
                     },
-                    {
-                        "type": "null"
-                    }
-                ]
-            },
-            "oneOf": [
-                {
-                    "type": "null"
+                    "oneOf": [
+                        {
+                            "type": "null"
+                        },
+                        {
+                            "type": "array"
+                        }
+                    ]
                 },
-                {
-                    "type": "array"
-                }
-            ]
-        },
-        "keyWords": {
-            "items": {
-                "oneOf": [
-                    {
-                        "type": "null"
+                "keyWords": {
+                    "items": {
+                        "oneOf": [
+                            {
+                                "type": "null"
+                            },
+                            {
+                                "type": "string"
+                            }
+                        ]
                     },
-                    {
-                        "type": "string"
-                    }
-                ]
+                    "oneOf": [
+                        {
+                            "type": "null"
+                        },
+                        {
+                            "type": "array"
+                        }
+                    ]
+                },
+                "big_number": {
+                    "oneOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "bigNumber": {
+                    "oneOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                }
             },
+            "additionalProperties": true,
             "oneOf": [
                 {
                     "type": "null"
                 },
                 {
-                    "type": "array"
+                    "type": "object"
                 }
-            ]
-        },
-        "big_number": {
-            "oneOf": [
-                {
-                    "type": "string"
-                },
-                {
-                    "type": "null"
-                }
-            ]
-        },
-        "bigNumber": {
-            "oneOf": [
-                {
-                    "type": "string"
-                },
-                {
-                    "type": "null"
-                }
-            ]
+            ],
+            "id": "ArrayOfPrimitives"
         }
-    },
-    "additionalProperties": true,
-    "oneOf": [
-        {
-            "type": "null"
-        },
-        {
-            "type": "object"
-        }
-    ]
+    }
 }`

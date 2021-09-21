@@ -1,73 +1,77 @@
 package testdata
 
 const EnumCeption = `{
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "properties": {
-        "name": {
-            "type": "string"
-        },
-        "timestamp": {
-            "type": "string"
-        },
-        "id": {
-            "type": "integer"
-        },
-        "rating": {
-            "type": "number"
-        },
-        "complete": {
-            "type": "boolean"
-        },
-        "failureMode": {
-            "enum": [
-                "RECURSION_ERROR",
-                0,
-                "SYNTAX_ERROR",
-                1
-            ],
-            "oneOf": [
-                {
-                    "type": "string"
-                },
-                {
-                    "type": "integer"
-                }
-            ]
-        },
-        "payload": {
-            "$ref": "samples.PayloadMessage",
-            "additionalProperties": true
-        },
-        "payloads": {
-            "items": {
-                "$ref": "samples.PayloadMessage"
-            },
-            "type": "array"
-        },
-        "importedEnum": {
-            "enum": [
-                "VALUE_0",
-                0,
-                "VALUE_1",
-                1,
-                "VALUE_2",
-                2,
-                "VALUE_3",
-                3
-            ],
-            "oneOf": [
-                {
-                    "type": "string"
-                },
-                {
-                    "type": "integer"
-                }
-            ]
-        }
-    },
-    "additionalProperties": true,
-    "type": "object",
+    "$ref": "Enumception",
     "definitions": {
+        "Enumception": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "rating": {
+                    "type": "number"
+                },
+                "complete": {
+                    "type": "boolean"
+                },
+                "failureMode": {
+                    "enum": [
+                        "RECURSION_ERROR",
+                        0,
+                        "SYNTAX_ERROR",
+                        1
+                    ],
+                    "oneOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "integer"
+                        }
+                    ]
+                },
+                "payload": {
+                    "$ref": "samples.PayloadMessage",
+                    "additionalProperties": true
+                },
+                "payloads": {
+                    "items": {
+                        "$ref": "samples.PayloadMessage"
+                    },
+                    "type": "array"
+                },
+                "importedEnum": {
+                    "enum": [
+                        "VALUE_0",
+                        0,
+                        "VALUE_1",
+                        1,
+                        "VALUE_2",
+                        2,
+                        "VALUE_3",
+                        3
+                    ],
+                    "oneOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "integer"
+                        }
+                    ]
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "id": "Enumception"
+        },
         "samples.PayloadMessage": {
             "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
