@@ -6,6 +6,35 @@ Useful for people who define their data using ProtoBuf, but use JSON for the "wi
 
 "Heavily influenced" by [Google's protobuf-to-BigQuery-schema compiler](https://github.com/GoogleCloudPlatform/protoc-gen-bq-schema).
 
+
+## Generated Schemas
+
+- One JSONSchema file is generated for each root-level proto message and ENUM. These are intended to be stand alone self-contained schemas which can be used to validate a payload derived from their source proto message
+- Nested message schemas become [referenced "definitions"](https://cswr.github.io/JsonSchema/spec/definitions_references/). This means that you know the name of the proto message they came from, and their schema is not duplicated (within the context of one JSONSchema file at least)
+
+
+## Logic
+
+- For each proto file provided
+  - Generates schema for each ENUM
+    - JSONSchema filename deried from ENUM name
+  - Generates schema for each Message
+    - Builds a list of every nested message and converts them to JSONSchema
+    - Recursively converts attributes and nested messages within the root message
+      - Optionally makes all fields required
+      - Optionally allows NULL values
+      - Optionally allows additional properties
+      - Optionally marks all fields required
+      - Specially marked fields are labelled required (options.proto)
+      - Specially marked fields are omitted (options.proto)
+      - Special handling for "OneOf"
+      - Special handling for arrays
+      - Special handling for maps
+    - Injects references to nested messages
+    - JSONSchema filename derived from Message name
+  - Bundles these into a protoc generator response
+
+
 ## Installation
 
 > Note: This tool requires Go 1.11+ to be installed.
