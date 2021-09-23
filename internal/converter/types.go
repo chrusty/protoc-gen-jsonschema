@@ -350,11 +350,13 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.Des
 			return nil, err
 		}
 
-		// need to give that schema an ID
+		// Give the schema an ID:
 		if refType.Extras == nil {
 			refType.Extras = make(map[string]interface{})
 		}
 		refType.Extras["id"] = name
+
+		// Add the schema to our definitions:
 		definitions[name] = refType
 	}
 
@@ -490,7 +492,7 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 	// Look up references:
 	if refName, ok := duplicatedMessages[msg]; ok && !ignoreDuplicatedMessages {
 		return &jsonschema.Type{
-			Ref: refName,
+			Ref: fmt.Sprintf("#/definitions/%s", refName),
 		}, nil
 	}
 
