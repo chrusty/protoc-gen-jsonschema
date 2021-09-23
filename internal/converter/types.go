@@ -360,28 +360,10 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.Des
 		definitions[name] = refType
 	}
 
-	// // By now the root type may have been swapped for a reference. Let's take it back:
-	// if len(rootType.Ref) > 0 {
-	// 	if rootTypeDefinition, ok := definitions[msg.GetName()]; ok {
-	// 		rootType = rootTypeDefinition
-	// 		delete(rootType.Extras, "id")
-	// 		delete(definitions, msg.GetName())
-	// 	}
-	// }
-
 	newJSONSchema := &jsonschema.Schema{
 		Type:        rootType,
 		Definitions: definitions,
 	}
-
-	// // Look for required fields (either by proto2 required flag, or the AllFieldsRequired option):
-	// for _, fieldDesc := range msg.GetField() {
-	// 	if (c.Flags.AllFieldsRequired && fieldDesc.OneofIndex == nil) || fieldDesc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REQUIRED {
-	// 		newJSONSchema.Required = append(newJSONSchema.Required, fieldDesc.GetName())
-	// 	}
-	// }
-
-	// newJSONSchema.Required = dedupe(newJSONSchema.Required)
 
 	return newJSONSchema, nil
 }
@@ -492,7 +474,7 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 	// Look up references:
 	if refName, ok := duplicatedMessages[msg]; ok && !ignoreDuplicatedMessages {
 		return &jsonschema.Type{
-			Ref: fmt.Sprintf("#/definitions/%s", refName),
+			Ref: fmt.Sprintf("%s%s", c.refPrefix, refName),
 		}, nil
 	}
 

@@ -1,17 +1,21 @@
 {
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "properties": {
-        "payload": {
-            "$ref": "samples.PayloadMessage",
-            "additionalProperties": false
-        },
-        "description": {
-            "type": "string"
-        }
-    },
-    "additionalProperties": false,
-    "type": "object",
+    "$ref": "NestedMessage",
     "definitions": {
+        "NestedMessage": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "properties": {
+                "payload": {
+                    "$ref": "samples.PayloadMessage",
+                    "additionalProperties": false
+                },
+                "description": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "id": "NestedMessage"
+        },
         "samples.PayloadMessage": {
             "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {

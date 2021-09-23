@@ -1,29 +1,33 @@
 {
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "properties": {
-        "name": {
-            "type": "string"
-        },
-        "f": {
-            "$ref": "samples.MessageKind11",
-            "additionalProperties": true
-        },
-        "kind5": {
-            "$ref": "samples.MessageKind5",
-            "additionalProperties": true
-        },
-        "kind6": {
-            "$ref": "samples.MessageKind6",
-            "additionalProperties": true
-        },
-        "kind7": {
-            "$ref": "samples.MessageKind7",
-            "additionalProperties": true
-        }
-    },
-    "additionalProperties": true,
-    "type": "object",
+    "$ref": "MessageKind12",
     "definitions": {
+        "MessageKind12": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "f": {
+                    "$ref": "samples.MessageKind11",
+                    "additionalProperties": true
+                },
+                "kind5": {
+                    "$ref": "samples.MessageKind5",
+                    "additionalProperties": true
+                },
+                "kind6": {
+                    "$ref": "samples.MessageKind6",
+                    "additionalProperties": true
+                },
+                "kind7": {
+                    "$ref": "samples.MessageKind7",
+                    "additionalProperties": true
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "id": "MessageKind12"
+        },
         "samples.MessageKind1": {
             "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {

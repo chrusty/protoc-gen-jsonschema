@@ -17,7 +17,8 @@ import (
 )
 
 const (
-	messageDelimiter = "+"
+	definitionsRefPrefix = "#/definitions/"
+	messageDelimiter     = "+"
 )
 
 // Converter is everything you need to convert protos to JSONSchemas:
@@ -25,6 +26,7 @@ type Converter struct {
 	Flags               ConverterFlags
 	ignoredFieldOption  string
 	logger              *logrus.Logger
+	refPrefix           string
 	requiredFieldOption string
 	sourceInfo          *sourceCodeInfo
 	messageTargets      []string

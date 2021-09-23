@@ -1,17 +1,21 @@
 {
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "properties": {
-        "payload": {
-            "$ref": "samples.NestedObject.NestedPayload",
-            "additionalProperties": true
-        },
-        "description": {
-            "type": "string"
-        }
-    },
-    "additionalProperties": true,
-    "type": "object",
+    "$ref": "NestedObject",
     "definitions": {
+        "NestedObject": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "properties": {
+                "payload": {
+                    "$ref": "samples.NestedObject.NestedPayload",
+                    "additionalProperties": true
+                },
+                "description": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "id": "NestedObject"
+        },
         "samples.NestedObject.NestedPayload": {
             "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {

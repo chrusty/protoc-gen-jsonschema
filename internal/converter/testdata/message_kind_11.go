@@ -1,3 +1,140 @@
 package testdata
 
-const MessageKind11 = ``
+const MessageKind11 = `{
+    "$ref": "MessageKind11",
+    "definitions": {
+        "MessageKind11": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "ones": {
+                    "items": {
+                        "$ref": "samples.MessageKind1"
+                    },
+                    "type": "array"
+                },
+                "kind2": {
+                    "$ref": "samples.MessageKind2",
+                    "additionalProperties": true
+                },
+                "kind3": {
+                    "$ref": "samples.MessageKind3",
+                    "additionalProperties": true
+                },
+                "kind4": {
+                    "$ref": "samples.MessageKind4",
+                    "additionalProperties": true
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "id": "MessageKind11"
+        },
+        "samples.MessageKind1": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "rating": {
+                    "type": "number"
+                },
+                "complete": {
+                    "type": "boolean"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "id": "samples.MessageKind1"
+        },
+        "samples.MessageKind2": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "rating": {
+                    "type": "number"
+                },
+                "complete": {
+                    "type": "boolean"
+                },
+                "isa": {
+                    "type": "boolean"
+                },
+                "hasa": {
+                    "type": "boolean"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "id": "samples.MessageKind2"
+        },
+        "samples.MessageKind3": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "rating": {
+                    "type": "number"
+                },
+                "complete": {
+                    "type": "boolean"
+                },
+                "someProp": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "id": "samples.MessageKind3"
+        },
+        "samples.MessageKind4": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "rating": {
+                    "type": "number"
+                },
+                "complete": {
+                    "type": "boolean"
+                },
+                "special": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "id": "samples.MessageKind4"
+        }
+    }
+}`
