@@ -1,5 +1,6 @@
 package testdata
 
+<<<<<<< HEAD
 const FieldOptions = `{
     "$ref": "FieldOptions",
     "definitions": {
@@ -26,3 +27,6 @@ const FieldOptions = `{
 const FieldOptionsFail = `{"ignore": 12345}`
 
 const FieldOptionsPass = `{"required": true}`
+=======
+const FieldOptions = ``
+>>>>>>> 5f61300... resetting test schemas
