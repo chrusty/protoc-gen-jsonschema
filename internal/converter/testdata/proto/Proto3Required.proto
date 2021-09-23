@@ -3,7 +3,7 @@ package samples;
 import "options.proto";
 
 message Proto3Required {
-  string query = 1 [(protoc.gen.jsonschema.options).required = true];
-  int32 page_number = 2 [deprecated = true, (protoc.gen.jsonschema.options).required = true];
+  string query = 1 [(protoc.gen.jsonschema.field_options).required = true];
+  int32 page_number = 2 [deprecated = true, (protoc.gen.jsonschema.field_options).required = true];
   int32 result_per_page = 3;
 }

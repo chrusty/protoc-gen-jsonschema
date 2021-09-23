@@ -131,10 +131,10 @@ package samples;
 import "options.proto";
 
 message HiddenFields {
-    string visible1 = 1 [(protoc.gen.jsonschema.options).ignore = false];
+    string visible1 = 1 [(protoc.gen.jsonschema.field_options).ignore = false];
     string visible2 = 2;
-    string hidden1  = 3 [(protoc.gen.jsonschema.options).ignore = true];
-    string hidden2  = 4 [deprecated = true, (protoc.gen.jsonschema.options).ignore = true];
+    string hidden1  = 3 [(protoc.gen.jsonschema.field_options).ignore = true];
+    string hidden2  = 4 [deprecated = true, (protoc.gen.jsonschema.field_options).ignore = true];
 }
 ```
 
@@ -148,8 +148,8 @@ package samples;
 import "options.proto";
 
 message Proto3Required {
-  string query = 1 [(protoc.gen.jsonschema.options).required = true];
-  int32 page_number = 2 [deprecated = true, (protoc.gen.jsonschema.options).required = true];
+  string query = 1 [(protoc.gen.jsonschema.field_options).required = true];
+  int32 page_number = 2 [deprecated = true, (protoc.gen.jsonschema.field_options).required = true];
   int32 result_per_page = 3;
 }
 ```
