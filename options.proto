@@ -1,9 +1,14 @@
+// Custom options for protoc-gen-jsonschema
+// Allocated range is 1125-1129
+// See https://github.com/protocolbuffers/protobuf/blob/master/docs/options.md
+
 syntax = "proto3";
 package protoc.gen.jsonschema;
 import "google/protobuf/descriptor.proto";
 option go_package = "./protos";
 
-// Custom FieldOptions for protoc-gen-jsonschema:
+
+// Custom FieldOptions:
 message FieldOptions {
 
   // Fields tagged with this will be omitted from generated schemas:
@@ -14,8 +19,6 @@ message FieldOptions {
 }
 
 
-// Custom FieldOptions using our legitimate registered number:
-// https://github.com/protocolbuffers/protobuf/blob/master/docs/options.md
 extend google.protobuf.FieldOptions {
-  FieldOptions options = 1125;
+  FieldOptions field_options = 1125;
 }

@@ -14,5 +14,5 @@ const FieldOptions = `{
     },
     "additionalProperties": true,
     "type": "object",
-    "description": "Custom FieldOptions for protoc-gen-jsonschema:"
+    "description": "Custom FieldOptions:"
 }`
