@@ -474,7 +474,7 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 	// Look up references:
 	if refName, ok := duplicatedMessages[msg]; ok && !ignoreDuplicatedMessages {
 		return &jsonschema.Type{
-			Ref: fmt.Sprintf("%s%s", c.refPrefix, refName),
+			Ref: refName,
 		}, nil
 	}
 
