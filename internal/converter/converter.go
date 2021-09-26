@@ -22,12 +22,11 @@ const (
 
 // Converter is everything you need to convert protos to JSONSchemas:
 type Converter struct {
-	Flags               ConverterFlags
-	ignoredFieldOption  string
-	logger              *logrus.Logger
-	requiredFieldOption string
-	sourceInfo          *sourceCodeInfo
-	messageTargets      []string
+	Flags          ConverterFlags
+	logger         *logrus.Logger
+	messageTargets []string
+	refPrefix      string
+	sourceInfo     *sourceCodeInfo
 }
 
 // ConverterFlags control the behaviour of the converter:
@@ -91,8 +90,7 @@ func (c *Converter) parseGeneratorParameters(parameters string) {
 		case "proto_and_json_fieldnames":
 			c.Flags.UseProtoAndJSONFieldNames = true
 		}
-
-		// look for specific message targets
+		// look for specific message targets:
 		// message types are separated by messageDelimiter "+"
 		// examples:
 		// 		messages=[foo+bar]
@@ -100,6 +98,14 @@ func (c *Converter) parseGeneratorParameters(parameters string) {
 		rx := regexp.MustCompile(`messages=\[([^\]]+)\]`)
 		if matches := rx.FindStringSubmatch(parameter); len(matches) == 2 {
 			c.messageTargets = strings.Split(matches[1], messageDelimiter)
+		}
+
+		// Look for a custom $ref prefix ($references will be prefixed with this string):
+		if strings.Contains(parameter, "ref_prefix=") {
+			refPrefixSetting := strings.Split(parameter, "=")
+			if len(refPrefixSetting) == 2 {
+				c.refPrefix = refPrefixSetting[1]
+			}
 		}
 	}
 }
