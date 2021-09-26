@@ -43,6 +43,7 @@ protoc \ # The protobuf compiler
 |`json_fieldnames`| Use JSON field names only |
 |`prefix_schema_files_with_package`| Prefix the output filename with package |
 |`proto_and_json_fieldnames`| Use proto and JSON field names |
+|`ref_prefix`| Provide a custom prefix for referenced schemas |
 
 ## Examples
 

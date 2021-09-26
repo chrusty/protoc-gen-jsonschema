@@ -26,6 +26,7 @@ type sampleProto struct {
 	ExpectedJSONSchema []string
 	FilesToGenerate    []string
 	ProtoFileName      string
+	RefPrefix          string
 	TargetedMessages   []string
 }
 
@@ -53,6 +54,7 @@ func testConvertSampleProto(t *testing.T, sampleProto sampleProto) {
 	// Use the logger to make a Converter:
 	protoConverter := New(logger)
 	protoConverter.Flags = sampleProto.Flags
+	protoConverter.refPrefix = sampleProto.RefPrefix
 
 	// Open the sample proto file:
 	sampleProtoFileName := fmt.Sprintf("%v/%v", sampleProtoDirectory, sampleProto.ProtoFileName)
@@ -277,6 +279,12 @@ func configureSampleProtos() map[string]sampleProto {
 			ExpectedJSONSchema: []string{testdata.FieldOptions, testdata.Proto3Required},
 			FilesToGenerate:    []string{"options.proto", "Proto3Required.proto"},
 			ProtoFileName:      "Proto3Required.proto",
+		},
+		"RefPrefix": {
+			ExpectedJSONSchema: []string{testdata.RefPrefixM, testdata.RefPrefixFoo, testdata.RefPrefixBar, testdata.RefPrefixBaz},
+			FilesToGenerate:    []string{"CyclicalReference.proto"},
+			ProtoFileName:      "CyclicalReference.proto",
+			RefPrefix:          "#/definitions/",
 		},
 	}
 }
