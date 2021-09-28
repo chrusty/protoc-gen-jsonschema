@@ -374,36 +374,27 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.Des
 func (c *Converter) findNestedMessages(curPkg *ProtoPackage, msg *descriptor.DescriptorProto) (map[*descriptor.DescriptorProto]string, error) {
 
 	// Get a list of all nested messages, and how often they occur:
-	all := make(map[*descriptor.DescriptorProto]*nameAndCounter)
-	if err := c.recursiveFindDuplicatedNestedMessages(curPkg, msg, msg.GetName(), all); err != nil {
+	nestedMessages := make(map[*descriptor.DescriptorProto]string)
+	if err := c.recursiveFindNestedMessages(curPkg, msg, msg.GetName(), nestedMessages); err != nil {
 		return nil, err
 	}
 
 	// Now filter them:
 	result := make(map[*descriptor.DescriptorProto]string)
-	for m, nameAndCounter := range all {
-		if !m.GetOptions().GetMapEntry() && !strings.HasPrefix(nameAndCounter.name, ".google.protobuf.") {
-			result[m] = strings.TrimLeft(nameAndCounter.name, ".")
+	for message, messageName := range nestedMessages {
+		if !message.GetOptions().GetMapEntry() && !strings.HasPrefix(messageName, ".google.protobuf.") {
+			result[message] = strings.TrimLeft(messageName, ".")
 		}
 	}
 
 	return result, nil
 }
 
-type nameAndCounter struct {
-	name    string
-	counter int
-}
-
-func (c *Converter) recursiveFindDuplicatedNestedMessages(curPkg *ProtoPackage, msg *descriptor.DescriptorProto, typeName string, alreadySeen map[*descriptor.DescriptorProto]*nameAndCounter) error {
-	if nameAndCounter, present := alreadySeen[msg]; present {
-		nameAndCounter.counter++
+func (c *Converter) recursiveFindNestedMessages(curPkg *ProtoPackage, msg *descriptor.DescriptorProto, typeName string, nestedMessages map[*descriptor.DescriptorProto]string) error {
+	if _, present := nestedMessages[msg]; present {
 		return nil
 	}
-	alreadySeen[msg] = &nameAndCounter{
-		name:    typeName,
-		counter: 1,
-	}
+	nestedMessages[msg] = typeName
 
 	for _, desc := range msg.GetField() {
 		descType := desc.GetType()
@@ -417,7 +408,7 @@ func (c *Converter) recursiveFindDuplicatedNestedMessages(curPkg *ProtoPackage, 
 		if !ok {
 			return fmt.Errorf("no such message type named %s", typeName)
 		}
-		if err := c.recursiveFindDuplicatedNestedMessages(curPkg, recordType, typeName, alreadySeen); err != nil {
+		if err := c.recursiveFindNestedMessages(curPkg, recordType, typeName, nestedMessages); err != nil {
 			return err
 		}
 	}
