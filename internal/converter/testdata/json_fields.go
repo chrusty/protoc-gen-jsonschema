@@ -1,7 +1,8 @@
 package testdata
 
 const JSONFields = `{
-    "$ref": "JSONFields",
+    "$ref": "#/definitions/JSONFields",
+    "id": "JSONFields",
     "definitions": {
         "JSONFields": {
             "$schema": "http://json-schema.org/draft-04/schema#",

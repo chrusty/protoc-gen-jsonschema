@@ -1,7 +1,8 @@
 package testdata
 
 const Proto3Required = `{
-    "$ref": "Proto3Required",
+    "$ref": "#/definitions/Proto3Required",
+    "id": "Proto3Required",
     "definitions": {
         "Proto3Required": {
             "$schema": "http://json-schema.org/draft-04/schema#",

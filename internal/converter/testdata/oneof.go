@@ -1,17 +1,18 @@
 package testdata
 
 const OneOf = `{
-    "$ref": "OneOf",
+    "$ref": "#/definitions/OneOf",
+    "id": "OneOf",
     "definitions": {
         "OneOf": {
             "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "bar": {
-                    "$ref": "samples.OneOf.Bar",
+                    "$ref": "#/definitions/samples.OneOf.Bar",
                     "additionalProperties": true
                 },
                 "baz": {
-                    "$ref": "samples.OneOf.Baz",
+                    "$ref": "#/definitions/samples.OneOf.Baz",
                     "additionalProperties": true
                 },
                 "something": {

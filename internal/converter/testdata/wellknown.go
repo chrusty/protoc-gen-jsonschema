@@ -1,7 +1,8 @@
 package testdata
 
 const WellKnown = `{
-    "$ref": "WellKnown",
+    "$ref": "#/definitions/WellKnown",
+    "id": "WellKnown",
     "definitions": {
         "WellKnown": {
             "$schema": "http://json-schema.org/draft-04/schema#",

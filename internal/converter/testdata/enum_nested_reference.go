@@ -1,7 +1,8 @@
 package testdata
 
 const EnumNestedReference = `{
-    "$ref": "Msg",
+    "$ref": "#/definitions/Msg",
+    "id": "Msg",
     "definitions": {
         "Msg": {
             "$schema": "http://json-schema.org/draft-04/schema#",

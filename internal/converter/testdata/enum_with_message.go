@@ -1,7 +1,8 @@
 package testdata
 
 const EnumWithMessage = `{
-    "$ref": "WithFooBarBaz",
+    "$ref": "#/definitions/WithFooBarBaz",
+    "id": "WithFooBarBaz",
     "definitions": {
         "WithFooBarBaz": {
             "$schema": "http://json-schema.org/draft-04/schema#",

@@ -1,7 +1,8 @@
 package testdata
 
 const GoogleValue = `{
-    "$ref": "GoogleValue",
+    "$ref": "#/definitions/GoogleValue",
+    "id": "GoogleValue",
     "definitions": {
         "GoogleValue": {
             "$schema": "http://json-schema.org/draft-04/schema#",

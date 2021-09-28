@@ -1,7 +1,8 @@
 package testdata
 
 const BytesPayload = `{
-    "$ref": "BytesPayload",
+    "$ref": "#/definitions/BytesPayload",
+    "id": "BytesPayload",
     "definitions": {
         "BytesPayload": {
             "$schema": "http://json-schema.org/draft-04/schema#",

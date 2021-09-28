@@ -1,7 +1,8 @@
 package testdata
 
 const ArrayOfMessages = `{
-    "$ref": "ArrayOfMessages",
+    "$ref": "#/definitions/ArrayOfMessages",
+    "id": "ArrayOfMessages",
     "definitions": {
         "ArrayOfMessages": {
             "$schema": "http://json-schema.org/draft-04/schema#",
@@ -11,7 +12,7 @@ const ArrayOfMessages = `{
                 },
                 "payload": {
                     "items": {
-                        "$ref": "samples.PayloadMessage"
+                        "$ref": "#/definitions/samples.PayloadMessage"
                     },
                     "type": "array"
                 }

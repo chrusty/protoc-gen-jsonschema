@@ -1,7 +1,8 @@
 package testdata
 
 const MessageKind10 = `{
-    "$ref": "MessageKind10",
+    "$ref": "#/definitions/MessageKind10",
+    "id": "MessageKind10",
     "definitions": {
         "MessageKind10": {
             "$schema": "http://json-schema.org/draft-04/schema#",

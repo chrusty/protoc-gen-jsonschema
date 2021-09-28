@@ -80,6 +80,8 @@ func testConvertSampleProto(t *testing.T, sampleProto sampleProto) {
 		t.Fail()
 	} else {
 		for responseFileIndex, responseFile := range response.File {
+
+			// Ensure that the generated schema matches the expected (canned) one:
 			assert.Equal(t, strings.TrimSpace(sampleProto.ExpectedJSONSchema[responseFileIndex]), *responseFile.Content, "Incorrect JSON-Schema returned for sample proto file (%v)", sampleProtoFileName)
 
 			// Validate any intended-to-fail data against the new schema:

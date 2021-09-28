@@ -1,7 +1,8 @@
 package testdata
 
 const HiddenFields = `{
-    "$ref": "HiddenFields",
+    "$ref": "#/definitions/HiddenFields",
+    "id": "HiddenFields",
     "definitions": {
         "HiddenFields": {
             "$schema": "http://json-schema.org/draft-04/schema#",

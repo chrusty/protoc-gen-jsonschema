@@ -1,7 +1,8 @@
 package testdata
 
 const EnumImport = `{
-    "$ref": "UseImportedEnum",
+    "$ref": "#/definitions/UseImportedEnum",
+    "id": "UseImportedEnum",
     "definitions": {
         "UseImportedEnum": {
             "$schema": "http://json-schema.org/draft-04/schema#",

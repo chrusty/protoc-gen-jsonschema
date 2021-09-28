@@ -1,13 +1,14 @@
 package testdata
 
 const NestedMessage = `{
-    "$ref": "NestedMessage",
+    "$ref": "#/definitions/NestedMessage",
+    "id": "NestedMessage",
     "definitions": {
         "NestedMessage": {
             "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "payload": {
-                    "$ref": "samples.PayloadMessage",
+                    "$ref": "#/definitions/samples.PayloadMessage",
                     "additionalProperties": true
                 },
                 "description": {

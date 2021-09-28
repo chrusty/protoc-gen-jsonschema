@@ -1,7 +1,8 @@
 package testdata
 
 const MessageKind11 = `{
-    "$ref": "MessageKind11",
+    "$ref": "#/definitions/MessageKind11",
+    "id": "MessageKind11",
     "definitions": {
         "MessageKind11": {
             "$schema": "http://json-schema.org/draft-04/schema#",
@@ -11,20 +12,20 @@ const MessageKind11 = `{
                 },
                 "ones": {
                     "items": {
-                        "$ref": "samples.MessageKind1"
+                        "$ref": "#/definitions/samples.MessageKind1"
                     },
                     "type": "array"
                 },
                 "kind2": {
-                    "$ref": "samples.MessageKind2",
+                    "$ref": "#/definitions/samples.MessageKind2",
                     "additionalProperties": true
                 },
                 "kind3": {
-                    "$ref": "samples.MessageKind3",
+                    "$ref": "#/definitions/samples.MessageKind3",
                     "additionalProperties": true
                 },
                 "kind4": {
-                    "$ref": "samples.MessageKind4",
+                    "$ref": "#/definitions/samples.MessageKind4",
                     "additionalProperties": true
                 }
             },
