@@ -500,8 +500,8 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 
 		// Check for our custom field options:
 		opts := fieldDesc.GetOptions()
-		if opts != nil && proto.HasExtension(opts, protos.E_Options) {
-			opt, err := proto.GetExtension(opts, protos.E_Options)
+		if opts != nil && proto.HasExtension(opts, protos.E_FieldOptions) {
+			opt, err := proto.GetExtension(opts, protos.E_FieldOptions)
 			if err == nil {
 				if fieldOptions, ok := opt.(*protos.FieldOptions); ok {
 
