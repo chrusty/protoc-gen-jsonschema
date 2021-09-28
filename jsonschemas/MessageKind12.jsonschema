@@ -1,5 +1,6 @@
 {
-    "$ref": "MessageKind12",
+    "$ref": "#/definitions/MessageKind12",
+    "id": "MessageKind12",
     "definitions": {
         "MessageKind12": {
             "$schema": "http://json-schema.org/draft-04/schema#",
@@ -8,19 +9,19 @@
                     "type": "string"
                 },
                 "f": {
-                    "$ref": "samples.MessageKind11",
+                    "$ref": "#/definitions/samples.MessageKind11",
                     "additionalProperties": true
                 },
                 "kind5": {
-                    "$ref": "samples.MessageKind5",
+                    "$ref": "#/definitions/samples.MessageKind5",
                     "additionalProperties": true
                 },
                 "kind6": {
-                    "$ref": "samples.MessageKind6",
+                    "$ref": "#/definitions/samples.MessageKind6",
                     "additionalProperties": true
                 },
                 "kind7": {
-                    "$ref": "samples.MessageKind7",
+                    "$ref": "#/definitions/samples.MessageKind7",
                     "additionalProperties": true
                 }
             },
@@ -59,20 +60,20 @@
                 },
                 "ones": {
                     "items": {
-                        "$ref": "samples.MessageKind1"
+                        "$ref": "#/definitions/samples.MessageKind1"
                     },
                     "type": "array"
                 },
                 "kind2": {
-                    "$ref": "samples.MessageKind2",
+                    "$ref": "#/definitions/samples.MessageKind2",
                     "additionalProperties": true
                 },
                 "kind3": {
-                    "$ref": "samples.MessageKind3",
+                    "$ref": "#/definitions/samples.MessageKind3",
                     "additionalProperties": true
                 },
                 "kind4": {
-                    "$ref": "samples.MessageKind4",
+                    "$ref": "#/definitions/samples.MessageKind4",
                     "additionalProperties": true
                 }
             },

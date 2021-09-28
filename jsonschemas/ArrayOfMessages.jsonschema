@@ -1,5 +1,6 @@
 {
-    "$ref": "ArrayOfMessages",
+    "$ref": "#/definitions/ArrayOfMessages",
+    "id": "ArrayOfMessages",
     "definitions": {
         "ArrayOfMessages": {
             "$schema": "http://json-schema.org/draft-04/schema#",
@@ -16,7 +17,7 @@
                 },
                 "payload": {
                     "items": {
-                        "$ref": "samples.PayloadMessage"
+                        "$ref": "#/definitions/samples.PayloadMessage"
                     },
                     "oneOf": [
                         {

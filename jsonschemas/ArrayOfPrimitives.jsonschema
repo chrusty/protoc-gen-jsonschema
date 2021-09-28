@@ -1,5 +1,6 @@
 {
-    "$ref": "ArrayOfPrimitives",
+    "$ref": "#/definitions/ArrayOfPrimitives",
+    "id": "ArrayOfPrimitives",
     "definitions": {
         "ArrayOfPrimitives": {
             "$schema": "http://json-schema.org/draft-04/schema#",

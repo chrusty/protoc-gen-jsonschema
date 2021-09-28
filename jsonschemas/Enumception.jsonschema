@@ -1,5 +1,6 @@
 {
-    "$ref": "Enumception",
+    "$ref": "#/definitions/Enumception",
+    "id": "Enumception",
     "definitions": {
         "Enumception": {
             "$schema": "http://json-schema.org/draft-04/schema#",
@@ -36,12 +37,12 @@
                     ]
                 },
                 "payload": {
-                    "$ref": "samples.PayloadMessage",
+                    "$ref": "#/definitions/samples.PayloadMessage",
                     "additionalProperties": false
                 },
                 "payloads": {
                     "items": {
-                        "$ref": "samples.PayloadMessage"
+                        "$ref": "#/definitions/samples.PayloadMessage"
                     },
                     "additionalProperties": false,
                     "type": "array"
