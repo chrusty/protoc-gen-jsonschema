@@ -331,7 +331,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.DescriptorProto) (*jsonschema.Schema, error) {
 
 	// first, recursively find messages that appear more than once - in particular, that will break cycles
-	duplicatedMessages, err := c.findDuplicatedNestedMessages(curPkg, msg)
+	duplicatedMessages, err := c.findNestedMessages(curPkg, msg)
 	if err != nil {
 		return nil, err
 	}
@@ -364,13 +364,14 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.Des
 		Type:        rootType,
 		Definitions: definitions,
 	}
+	rootType.Extras = map[string]interface{}{"id": msg.Name}
 
 	return newJSONSchema, nil
 }
 
-// findDuplicatedNestedMessages takes a message, and returns a map mapping pointers to messages that appear more than once
-// (typically because they're part of a reference cycle) to the sub-schema name that we give them.
-func (c *Converter) findDuplicatedNestedMessages(curPkg *ProtoPackage, msg *descriptor.DescriptorProto) (map[*descriptor.DescriptorProto]string, error) {
+// findNestedMessages takes a message, and returns a map mapping pointers to messages nested within it:
+// these messages become definitions which can be referenced (instead of repeating them every time they're used)
+func (c *Converter) findNestedMessages(curPkg *ProtoPackage, msg *descriptor.DescriptorProto) (map[*descriptor.DescriptorProto]string, error) {
 
 	// Get a list of all nested messages, and how often they occur:
 	all := make(map[*descriptor.DescriptorProto]*nameAndCounter)
@@ -474,7 +475,7 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 	// Look up references:
 	if refName, ok := duplicatedMessages[msg]; ok && !ignoreDuplicatedMessages {
 		return &jsonschema.Type{
-			Ref: refName,
+			Ref: fmt.Sprintf("%s%s", c.refPrefix, refName),
 		}, nil
 	}
 
