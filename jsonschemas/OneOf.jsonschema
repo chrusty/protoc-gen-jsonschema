@@ -1,9 +1,9 @@
 {
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/OneOf",
     "id": "OneOf",
     "definitions": {
         "OneOf": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "bar": {
                     "$ref": "#/definitions/samples.OneOf.Bar",
@@ -34,7 +34,6 @@
             "id": "OneOf"
         },
         "samples.OneOf.Bar": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "foo": {
                     "type": "integer"
@@ -45,7 +44,6 @@
             "id": "samples.OneOf.Bar"
         },
         "samples.OneOf.Baz": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "foo": {
                     "type": "string"
