@@ -1,7 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/Proto2NestedMessage",
-    "id": "Proto2NestedMessage",
     "definitions": {
         "Proto2NestedMessage": {
             "required": [
@@ -17,8 +16,7 @@
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "Proto2NestedMessage"
+            "type": "object"
         },
         "samples.Proto2PayloadMessage": {
             "required": [
@@ -67,8 +65,7 @@
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "samples.Proto2PayloadMessage"
+            "type": "object"
         }
     }
 }

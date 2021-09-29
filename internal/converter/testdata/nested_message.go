@@ -3,7 +3,6 @@ package testdata
 const NestedMessage = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/NestedMessage",
-    "id": "NestedMessage",
     "definitions": {
         "NestedMessage": {
             "properties": {
@@ -16,8 +15,7 @@ const NestedMessage = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "NestedMessage"
+            "type": "object"
         },
         "samples.PayloadMessage": {
             "properties": {
@@ -62,8 +60,7 @@ const NestedMessage = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "samples.PayloadMessage"
+            "type": "object"
         }
     }
 }`

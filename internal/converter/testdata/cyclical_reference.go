@@ -3,7 +3,6 @@ package testdata
 const CyclicalReferenceMessageM = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/M",
-    "id": "M",
     "definitions": {
         "M": {
             "properties": {
@@ -13,8 +12,7 @@ const CyclicalReferenceMessageM = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "M"
+            "type": "object"
         },
         "samples.Bar": {
             "properties": {
@@ -27,8 +25,7 @@ const CyclicalReferenceMessageM = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "samples.Bar"
+            "type": "object"
         },
         "samples.Baz": {
             "properties": {
@@ -41,8 +38,7 @@ const CyclicalReferenceMessageM = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "samples.Baz"
+            "type": "object"
         },
         "samples.Foo": {
             "properties": {
@@ -57,8 +53,7 @@ const CyclicalReferenceMessageM = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "samples.Foo"
+            "type": "object"
         }
     }
 }`
@@ -66,7 +61,6 @@ const CyclicalReferenceMessageM = `{
 const CyclicalReferenceMessageFoo = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/Foo",
-    "id": "Foo",
     "definitions": {
         "Foo": {
             "properties": {
@@ -81,8 +75,7 @@ const CyclicalReferenceMessageFoo = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "Foo"
+            "type": "object"
         },
         "samples.Bar": {
             "properties": {
@@ -95,8 +88,7 @@ const CyclicalReferenceMessageFoo = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "samples.Bar"
+            "type": "object"
         },
         "samples.Baz": {
             "properties": {
@@ -109,8 +101,7 @@ const CyclicalReferenceMessageFoo = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "samples.Baz"
+            "type": "object"
         }
     }
 }`
@@ -118,7 +109,6 @@ const CyclicalReferenceMessageFoo = `{
 const CyclicalReferenceMessageBar = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/Bar",
-    "id": "Bar",
     "definitions": {
         "Bar": {
             "properties": {
@@ -131,8 +121,7 @@ const CyclicalReferenceMessageBar = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "Bar"
+            "type": "object"
         },
         "samples.Baz": {
             "properties": {
@@ -145,8 +134,7 @@ const CyclicalReferenceMessageBar = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "samples.Baz"
+            "type": "object"
         },
         "samples.Foo": {
             "properties": {
@@ -161,8 +149,7 @@ const CyclicalReferenceMessageBar = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "samples.Foo"
+            "type": "object"
         }
     }
 }`
@@ -170,7 +157,6 @@ const CyclicalReferenceMessageBar = `{
 const CyclicalReferenceMessageBaz = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/Baz",
-    "id": "Baz",
     "definitions": {
         "Baz": {
             "properties": {
@@ -183,8 +169,7 @@ const CyclicalReferenceMessageBaz = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "Baz"
+            "type": "object"
         },
         "samples.Bar": {
             "properties": {
@@ -197,8 +182,7 @@ const CyclicalReferenceMessageBaz = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "samples.Bar"
+            "type": "object"
         },
         "samples.Foo": {
             "properties": {
@@ -213,8 +197,7 @@ const CyclicalReferenceMessageBaz = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "samples.Foo"
+            "type": "object"
         }
     }
 }`

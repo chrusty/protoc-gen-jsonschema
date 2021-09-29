@@ -3,7 +3,6 @@ package testdata
 const ArrayOfEnums = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/ArrayOfEnums",
-    "id": "ArrayOfEnums",
     "definitions": {
         "ArrayOfEnums": {
             "properties": {
@@ -27,8 +26,7 @@ const ArrayOfEnums = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "ArrayOfEnums"
+            "type": "object"
         }
     }
 }`

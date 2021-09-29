@@ -3,7 +3,6 @@ package testdata
 const MessageKind12 = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/MessageKind12",
-    "id": "MessageKind12",
     "definitions": {
         "MessageKind12": {
             "properties": {
@@ -28,8 +27,7 @@ const MessageKind12 = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "MessageKind12"
+            "type": "object"
         },
         "samples.MessageKind1": {
             "properties": {
@@ -50,8 +48,7 @@ const MessageKind12 = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "samples.MessageKind1"
+            "type": "object"
         },
         "samples.MessageKind11": {
             "properties": {
@@ -78,8 +75,7 @@ const MessageKind12 = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "samples.MessageKind11"
+            "type": "object"
         },
         "samples.MessageKind2": {
             "properties": {
@@ -106,8 +102,7 @@ const MessageKind12 = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "samples.MessageKind2"
+            "type": "object"
         },
         "samples.MessageKind3": {
             "properties": {
@@ -131,8 +126,7 @@ const MessageKind12 = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "samples.MessageKind3"
+            "type": "object"
         },
         "samples.MessageKind4": {
             "properties": {
@@ -156,8 +150,7 @@ const MessageKind12 = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "samples.MessageKind4"
+            "type": "object"
         },
         "samples.MessageKind5": {
             "properties": {
@@ -181,8 +174,7 @@ const MessageKind12 = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "samples.MessageKind5"
+            "type": "object"
         },
         "samples.MessageKind6": {
             "properties": {
@@ -206,8 +198,7 @@ const MessageKind12 = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "samples.MessageKind6"
+            "type": "object"
         },
         "samples.MessageKind7": {
             "properties": {
@@ -231,8 +222,7 @@ const MessageKind12 = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "samples.MessageKind7"
+            "type": "object"
         }
     }
 }`

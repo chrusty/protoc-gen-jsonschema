@@ -3,7 +3,6 @@ package testdata
 const ArrayOfMessages = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/ArrayOfMessages",
-    "id": "ArrayOfMessages",
     "definitions": {
         "ArrayOfMessages": {
             "properties": {
@@ -18,8 +17,7 @@ const ArrayOfMessages = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "ArrayOfMessages"
+            "type": "object"
         },
         "samples.PayloadMessage": {
             "properties": {
@@ -64,8 +62,7 @@ const ArrayOfMessages = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "samples.PayloadMessage"
+            "type": "object"
         }
     }
 }`

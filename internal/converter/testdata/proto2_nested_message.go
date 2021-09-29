@@ -3,7 +3,6 @@ package testdata
 const Proto2NestedMessage = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/Proto2NestedMessage",
-    "id": "Proto2NestedMessage",
     "definitions": {
         "Proto2NestedMessage": {
             "required": [
@@ -19,8 +18,7 @@ const Proto2NestedMessage = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "Proto2NestedMessage"
+            "type": "object"
         },
         "samples.Proto2PayloadMessage": {
             "required": [
@@ -69,8 +67,7 @@ const Proto2NestedMessage = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "samples.Proto2PayloadMessage"
+            "type": "object"
         }
     }
 }`

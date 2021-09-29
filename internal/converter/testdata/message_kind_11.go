@@ -3,7 +3,6 @@ package testdata
 const MessageKind11 = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/MessageKind11",
-    "id": "MessageKind11",
     "definitions": {
         "MessageKind11": {
             "properties": {
@@ -30,8 +29,7 @@ const MessageKind11 = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "MessageKind11"
+            "type": "object"
         },
         "samples.MessageKind1": {
             "properties": {
@@ -52,8 +50,7 @@ const MessageKind11 = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "samples.MessageKind1"
+            "type": "object"
         },
         "samples.MessageKind2": {
             "properties": {
@@ -80,8 +77,7 @@ const MessageKind11 = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "samples.MessageKind2"
+            "type": "object"
         },
         "samples.MessageKind3": {
             "properties": {
@@ -105,8 +101,7 @@ const MessageKind11 = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "samples.MessageKind3"
+            "type": "object"
         },
         "samples.MessageKind4": {
             "properties": {
@@ -130,8 +125,7 @@ const MessageKind11 = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "samples.MessageKind4"
+            "type": "object"
         }
     }
 }`

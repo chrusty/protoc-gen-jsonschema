@@ -3,7 +3,6 @@ package testdata
 const WellKnown = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/WellKnown",
-    "id": "WellKnown",
     "definitions": {
         "WellKnown": {
             "properties": {
@@ -39,8 +38,7 @@ const WellKnown = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "WellKnown"
+            "type": "object"
         }
     }
 }`

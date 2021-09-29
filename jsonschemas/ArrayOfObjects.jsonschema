@@ -1,7 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/ArrayOfObjects",
-    "id": "ArrayOfObjects",
     "definitions": {
         "ArrayOfObjects": {
             "properties": {
@@ -37,8 +36,7 @@
                 {
                     "type": "object"
                 }
-            ],
-            "id": "ArrayOfObjects"
+            ]
         },
         "samples.ArrayOfObjects.RepeatedPayload": {
             "properties": {
@@ -128,8 +126,7 @@
                 {
                     "type": "object"
                 }
-            ],
-            "id": "samples.ArrayOfObjects.RepeatedPayload"
+            ]
         }
     }
 }

@@ -3,7 +3,6 @@ package testdata
 const MessageWithComments = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/MessageWithComments",
-    "id": "MessageWithComments",
     "definitions": {
         "MessageWithComments": {
             "properties": {
@@ -14,8 +13,7 @@ const MessageWithComments = `{
             },
             "additionalProperties": true,
             "type": "object",
-            "description": "This is a message level comment and talks about what this message is and why you should care about it!",
-            "id": "MessageWithComments"
+            "description": "This is a message level comment and talks about what this message is and why you should care about it!"
         }
     }
 }`

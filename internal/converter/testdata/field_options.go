@@ -3,7 +3,6 @@ package testdata
 const FieldOptions = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/FieldOptions",
-    "id": "FieldOptions",
     "definitions": {
         "FieldOptions": {
             "properties": {
@@ -18,8 +17,7 @@ const FieldOptions = `{
             },
             "additionalProperties": true,
             "type": "object",
-            "description": "Custom FieldOptions:",
-            "id": "FieldOptions"
+            "description": "Custom FieldOptions:"
         }
     }
 }`

@@ -1,7 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/Timestamp",
-    "id": "Timestamp",
     "definitions": {
         "Timestamp": {
             "properties": {
@@ -11,8 +10,7 @@
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "Timestamp"
+            "type": "object"
         }
     }
 }

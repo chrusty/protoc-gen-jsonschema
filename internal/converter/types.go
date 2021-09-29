@@ -71,6 +71,7 @@ func (c *Converter) registerType(pkgName *string, msg *descriptor.DescriptorProt
 
 // Convert a proto "field" (essentially a type-switch with some recursion):
 func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, msg *descriptor.DescriptorProto, duplicatedMessages map[*descriptor.DescriptorProto]string) (*jsonschema.Type, error) {
+
 	// Prepare a new jsonschema.Type for our eventual return value:
 	jsonSchemaType := &jsonschema.Type{}
 
@@ -330,21 +331,13 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 // Converts a proto "MESSAGE" into a JSON-Schema:
 func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.DescriptorProto) (*jsonschema.Schema, error) {
 
-	// first, recursively find messages that appear more than once - in particular, that will break cycles
+	// Get a list of any nested messages in our schema:
 	duplicatedMessages, err := c.findNestedMessages(curPkg, msg)
 	if err != nil {
 		return nil, err
 	}
 
-	// main schema for the message
-	rootType, err := c.recursiveConvertMessageType(curPkg, msg, "", duplicatedMessages, false)
-	if err != nil {
-		return nil, err
-	}
-	rootType.Extras = map[string]interface{}{"id": msg.Name}
-	rootType.Version = jsonschema.Version
-
-	// and then generate the sub-schema for each duplicated message
+	// Build up a list of JSONSchema type definitions for every message:
 	definitions := jsonschema.Definitions{}
 	for refMsg, name := range duplicatedMessages {
 		refType, err := c.recursiveConvertMessageType(curPkg, refMsg, "", duplicatedMessages, true)
@@ -352,18 +345,16 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.Des
 			return nil, err
 		}
 
-		// Give the schema an ID:
-		if refType.Extras == nil {
-			refType.Extras = make(map[string]interface{})
-		}
-		refType.Extras["id"] = name
-
 		// Add the schema to our definitions:
 		definitions[name] = refType
 	}
 
+	// Put together a JSON schema with our discovered definitions, and a $ref for the root type:
 	newJSONSchema := &jsonschema.Schema{
-		Type:        rootType,
+		Type: &jsonschema.Type{
+			Ref:     fmt.Sprintf("%s%s", c.refPrefix, msg.GetName()),
+			Version: jsonschema.Version,
+		},
 		Definitions: definitions,
 	}
 

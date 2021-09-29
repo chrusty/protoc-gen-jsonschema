@@ -3,7 +3,6 @@ package testdata
 const ArrayOfObjects = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/ArrayOfObjects",
-    "id": "ArrayOfObjects",
     "definitions": {
         "ArrayOfObjects": {
             "properties": {
@@ -39,8 +38,7 @@ const ArrayOfObjects = `{
                 {
                     "type": "object"
                 }
-            ],
-            "id": "ArrayOfObjects"
+            ]
         },
         "samples.ArrayOfObjects.RepeatedPayload": {
             "properties": {
@@ -130,8 +128,7 @@ const ArrayOfObjects = `{
                 {
                     "type": "object"
                 }
-            ],
-            "id": "samples.ArrayOfObjects.RepeatedPayload"
+            ]
         }
     }
 }`

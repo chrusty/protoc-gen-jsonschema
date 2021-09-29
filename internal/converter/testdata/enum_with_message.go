@@ -3,7 +3,6 @@ package testdata
 const EnumWithMessage = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/WithFooBarBaz",
-    "id": "WithFooBarBaz",
     "definitions": {
         "WithFooBarBaz": {
             "properties": {
@@ -27,8 +26,7 @@ const EnumWithMessage = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "WithFooBarBaz"
+            "type": "object"
         }
     }
 }`

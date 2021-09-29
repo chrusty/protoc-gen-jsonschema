@@ -3,7 +3,6 @@ package testdata
 const Maps = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/Maps",
-    "id": "Maps",
     "definitions": {
         "Maps": {
             "properties": {
@@ -28,8 +27,7 @@ const Maps = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "Maps"
+            "type": "object"
         },
         "samples.PayloadMessage": {
             "properties": {
@@ -74,8 +72,7 @@ const Maps = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "samples.PayloadMessage"
+            "type": "object"
         }
     }
 }`

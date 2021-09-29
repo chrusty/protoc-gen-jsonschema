@@ -1,7 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/FirstMessage",
-    "id": "FirstMessage",
     "definitions": {
         "FirstMessage": {
             "properties": {
@@ -22,8 +21,7 @@
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "FirstMessage"
+            "type": "object"
         }
     }
 }

@@ -3,7 +3,6 @@ package testdata
 const HiddenFields = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/HiddenFields",
-    "id": "HiddenFields",
     "definitions": {
         "HiddenFields": {
             "properties": {
@@ -15,8 +14,7 @@ const HiddenFields = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "HiddenFields"
+            "type": "object"
         }
     }
 }`

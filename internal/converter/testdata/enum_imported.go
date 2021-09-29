@@ -3,7 +3,6 @@ package testdata
 const EnumImport = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/UseImportedEnum",
-    "id": "UseImportedEnum",
     "definitions": {
         "UseImportedEnum": {
             "properties": {
@@ -29,8 +28,7 @@ const EnumImport = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "UseImportedEnum"
+            "type": "object"
         }
     }
 }`

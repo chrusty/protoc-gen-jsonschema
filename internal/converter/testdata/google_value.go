@@ -3,7 +3,6 @@ package testdata
 const GoogleValue = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/GoogleValue",
-    "id": "GoogleValue",
     "definitions": {
         "GoogleValue": {
             "properties": {
@@ -29,8 +28,7 @@ const GoogleValue = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "GoogleValue"
+            "type": "object"
         }
     }
 }`

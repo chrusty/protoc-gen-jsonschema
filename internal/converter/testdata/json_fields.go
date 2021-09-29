@@ -3,7 +3,6 @@ package testdata
 const JSONFields = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/JSONFields",
-    "id": "JSONFields",
     "definitions": {
         "JSONFields": {
             "properties": {
@@ -27,8 +26,7 @@ const JSONFields = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "JSONFields"
+            "type": "object"
         }
     }
 }`

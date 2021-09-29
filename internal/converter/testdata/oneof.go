@@ -3,7 +3,6 @@ package testdata
 const OneOf = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/OneOf",
-    "id": "OneOf",
     "definitions": {
         "OneOf": {
             "properties": {
@@ -32,8 +31,7 @@ const OneOf = `{
                         "baz"
                     ]
                 }
-            ],
-            "id": "OneOf"
+            ]
         },
         "samples.OneOf.Bar": {
             "required": [
@@ -45,8 +43,7 @@ const OneOf = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "samples.OneOf.Bar"
+            "type": "object"
         },
         "samples.OneOf.Baz": {
             "required": [
@@ -58,8 +55,7 @@ const OneOf = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "samples.OneOf.Baz"
+            "type": "object"
         }
     }
 }`

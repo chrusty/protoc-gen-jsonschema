@@ -1,7 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/WellKnown",
-    "id": "WellKnown",
     "definitions": {
         "WellKnown": {
             "properties": {
@@ -37,8 +36,7 @@
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "WellKnown"
+            "type": "object"
         }
     }
 }

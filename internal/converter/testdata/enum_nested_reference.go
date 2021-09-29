@@ -3,7 +3,6 @@ package testdata
 const EnumNestedReference = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/Msg",
-    "id": "Msg",
     "definitions": {
         "Msg": {
             "properties": {
@@ -33,8 +32,7 @@ const EnumNestedReference = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "Msg"
+            "type": "object"
         }
     }
 }`

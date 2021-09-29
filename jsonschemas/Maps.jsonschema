@@ -1,7 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/Maps",
-    "id": "Maps",
     "definitions": {
         "Maps": {
             "properties": {
@@ -26,8 +25,7 @@
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "Maps"
+            "type": "object"
         },
         "samples.PayloadMessage": {
             "properties": {
@@ -72,8 +70,7 @@
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "samples.PayloadMessage"
+            "type": "object"
         }
     }
 }

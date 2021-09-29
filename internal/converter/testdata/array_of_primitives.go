@@ -3,7 +3,6 @@ package testdata
 const ArrayOfPrimitives = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/ArrayOfPrimitives",
-    "id": "ArrayOfPrimitives",
     "definitions": {
         "ArrayOfPrimitives": {
             "properties": {
@@ -96,8 +95,7 @@ const ArrayOfPrimitives = `{
                 {
                     "type": "object"
                 }
-            ],
-            "id": "ArrayOfPrimitives"
+            ]
         }
     }
 }`
@@ -109,7 +107,6 @@ const ArrayOfPrimitivesPass = `{"luckyNumbers": [1,2,3]}`
 const ArrayOfPrimitivesDouble = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/ArrayOfPrimitives",
-    "id": "ArrayOfPrimitives",
     "definitions": {
         "ArrayOfPrimitives": {
             "properties": {
@@ -212,8 +209,7 @@ const ArrayOfPrimitivesDouble = `{
                 {
                     "type": "object"
                 }
-            ],
-            "id": "ArrayOfPrimitives"
+            ]
         }
     }
 }`

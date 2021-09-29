@@ -3,7 +3,6 @@ package testdata
 const PayloadMessage = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/PayloadMessage",
-    "id": "PayloadMessage",
     "definitions": {
         "PayloadMessage": {
             "properties": {
@@ -48,8 +47,7 @@ const PayloadMessage = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "PayloadMessage"
+            "type": "object"
         }
     }
 }`

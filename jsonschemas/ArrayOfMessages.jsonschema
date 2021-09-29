@@ -1,7 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/ArrayOfMessages",
-    "id": "ArrayOfMessages",
     "definitions": {
         "ArrayOfMessages": {
             "properties": {
@@ -37,8 +36,7 @@
                 {
                     "type": "object"
                 }
-            ],
-            "id": "ArrayOfMessages"
+            ]
         },
         "samples.PayloadMessage": {
             "properties": {
@@ -128,8 +126,7 @@
                 {
                     "type": "object"
                 }
-            ],
-            "id": "samples.PayloadMessage"
+            ]
         }
     }
 }

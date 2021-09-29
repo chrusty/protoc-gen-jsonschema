@@ -1,7 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/OneOf",
-    "id": "OneOf",
     "definitions": {
         "OneOf": {
             "properties": {
@@ -30,8 +29,7 @@
                         "baz"
                     ]
                 }
-            ],
-            "id": "OneOf"
+            ]
         },
         "samples.OneOf.Bar": {
             "properties": {
@@ -40,8 +38,7 @@
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "samples.OneOf.Bar"
+            "type": "object"
         },
         "samples.OneOf.Baz": {
             "properties": {
@@ -50,8 +47,7 @@
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "samples.OneOf.Baz"
+            "type": "object"
         }
     }
 }

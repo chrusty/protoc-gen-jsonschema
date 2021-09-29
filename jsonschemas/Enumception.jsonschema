@@ -1,7 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/Enumception",
-    "id": "Enumception",
     "definitions": {
         "Enumception": {
             "properties": {
@@ -69,8 +68,7 @@
                 }
             },
             "additionalProperties": false,
-            "type": "object",
-            "id": "Enumception"
+            "type": "object"
         },
         "samples.PayloadMessage": {
             "properties": {
@@ -115,8 +113,7 @@
                 }
             },
             "additionalProperties": false,
-            "type": "object",
-            "id": "samples.PayloadMessage"
+            "type": "object"
         }
     }
 }
