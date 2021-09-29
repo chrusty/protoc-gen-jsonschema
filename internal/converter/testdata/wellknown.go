@@ -35,6 +35,10 @@ const WellKnown = `{
                     "type": "string",
                     "description": "This is a duration:",
                     "format": "regex"
+                },
+                "struct": {
+                    "additionalProperties": true,
+                    "type": "object"
                 }
             },
             "additionalProperties": true,

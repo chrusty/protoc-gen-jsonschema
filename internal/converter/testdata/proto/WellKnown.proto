@@ -1,6 +1,7 @@
 syntax = "proto3";
 package samples;
 import "google/protobuf/duration.proto";
+import "google/protobuf/struct.proto";
 import "google/protobuf/wrappers.proto";
 
 message WellKnown {
@@ -10,5 +11,6 @@ message WellKnown {
     repeated google.protobuf.Int32Value list_of_integers = 4;
     // This is a duration:
     google.protobuf.Duration duration = 5;
+    google.protobuf.Struct struct = 6;
 }
 
