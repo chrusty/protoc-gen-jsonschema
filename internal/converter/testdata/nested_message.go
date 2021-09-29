@@ -2,8 +2,22 @@ package testdata
 
 const NestedMessage = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "properties": {
-        "payload": {
+    "$ref": "#/definitions/NestedMessage",
+    "definitions": {
+        "NestedMessage": {
+            "properties": {
+                "payload": {
+                    "$ref": "#/definitions/samples.PayloadMessage",
+                    "additionalProperties": true
+                },
+                "description": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object"
+        },
+        "samples.PayloadMessage": {
             "properties": {
                 "name": {
                     "type": "string"
@@ -47,11 +61,18 @@ const NestedMessage = `{
             },
             "additionalProperties": true,
             "type": "object"
-        },
-        "description": {
-            "type": "string"
         }
-    },
-    "additionalProperties": true,
-    "type": "object"
+    }
+}`
+
+const NestedMessageFail = `{
+	"payload": {
+		"topology": "ROUND"
+	}
+}`
+
+const NestedMessagePass = `{
+	"payload": {
+		"topology": "FLAT"
+	}
 }`

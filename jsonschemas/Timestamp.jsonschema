@@ -1,11 +1,16 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "properties": {
-        "timestamp": {
-            "type": "string",
-            "format": "date-time"
+    "$ref": "#/definitions/Timestamp",
+    "definitions": {
+        "Timestamp": {
+            "properties": {
+                "timestamp": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object"
         }
-    },
-    "additionalProperties": true,
-    "type": "object"
+    }
 }

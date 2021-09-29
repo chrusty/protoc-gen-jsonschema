@@ -2,75 +2,76 @@ package testdata
 
 const EnumCeption = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "properties": {
-        "name": {
-            "type": "string"
-        },
-        "timestamp": {
-            "type": "string"
-        },
-        "id": {
-            "type": "integer"
-        },
-        "rating": {
-            "type": "number"
-        },
-        "complete": {
-            "type": "boolean"
-        },
-        "failureMode": {
-            "enum": [
-                "RECURSION_ERROR",
-                0,
-                "SYNTAX_ERROR",
-                1
-            ],
-            "oneOf": [
-                {
-                    "type": "string"
-                },
-                {
-                    "type": "integer"
-                }
-            ]
-        },
-        "payload": {
-            "$ref": "samples.PayloadMessage",
-            "additionalProperties": true
-        },
-        "payloads": {
-            "items": {
-                "$schema": "http://json-schema.org/draft-04/schema#",
-                "$ref": "samples.PayloadMessage"
-            },
-            "type": "array"
-        },
-        "importedEnum": {
-            "enum": [
-                "VALUE_0",
-                0,
-                "VALUE_1",
-                1,
-                "VALUE_2",
-                2,
-                "VALUE_3",
-                3
-            ],
-            "oneOf": [
-                {
-                    "type": "string"
-                },
-                {
-                    "type": "integer"
-                }
-            ]
-        }
-    },
-    "additionalProperties": true,
-    "type": "object",
+    "$ref": "#/definitions/Enumception",
     "definitions": {
+        "Enumception": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "rating": {
+                    "type": "number"
+                },
+                "complete": {
+                    "type": "boolean"
+                },
+                "failureMode": {
+                    "enum": [
+                        "RECURSION_ERROR",
+                        0,
+                        "SYNTAX_ERROR",
+                        1
+                    ],
+                    "oneOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "integer"
+                        }
+                    ]
+                },
+                "payload": {
+                    "$ref": "#/definitions/samples.PayloadMessage",
+                    "additionalProperties": true
+                },
+                "payloads": {
+                    "items": {
+                        "$ref": "#/definitions/samples.PayloadMessage"
+                    },
+                    "type": "array"
+                },
+                "importedEnum": {
+                    "enum": [
+                        "VALUE_0",
+                        0,
+                        "VALUE_1",
+                        1,
+                        "VALUE_2",
+                        2,
+                        "VALUE_3",
+                        3
+                    ],
+                    "oneOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "integer"
+                        }
+                    ]
+                }
+            },
+            "additionalProperties": true,
+            "type": "object"
+        },
         "samples.PayloadMessage": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"
@@ -113,8 +114,11 @@ const EnumCeption = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object",
-            "id": "samples.PayloadMessage"
+            "type": "object"
         }
     }
 }`
+
+const EnumCeptionFail = `{"payloads": [ {"topology": "MAP"} ]}`
+
+const EnumCeptionPass = `{"payloads": [ {"topology": "ARRAY_OF_MESSAGE"} ]}`

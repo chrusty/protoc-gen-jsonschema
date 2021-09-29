@@ -2,12 +2,26 @@ package testdata
 
 const Proto2NestedObject = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "required": [
-        "payload",
-        "description"
-    ],
-    "properties": {
-        "payload": {
+    "$ref": "#/definitions/Proto2NestedObject",
+    "definitions": {
+        "Proto2NestedObject": {
+            "required": [
+                "payload",
+                "description"
+            ],
+            "properties": {
+                "payload": {
+                    "$ref": "#/definitions/samples.Proto2NestedObject.NestedPayload",
+                    "additionalProperties": false
+                },
+                "description": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object"
+        },
+        "samples.Proto2NestedObject.NestedPayload": {
             "required": [
                 "name",
                 "timestamp",
@@ -57,13 +71,26 @@ const Proto2NestedObject = `{
                     ]
                 }
             },
-            "additionalProperties": false,
+            "additionalProperties": true,
             "type": "object"
-        },
-        "description": {
-            "type": "string"
         }
-    },
-    "additionalProperties": true,
-    "type": "object"
+    }
+}`
+
+const Proto2NestedObjectFail = `{
+	"payload": {
+		"topology": "FLAT"	
+	}
+}`
+
+const Proto2NestedObjectPass = `{
+	"description": "lots of attributes",
+	"payload": {
+		"name": "something",
+		"timestamp": "1970-01-01T00:00:00Z",
+		"id": 1,
+		"rating": 100,
+		"complete": true,
+		"topology": "FLAT"
+	}
 }`

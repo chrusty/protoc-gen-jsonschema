@@ -1,11 +1,25 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "required": [
-        "payload",
-        "description"
-    ],
-    "properties": {
-        "payload": {
+    "$ref": "#/definitions/Proto2NestedObject",
+    "definitions": {
+        "Proto2NestedObject": {
+            "required": [
+                "payload",
+                "description"
+            ],
+            "properties": {
+                "payload": {
+                    "$ref": "#/definitions/samples.Proto2NestedObject.NestedPayload",
+                    "additionalProperties": false
+                },
+                "description": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object"
+        },
+        "samples.Proto2NestedObject.NestedPayload": {
             "required": [
                 "name",
                 "timestamp",
@@ -55,13 +69,8 @@
                     ]
                 }
             },
-            "additionalProperties": false,
+            "additionalProperties": true,
             "type": "object"
-        },
-        "description": {
-            "type": "string"
         }
-    },
-    "additionalProperties": true,
-    "type": "object"
+    }
 }

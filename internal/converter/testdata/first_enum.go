@@ -21,3 +21,7 @@ const FirstEnum = `{
         }
     ]
 }`
+
+const FirstEnumFail = `5`
+
+const FirstEnumPass = `3`

@@ -21,3 +21,7 @@ const ImportedEnum = `{
         }
     ]
 }`
+
+const ImportedEnumFail = `"VALUE_5"`
+
+const ImportedEnumPass = `"VALUE_3"`

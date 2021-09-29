@@ -2,11 +2,38 @@ package testdata
 
 const OneOf = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "required": [
-        "something"
-    ],
-    "properties": {
-        "bar": {
+    "$ref": "#/definitions/OneOf",
+    "definitions": {
+        "OneOf": {
+            "properties": {
+                "bar": {
+                    "$ref": "#/definitions/samples.OneOf.Bar",
+                    "additionalProperties": true
+                },
+                "baz": {
+                    "$ref": "#/definitions/samples.OneOf.Baz",
+                    "additionalProperties": true
+                },
+                "something": {
+                    "type": "boolean"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "oneOf": [
+                {
+                    "required": [
+                        "bar"
+                    ]
+                },
+                {
+                    "required": [
+                        "baz"
+                    ]
+                }
+            ]
+        },
+        "samples.OneOf.Bar": {
             "required": [
                 "foo"
             ],
@@ -18,7 +45,7 @@ const OneOf = `{
             "additionalProperties": true,
             "type": "object"
         },
-        "baz": {
+        "samples.OneOf.Baz": {
             "required": [
                 "foo"
             ],
@@ -29,23 +56,17 @@ const OneOf = `{
             },
             "additionalProperties": true,
             "type": "object"
-        },
-        "something": {
-            "type": "boolean"
         }
-    },
-    "additionalProperties": true,
-    "type": "object",
-    "oneOf": [
-        {
-            "required": [
-                "bar"
-            ]
-        },
-        {
-            "required": [
-                "baz"
-            ]
-        }
-    ]
+    }
+}`
+
+const OneOfFail = `{
+	"something": true,
+	"bar": {"foo": 1},
+	"baz": {"foo": "one"}
+}`
+
+const OneOfPass = `{
+	"something": true,
+	"bar": {"foo": 1}
 }`

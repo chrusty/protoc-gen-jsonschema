@@ -17,6 +17,7 @@ import (
 )
 
 const (
+	defaultRefPrefix = "#/definitions/"
 	messageDelimiter = "+"
 )
 
@@ -25,6 +26,7 @@ type Converter struct {
 	Flags               ConverterFlags
 	ignoredFieldOption  string
 	logger              *logrus.Logger
+	refPrefix           string
 	requiredFieldOption string
 	sourceInfo          *sourceCodeInfo
 	messageTargets      []string
@@ -45,7 +47,8 @@ type ConverterFlags struct {
 // New returns a configured *Converter:
 func New(logger *logrus.Logger) *Converter {
 	return &Converter{
-		logger: logger,
+		logger:    logger,
+		refPrefix: defaultRefPrefix,
 	}
 }
 
