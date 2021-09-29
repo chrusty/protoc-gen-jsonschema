@@ -28,6 +28,7 @@ var (
 		"BytesValue":  true,
 		"Value":       true,
 		"Duration":    true,
+		"Struct":      true,
 	}
 )
 
@@ -439,6 +440,8 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 			}
 		case "Duration":
 			jsonSchemaType.Type = gojsonschema.TYPE_STRING
+		case "Struct":
+			jsonSchemaType.Type = gojsonschema.TYPE_OBJECT
 		}
 
 		// If we're allowing nulls then prepare a OneOf:
