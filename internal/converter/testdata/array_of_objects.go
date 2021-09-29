@@ -1,11 +1,11 @@
 package testdata
 
 const ArrayOfObjects = `{
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/ArrayOfObjects",
     "id": "ArrayOfObjects",
     "definitions": {
         "ArrayOfObjects": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "description": {
                     "oneOf": [
@@ -43,7 +43,6 @@ const ArrayOfObjects = `{
             "id": "ArrayOfObjects"
         },
         "samples.ArrayOfObjects.RepeatedPayload": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "oneOf": [

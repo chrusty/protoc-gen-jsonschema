@@ -1,11 +1,11 @@
 package testdata
 
 const Maps = `{
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/Maps",
     "id": "Maps",
     "definitions": {
         "Maps": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "map_of_strings": {
                     "additionalProperties": {
@@ -32,7 +32,6 @@ const Maps = `{
             "id": "Maps"
         },
         "samples.PayloadMessage": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"

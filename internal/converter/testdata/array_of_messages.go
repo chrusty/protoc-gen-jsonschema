@@ -1,11 +1,11 @@
 package testdata
 
 const ArrayOfMessages = `{
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/ArrayOfMessages",
     "id": "ArrayOfMessages",
     "definitions": {
         "ArrayOfMessages": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "description": {
                     "type": "string"
@@ -22,7 +22,6 @@ const ArrayOfMessages = `{
             "id": "ArrayOfMessages"
         },
         "samples.PayloadMessage": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"

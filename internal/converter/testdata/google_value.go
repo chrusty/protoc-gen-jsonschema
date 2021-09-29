@@ -1,11 +1,11 @@
 package testdata
 
 const GoogleValue = `{
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/GoogleValue",
     "id": "GoogleValue",
     "definitions": {
         "GoogleValue": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "arg": {
                     "oneOf": [

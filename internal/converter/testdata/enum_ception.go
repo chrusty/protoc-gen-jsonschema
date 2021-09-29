@@ -1,11 +1,11 @@
 package testdata
 
 const EnumCeption = `{
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/Enumception",
     "id": "Enumception",
     "definitions": {
         "Enumception": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"
@@ -74,7 +74,6 @@ const EnumCeption = `{
             "id": "Enumception"
         },
         "samples.PayloadMessage": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"

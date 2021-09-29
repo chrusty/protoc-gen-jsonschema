@@ -1,11 +1,11 @@
 package testdata
 
 const CyclicalReferenceMessageM = `{
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/M",
     "id": "M",
     "definitions": {
         "M": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "foo": {
                     "$ref": "#/definitions/samples.Foo",
@@ -17,7 +17,6 @@ const CyclicalReferenceMessageM = `{
             "id": "M"
         },
         "samples.Bar": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "id": {
                     "type": "integer"
@@ -32,7 +31,6 @@ const CyclicalReferenceMessageM = `{
             "id": "samples.Bar"
         },
         "samples.Baz": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "enabled": {
                     "type": "boolean"
@@ -47,7 +45,6 @@ const CyclicalReferenceMessageM = `{
             "id": "samples.Baz"
         },
         "samples.Foo": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"
@@ -67,11 +64,11 @@ const CyclicalReferenceMessageM = `{
 }`
 
 const CyclicalReferenceMessageFoo = `{
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/Foo",
     "id": "Foo",
     "definitions": {
         "Foo": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"
@@ -88,7 +85,6 @@ const CyclicalReferenceMessageFoo = `{
             "id": "Foo"
         },
         "samples.Bar": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "id": {
                     "type": "integer"
@@ -103,7 +99,6 @@ const CyclicalReferenceMessageFoo = `{
             "id": "samples.Bar"
         },
         "samples.Baz": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "enabled": {
                     "type": "boolean"
@@ -121,11 +116,11 @@ const CyclicalReferenceMessageFoo = `{
 }`
 
 const CyclicalReferenceMessageBar = `{
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/Bar",
     "id": "Bar",
     "definitions": {
         "Bar": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "id": {
                     "type": "integer"
@@ -140,7 +135,6 @@ const CyclicalReferenceMessageBar = `{
             "id": "Bar"
         },
         "samples.Baz": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "enabled": {
                     "type": "boolean"
@@ -155,7 +149,6 @@ const CyclicalReferenceMessageBar = `{
             "id": "samples.Baz"
         },
         "samples.Foo": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"
@@ -175,11 +168,11 @@ const CyclicalReferenceMessageBar = `{
 }`
 
 const CyclicalReferenceMessageBaz = `{
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/Baz",
     "id": "Baz",
     "definitions": {
         "Baz": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "enabled": {
                     "type": "boolean"
@@ -194,7 +187,6 @@ const CyclicalReferenceMessageBaz = `{
             "id": "Baz"
         },
         "samples.Bar": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "id": {
                     "type": "integer"
@@ -209,7 +201,6 @@ const CyclicalReferenceMessageBaz = `{
             "id": "samples.Bar"
         },
         "samples.Foo": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"

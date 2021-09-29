@@ -1,11 +1,11 @@
 package testdata
 
 const MessageKind11 = `{
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/MessageKind11",
     "id": "MessageKind11",
     "definitions": {
         "MessageKind11": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"
@@ -34,7 +34,6 @@ const MessageKind11 = `{
             "id": "MessageKind11"
         },
         "samples.MessageKind1": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"
@@ -57,7 +56,6 @@ const MessageKind11 = `{
             "id": "samples.MessageKind1"
         },
         "samples.MessageKind2": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"
@@ -86,7 +84,6 @@ const MessageKind11 = `{
             "id": "samples.MessageKind2"
         },
         "samples.MessageKind3": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"
@@ -112,7 +109,6 @@ const MessageKind11 = `{
             "id": "samples.MessageKind3"
         },
         "samples.MessageKind4": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"

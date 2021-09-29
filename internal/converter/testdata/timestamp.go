@@ -1,11 +1,11 @@
 package testdata
 
 const Timestamp = `{
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/Timestamp",
     "id": "Timestamp",
     "definitions": {
         "Timestamp": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "timestamp": {
                     "type": "string",

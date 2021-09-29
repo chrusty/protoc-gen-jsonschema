@@ -1,11 +1,11 @@
 package testdata
 
 const PayloadMessage = `{
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/PayloadMessage",
     "id": "PayloadMessage",
     "definitions": {
         "PayloadMessage": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"

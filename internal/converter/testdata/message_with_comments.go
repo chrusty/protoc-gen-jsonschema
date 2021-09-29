@@ -1,11 +1,11 @@
 package testdata
 
 const MessageWithComments = `{
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/MessageWithComments",
     "id": "MessageWithComments",
     "definitions": {
         "MessageWithComments": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name1": {
                     "type": "string",

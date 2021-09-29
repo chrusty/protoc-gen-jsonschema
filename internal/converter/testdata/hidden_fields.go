@@ -1,11 +1,11 @@
 package testdata
 
 const HiddenFields = `{
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/HiddenFields",
     "id": "HiddenFields",
     "definitions": {
         "HiddenFields": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "visible1": {
                     "type": "string"

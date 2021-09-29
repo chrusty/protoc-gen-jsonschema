@@ -341,6 +341,8 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.Des
 	if err != nil {
 		return nil, err
 	}
+	rootType.Extras = map[string]interface{}{"id": msg.Name}
+	rootType.Version = jsonschema.Version
 
 	// and then generate the sub-schema for each duplicated message
 	definitions := jsonschema.Definitions{}
@@ -364,7 +366,6 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msg *descriptor.Des
 		Type:        rootType,
 		Definitions: definitions,
 	}
-	rootType.Extras = map[string]interface{}{"id": msg.Name}
 
 	return newJSONSchema, nil
 }
@@ -461,7 +462,6 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 
 	// Set defaults:
 	jsonSchemaType.Properties = orderedmap.New()
-	jsonSchemaType.Version = jsonschema.Version
 
 	// Look up references:
 	if refName, ok := duplicatedMessages[msg]; ok && !ignoreDuplicatedMessages {

@@ -1,11 +1,11 @@
 package testdata
 
 const MessageKind12 = `{
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/MessageKind12",
     "id": "MessageKind12",
     "definitions": {
         "MessageKind12": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"
@@ -32,7 +32,6 @@ const MessageKind12 = `{
             "id": "MessageKind12"
         },
         "samples.MessageKind1": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"
@@ -55,7 +54,6 @@ const MessageKind12 = `{
             "id": "samples.MessageKind1"
         },
         "samples.MessageKind11": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"
@@ -84,7 +82,6 @@ const MessageKind12 = `{
             "id": "samples.MessageKind11"
         },
         "samples.MessageKind2": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"
@@ -113,7 +110,6 @@ const MessageKind12 = `{
             "id": "samples.MessageKind2"
         },
         "samples.MessageKind3": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"
@@ -139,7 +135,6 @@ const MessageKind12 = `{
             "id": "samples.MessageKind3"
         },
         "samples.MessageKind4": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"
@@ -165,7 +160,6 @@ const MessageKind12 = `{
             "id": "samples.MessageKind4"
         },
         "samples.MessageKind5": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"
@@ -191,7 +185,6 @@ const MessageKind12 = `{
             "id": "samples.MessageKind5"
         },
         "samples.MessageKind6": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"
@@ -217,7 +210,6 @@ const MessageKind12 = `{
             "id": "samples.MessageKind6"
         },
         "samples.MessageKind7": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "name": {
                     "type": "string"

@@ -1,11 +1,11 @@
 package testdata
 
 const EnumWithMessage = `{
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/WithFooBarBaz",
     "id": "WithFooBarBaz",
     "definitions": {
         "WithFooBarBaz": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "enumField": {
                     "enum": [

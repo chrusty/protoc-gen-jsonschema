@@ -1,11 +1,11 @@
 package testdata
 
 const FieldOptions = `{
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/FieldOptions",
     "id": "FieldOptions",
     "definitions": {
         "FieldOptions": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "ignore": {
                     "type": "boolean",

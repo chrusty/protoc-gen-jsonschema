@@ -1,11 +1,11 @@
 package testdata
 
 const ArrayOfEnums = `{
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/ArrayOfEnums",
     "id": "ArrayOfEnums",
     "definitions": {
         "ArrayOfEnums": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "description": {
                     "type": "string"

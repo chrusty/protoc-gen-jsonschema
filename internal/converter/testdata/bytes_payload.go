@@ -1,11 +1,11 @@
 package testdata
 
 const BytesPayload = `{
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/BytesPayload",
     "id": "BytesPayload",
     "definitions": {
         "BytesPayload": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "description": {
                     "type": "string"

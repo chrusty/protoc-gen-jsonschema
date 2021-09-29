@@ -1,11 +1,11 @@
 package testdata
 
 const OneOf = `{
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/OneOf",
     "id": "OneOf",
     "definitions": {
         "OneOf": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "properties": {
                 "bar": {
                     "$ref": "#/definitions/samples.OneOf.Bar",
@@ -36,7 +36,6 @@ const OneOf = `{
             "id": "OneOf"
         },
         "samples.OneOf.Bar": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "required": [
                 "foo"
             ],
@@ -50,7 +49,6 @@ const OneOf = `{
             "id": "samples.OneOf.Bar"
         },
         "samples.OneOf.Baz": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "required": [
                 "foo"
             ],

@@ -1,11 +1,11 @@
 package testdata
 
 const Proto2NestedMessage = `{
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/Proto2NestedMessage",
     "id": "Proto2NestedMessage",
     "definitions": {
         "Proto2NestedMessage": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "required": [
                 "payload"
             ],
@@ -23,7 +23,6 @@ const Proto2NestedMessage = `{
             "id": "Proto2NestedMessage"
         },
         "samples.Proto2PayloadMessage": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
             "required": [
                 "name",
                 "id"
