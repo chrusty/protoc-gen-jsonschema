@@ -7,10 +7,10 @@ import (
 
 	"github.com/alecthomas/jsonschema"
 	"github.com/chrusty/protoc-gen-jsonschema/internal/protos"
-	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/iancoleman/orderedmap"
 	"github.com/xeipuuv/gojsonschema"
+	"google.golang.org/protobuf/proto"
+	descriptor "google.golang.org/protobuf/types/descriptorpb"
 )
 
 var (
@@ -481,14 +481,13 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msg *descr
 		jsonSchemaType.AdditionalProperties = []byte("true")
 	}
 
-	c.logger.WithField("message_str", proto.MarshalTextString(msg)).Trace("Converting message")
+	c.logger.WithField("message_str", msg.String()).Trace("Converting message")
 	for _, fieldDesc := range msg.GetField() {
 
 		// Check for our custom field options:
 		opts := fieldDesc.GetOptions()
 		if opts != nil && proto.HasExtension(opts, protos.E_FieldOptions) {
-			opt, err := proto.GetExtension(opts, protos.E_FieldOptions)
-			if err == nil {
+			if opt := proto.GetExtension(opts, protos.E_FieldOptions); opt != nil {
 				if fieldOptions, ok := opt.(*protos.FieldOptions); ok {
 
 					// "Ignored" fields are simply skipped:

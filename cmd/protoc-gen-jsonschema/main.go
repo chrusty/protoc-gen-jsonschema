@@ -11,9 +11,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/golang/protobuf/proto"
-	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
 	"github.com/sirupsen/logrus"
+	"google.golang.org/protobuf/proto"
+	plugin "google.golang.org/protobuf/types/pluginpb"
 
 	"github.com/chrusty/protoc-gen-jsonschema/internal/converter"
 )
