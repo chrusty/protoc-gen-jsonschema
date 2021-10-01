@@ -217,11 +217,11 @@ func configureSampleProtos() map[string]sampleProto {
 			ObjectsToValidatePass: []string{testdata.GoogleValuePass},
 		},
 		"HiddenFields": {
-			ExpectedJSONSchema:    []string{testdata.FieldOptions, testdata.HiddenFields},
+			ExpectedJSONSchema:    []string{testdata.FieldOptions, testdata.FileOptions, testdata.MessageOptions, testdata.HiddenFields},
 			FilesToGenerate:       []string{"options.proto", "HiddenFields.proto"},
 			ProtoFileName:         "HiddenFields.proto",
-			ObjectsToValidateFail: []string{testdata.FieldOptionsFail, testdata.HiddenFieldsFail},
-			ObjectsToValidatePass: []string{testdata.FieldOptionsPass, testdata.HiddenFieldsPass},
+			ObjectsToValidateFail: []string{testdata.FieldOptionsFail, testdata.FileOptionsFail, testdata.MessageOptionsFail, testdata.HiddenFieldsFail},
+			ObjectsToValidatePass: []string{testdata.FieldOptionsPass, testdata.FileOptionsPass, testdata.MessageOptionsPass, testdata.HiddenFieldsPass},
 		},
 		"ImportedEnum": {
 			ExpectedJSONSchema:    []string{testdata.ImportedEnum},
@@ -310,11 +310,11 @@ func configureSampleProtos() map[string]sampleProto {
 			ObjectsToValidatePass: []string{testdata.Proto2RequiredPass},
 		},
 		"Proto3Required": {
-			ExpectedJSONSchema:    []string{testdata.FieldOptions, testdata.Proto3Required},
+			ExpectedJSONSchema:    []string{testdata.FieldOptions, testdata.FileOptions, testdata.MessageOptions, testdata.Proto3Required},
 			FilesToGenerate:       []string{"options.proto", "Proto3Required.proto"},
 			ProtoFileName:         "Proto3Required.proto",
-			ObjectsToValidateFail: []string{testdata.FieldOptionsFail, testdata.Proto3RequiredFail},
-			ObjectsToValidatePass: []string{testdata.FieldOptionsPass, testdata.Proto3RequiredPass},
+			ObjectsToValidateFail: []string{testdata.FieldOptionsFail, testdata.FileOptionsFail, testdata.MessageOptionsFail, testdata.Proto3RequiredFail},
+			ObjectsToValidatePass: []string{testdata.FieldOptionsPass, testdata.FileOptionsPass, testdata.MessageOptionsPass, testdata.Proto3RequiredPass},
 		},
 		"SelfReference": {
 			ExpectedJSONSchema:    []string{testdata.SelfReference},

@@ -19,6 +19,30 @@ message FieldOptions {
 }
 
 
+// Custom FileOptions:
+message FileOptions {
+
+  // Files tagged with this will not be processed:
+  bool ignore = 1;
+}
+
+
+// Custom MessageOptions:
+message MessageOptions {
+
+  // Messages tagged with this will not be processed:
+  bool ignore = 1;
+}
+
+
 extend google.protobuf.FieldOptions {
   FieldOptions field_options = 1125;
+}
+
+extend google.protobuf.FileOptions {
+  FileOptions file_options = 1126;
+}
+
+extend google.protobuf.MessageOptions {
+  MessageOptions message_options = 1127;
 }

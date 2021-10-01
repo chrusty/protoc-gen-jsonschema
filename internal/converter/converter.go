@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/alecthomas/jsonschema"
+	"github.com/chrusty/protoc-gen-jsonschema/internal/protos"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/protobuf/proto"
 	descriptor "google.golang.org/protobuf/types/descriptorpb"
@@ -143,6 +144,7 @@ func (c *Converter) convertEnumType(enum *descriptor.EnumDescriptorProto) (jsons
 
 // Converts a proto file into a JSON-Schema:
 func (c *Converter) convertFile(file *descriptor.FileDescriptorProto) ([]*plugin.CodeGeneratorResponse_File, error) {
+
 	// Input filename:
 	protoFileName := path.Base(file.GetName())
 
@@ -230,43 +232,70 @@ func (c *Converter) convertFile(file *descriptor.FileDescriptorProto) ([]*plugin
 	return response, nil
 }
 
-func (c *Converter) convert(req *plugin.CodeGeneratorRequest) (*plugin.CodeGeneratorResponse, error) {
-	c.parseGeneratorParameters(req.GetParameter())
+// convert processes a protoc CodeGeneratorRequest:
+func (c *Converter) convert(request *plugin.CodeGeneratorRequest) (*plugin.CodeGeneratorResponse, error) {
+	response := &plugin.CodeGeneratorResponse{}
 
+	// Parse the various generator parameter flags:
+	c.parseGeneratorParameters(request.GetParameter())
+
+	// Prepare a list of target files:
 	generateTargets := make(map[string]bool)
-	for _, file := range req.GetFileToGenerate() {
+	for _, file := range request.GetFileToGenerate() {
 		generateTargets[file] = true
 	}
 
-	c.sourceInfo = newSourceCodeInfo(req.GetProtoFile())
-	res := &plugin.CodeGeneratorResponse{}
-	for _, file := range req.GetProtoFile() {
-		if file.GetPackage() == "" {
-			c.logger.WithField("filename", file.GetName()).Warn("Proto file doesn't specify a package")
+	// Get the source-code info (we use this to map any code comments to JSONSchema descriptions):
+	c.sourceInfo = newSourceCodeInfo(request.GetProtoFile())
+
+	// Go through the list of proto files provided by protoc:
+	for _, fileDesc := range request.GetProtoFile() {
+
+		// Check for our custom field options:
+		opts := fileDesc.GetOptions()
+		if opts != nil && proto.HasExtension(opts, protos.E_FileOptions) {
+			if opt := proto.GetExtension(opts, protos.E_FileOptions); opt != nil {
+				if fileOptions, ok := opt.(*protos.FileOptions); ok {
+
+					// "Ignored" files are simply skipped:
+					if fileOptions.GetIgnore() {
+						c.logger.WithField("file_name", fileDesc.GetName()).Debug("Skipping ignored file")
+						continue
+					}
+				}
+			}
+		}
+
+		// Check that this file has a proto package:
+		if fileDesc.GetPackage() == "" {
+			c.logger.WithField("filename", fileDesc.GetName()).Warn("Proto file doesn't specify a package")
 			continue
 		}
 
-		for _, msg := range file.GetMessageType() {
-			c.logger.WithField("msg_name", msg.GetName()).WithField("package_name", file.GetPackage()).Debug("Loading a message")
-			c.registerType(file.Package, msg)
+		// Build a list of any messages specified by this file:
+		for _, msg := range fileDesc.GetMessageType() {
+			c.logger.WithField("msg_name", msg.GetName()).WithField("package_name", fileDesc.GetPackage()).Debug("Loading a message")
+			c.registerType(fileDesc.Package, msg)
 		}
 
-		for _, en := range file.GetEnumType() {
-			c.logger.WithField("enum_name", en.GetName()).WithField("package_name", file.GetPackage()).Debug("Loading an enum")
-			c.registerEnum(file.Package, en)
+		// Build a list of any enums specified by this file:
+		for _, en := range fileDesc.GetEnumType() {
+			c.logger.WithField("enum_name", en.GetName()).WithField("package_name", fileDesc.GetPackage()).Debug("Loading an enum")
+			c.registerEnum(fileDesc.Package, en)
 		}
 
-		if _, ok := generateTargets[file.GetName()]; ok {
-			c.logger.WithField("filename", file.GetName()).Debug("Converting file")
-			converted, err := c.convertFile(file)
+		// Generate schemas for this file:
+		if _, ok := generateTargets[fileDesc.GetName()]; ok {
+			c.logger.WithField("filename", fileDesc.GetName()).Debug("Converting file")
+			converted, err := c.convertFile(fileDesc)
 			if err != nil {
-				res.Error = proto.String(fmt.Sprintf("Failed to convert %s: %v", file.GetName(), err))
-				return res, err
+				response.Error = proto.String(fmt.Sprintf("Failed to convert %s: %v", fileDesc.GetName(), err))
+				return response, err
 			}
-			res.File = append(res.File, converted...)
+			response.File = append(response.File, converted...)
 		}
 	}
-	return res, nil
+	return response, nil
 }
 
 func (c *Converter) generateSchemaFilename(file *descriptor.FileDescriptorProto, protoName string) string {
