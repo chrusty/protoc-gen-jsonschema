@@ -17,7 +17,7 @@ import (
 )
 
 const (
-	defaultFileExtention = "jsonschema"
+	defaultFileExtention = "json"
 	defaultRefPrefix     = "#/definitions/"
 	messageDelimiter     = "+"
 )
