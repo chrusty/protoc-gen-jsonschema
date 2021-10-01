@@ -71,18 +71,10 @@ func (c *Converter) registerType(pkgName *string, msgDesc *descriptor.Descriptor
 }
 
 // Convert a proto "field" (essentially a type-switch with some recursion):
-func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, msgDesc *descriptor.DescriptorProto, duplicatedMessages map[*descriptor.DescriptorProto]string) (*jsonschema.Type, error) {
+func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDescriptorProto, msgDesc *descriptor.DescriptorProto, duplicatedMessages map[*descriptor.DescriptorProto]string, messageFlags ConverterFlags) (*jsonschema.Type, error) {
 
 	// Prepare a new jsonschema.Type for our eventual return value:
 	jsonSchemaType := &jsonschema.Type{}
-
-	// Check for our custom message options:
-	messageOptions := new(protos.MessageOptions)
-	if opts := msgDesc.GetOptions(); opts != nil && proto.HasExtension(opts, protos.E_MessageOptions) {
-		if opt := proto.GetExtension(opts, protos.E_MessageOptions); opt != nil {
-			messageOptions = opt.(*protos.MessageOptions)
-		}
-	}
 
 	// Generate a description from src comments (if available)
 	if src := c.sourceInfo.GetField(desc); src != nil {
@@ -289,7 +281,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			jsonSchemaType.Type = gojsonschema.TYPE_ARRAY
 
 			// Build up the list of required fields:
-			if (c.Flags.AllFieldsRequired || messageOptions.GetAllFieldsRequired()) && len(recursedJSONSchemaType.OneOf) == 0 && recursedJSONSchemaType.Properties != nil {
+			if messageFlags.AllFieldsRequired && len(recursedJSONSchemaType.OneOf) == 0 && recursedJSONSchemaType.Properties != nil {
 				for _, property := range recursedJSONSchemaType.Properties.Keys() {
 					jsonSchemaType.Items.Required = append(jsonSchemaType.Items.Required, property)
 				}
@@ -315,7 +307,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			jsonSchemaType.Required = recursedJSONSchemaType.Required
 
 			// Build up the list of required fields:
-			if (c.Flags.AllFieldsRequired || messageOptions.GetAllFieldsRequired()) && len(recursedJSONSchemaType.OneOf) == 0 && recursedJSONSchemaType.Properties != nil {
+			if messageFlags.AllFieldsRequired && len(recursedJSONSchemaType.OneOf) == 0 && recursedJSONSchemaType.Properties != nil {
 				for _, property := range recursedJSONSchemaType.Properties.Keys() {
 					jsonSchemaType.Required = append(jsonSchemaType.Required, property)
 				}
@@ -422,11 +414,17 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 	// Prepare a new jsonschema:
 	jsonSchemaType := new(jsonschema.Type)
 
-	// Check for our custom message options:
-	messageOptions := new(protos.MessageOptions)
+	// Set some per-message flags from config and options:
+	messageFlags := c.Flags
 	if opts := msgDesc.GetOptions(); opts != nil && proto.HasExtension(opts, protos.E_MessageOptions) {
 		if opt := proto.GetExtension(opts, protos.E_MessageOptions); opt != nil {
-			messageOptions = opt.(*protos.MessageOptions)
+			if messageOptions, ok := opt.(*protos.MessageOptions); ok {
+
+				// AllFieldsRequired:
+				if messageOptions.GetAllFieldsRequired() {
+					messageFlags.AllFieldsRequired = true
+				}
+			}
 		}
 	}
 
@@ -522,7 +520,7 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 		}
 
 		// Convert the field into a JSONSchema type:
-		recursedJSONSchemaType, err := c.convertField(curPkg, fieldDesc, msgDesc, duplicatedMessages)
+		recursedJSONSchemaType, err := c.convertField(curPkg, fieldDesc, msgDesc, duplicatedMessages, messageFlags)
 		if err != nil {
 			c.logger.WithError(err).WithField("field_name", fieldDesc.GetName()).WithField("message_name", msgDesc.GetName()).Error("Failed to convert field")
 			return nil, err
@@ -546,7 +544,7 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 		}
 
 		// Enforce all_fields_required:
-		if (c.Flags.AllFieldsRequired || messageOptions.GetAllFieldsRequired()) && len(jsonSchemaType.OneOf) == 0 && jsonSchemaType.Properties != nil {
+		if messageFlags.AllFieldsRequired && len(jsonSchemaType.OneOf) == 0 && jsonSchemaType.Properties != nil {
 			for _, property := range jsonSchemaType.Properties.Keys() {
 				jsonSchemaType.Required = append(jsonSchemaType.Required, property)
 			}
