@@ -76,6 +76,14 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 	// Prepare a new jsonschema.Type for our eventual return value:
 	jsonSchemaType := &jsonschema.Type{}
 
+	// Check for our custom message options:
+	messageOptions := new(protos.MessageOptions)
+	if opts := msgDesc.GetOptions(); opts != nil && proto.HasExtension(opts, protos.E_MessageOptions) {
+		if opt := proto.GetExtension(opts, protos.E_MessageOptions); opt != nil {
+			messageOptions = opt.(*protos.MessageOptions)
+		}
+	}
+
 	// Generate a description from src comments (if available)
 	if src := c.sourceInfo.GetField(desc); src != nil {
 		jsonSchemaType.Description = formatDescription(src)
@@ -281,7 +289,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			jsonSchemaType.Type = gojsonschema.TYPE_ARRAY
 
 			// Build up the list of required fields:
-			if c.Flags.AllFieldsRequired && len(recursedJSONSchemaType.OneOf) == 0 && recursedJSONSchemaType.Properties != nil {
+			if (c.Flags.AllFieldsRequired || messageOptions.GetAllFieldsRequired()) && len(recursedJSONSchemaType.OneOf) == 0 && recursedJSONSchemaType.Properties != nil {
 				for _, property := range recursedJSONSchemaType.Properties.Keys() {
 					jsonSchemaType.Items.Required = append(jsonSchemaType.Items.Required, property)
 				}
@@ -307,7 +315,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			jsonSchemaType.Required = recursedJSONSchemaType.Required
 
 			// Build up the list of required fields:
-			if c.Flags.AllFieldsRequired && len(recursedJSONSchemaType.OneOf) == 0 && recursedJSONSchemaType.Properties != nil {
+			if (c.Flags.AllFieldsRequired || messageOptions.GetAllFieldsRequired()) && len(recursedJSONSchemaType.OneOf) == 0 && recursedJSONSchemaType.Properties != nil {
 				for _, property := range recursedJSONSchemaType.Properties.Keys() {
 					jsonSchemaType.Required = append(jsonSchemaType.Required, property)
 				}
@@ -413,6 +421,14 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 
 	// Prepare a new jsonschema:
 	jsonSchemaType := new(jsonschema.Type)
+
+	// Check for our custom message options:
+	messageOptions := new(protos.MessageOptions)
+	if opts := msgDesc.GetOptions(); opts != nil && proto.HasExtension(opts, protos.E_MessageOptions) {
+		if opt := proto.GetExtension(opts, protos.E_MessageOptions); opt != nil {
+			messageOptions = opt.(*protos.MessageOptions)
+		}
+	}
 
 	// Generate a description from src comments (if available)
 	if src := c.sourceInfo.GetMessage(msgDesc); src != nil {
@@ -530,7 +546,7 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 		}
 
 		// Enforce all_fields_required:
-		if c.Flags.AllFieldsRequired && len(jsonSchemaType.OneOf) == 0 && jsonSchemaType.Properties != nil {
+		if (c.Flags.AllFieldsRequired || messageOptions.GetAllFieldsRequired()) && len(jsonSchemaType.OneOf) == 0 && jsonSchemaType.Properties != nil {
 			for _, property := range jsonSchemaType.Properties.Keys() {
 				jsonSchemaType.Required = append(jsonSchemaType.Required, property)
 			}

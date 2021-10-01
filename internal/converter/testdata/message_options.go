@@ -9,6 +9,10 @@ const MessageOptions = `{
                 "ignore": {
                     "type": "boolean",
                     "description": "Messages tagged with this will not be processed"
+                },
+                "all_fields_required": {
+                    "type": "boolean",
+                    "description": "Messages tagged with this will have all fields marked as \"required\":"
                 }
             },
             "additionalProperties": true,

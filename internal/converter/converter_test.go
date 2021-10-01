@@ -228,25 +228,6 @@ func configureSampleProtos() map[string]sampleProto {
 			ObjectsToValidateFail: []string{testdata.GoogleValueFail},
 			ObjectsToValidatePass: []string{testdata.GoogleValuePass},
 		},
-		"HiddenFields": {
-			ExpectedJSONSchema:    []string{testdata.FieldOptions, testdata.FileOptions, testdata.MessageOptions, testdata.HiddenFields},
-			FilesToGenerate:       []string{"options.proto", "HiddenFields.proto"},
-			ProtoFileName:         "HiddenFields.proto",
-			ObjectsToValidateFail: []string{testdata.FieldOptionsFail, testdata.FileOptionsFail, testdata.MessageOptionsFail, testdata.HiddenFieldsFail},
-			ObjectsToValidatePass: []string{testdata.FieldOptionsPass, testdata.FileOptionsPass, testdata.MessageOptionsPass, testdata.HiddenFieldsPass},
-		},
-		"IgnoredFile": {
-			ExpectedJSONSchema:    []string{testdata.FieldOptions, testdata.FileOptions, testdata.MessageOptions},
-			FilesToGenerate:       []string{"options.proto", "IgnoredFile.proto"},
-			ProtoFileName:         "IgnoredFile.proto",
-			ObjectsToValidateFail: []string{testdata.FieldOptionsFail, testdata.FileOptionsFail, testdata.MessageOptionsFail},
-			ObjectsToValidatePass: []string{testdata.FieldOptionsPass, testdata.FileOptionsPass, testdata.MessageOptionsPass},
-		},
-		"IgnoredMessage": {
-			ExpectedJSONSchema: []string{testdata.FieldOptions, testdata.FileOptions, testdata.MessageOptions, testdata.UnignoredMessage},
-			FilesToGenerate:    []string{"options.proto", "IgnoredMessage.proto"},
-			ProtoFileName:      "IgnoredMessage.proto",
-		},
 		"ImportedEnum": {
 			ExpectedJSONSchema:    []string{testdata.ImportedEnum},
 			FilesToGenerate:       []string{"ImportedEnum.proto"},
@@ -296,6 +277,37 @@ func configureSampleProtos() map[string]sampleProto {
 			ObjectsToValidateFail: []string{testdata.OneOfFail},
 			ObjectsToValidatePass: []string{testdata.OneOfPass},
 		},
+		"IgnoredFile": {
+			ExpectedJSONSchema: []string{},
+			FilesToGenerate:    []string{"IgnoredFile.proto"},
+			ProtoFileName:      "IgnoredFile.proto",
+		},
+		"OptionIgnoredField": {
+			ExpectedJSONSchema:    []string{testdata.HiddenFields},
+			FilesToGenerate:       []string{"HiddenFields.proto"},
+			ProtoFileName:         "HiddenFields.proto",
+			ObjectsToValidateFail: []string{testdata.HiddenFieldsFail},
+			ObjectsToValidatePass: []string{testdata.HiddenFieldsPass},
+		},
+		"OptionIgnoredMessage": {
+			ExpectedJSONSchema: []string{testdata.FieldOptions, testdata.FileOptions, testdata.MessageOptions, testdata.UnignoredMessage},
+			FilesToGenerate:    []string{"options.proto", "IgnoredMessage.proto"},
+			ProtoFileName:      "IgnoredMessage.proto",
+		},
+		"OptionRequiredField": {
+			ExpectedJSONSchema:    []string{testdata.Proto3Required},
+			FilesToGenerate:       []string{"Proto3Required.proto"},
+			ProtoFileName:         "Proto3Required.proto",
+			ObjectsToValidateFail: []string{testdata.Proto3RequiredFail},
+			ObjectsToValidatePass: []string{testdata.Proto3RequiredPass},
+		},
+		"OptionRequiredMessage": {
+			ExpectedJSONSchema:    []string{testdata.OptionRequiredMessage},
+			FilesToGenerate:       []string{"OptionRequiredMessage.proto"},
+			ProtoFileName:         "OptionRequiredMessage.proto",
+			ObjectsToValidateFail: []string{testdata.OptionRequiredMessageFail},
+			ObjectsToValidatePass: []string{testdata.OptionRequiredMessagePass},
+		},
 		"PackagePrefix": {
 			Flags:                 ConverterFlags{PrefixSchemaFilesWithPackage: true},
 			ExpectedJSONSchema:    []string{testdata.Timestamp},
@@ -332,13 +344,6 @@ func configureSampleProtos() map[string]sampleProto {
 			ProtoFileName:         "Proto2Required.proto",
 			ObjectsToValidateFail: []string{testdata.Proto2RequiredFail},
 			ObjectsToValidatePass: []string{testdata.Proto2RequiredPass},
-		},
-		"Proto3Required": {
-			ExpectedJSONSchema:    []string{testdata.FieldOptions, testdata.FileOptions, testdata.MessageOptions, testdata.Proto3Required},
-			FilesToGenerate:       []string{"options.proto", "Proto3Required.proto"},
-			ProtoFileName:         "Proto3Required.proto",
-			ObjectsToValidateFail: []string{testdata.FieldOptionsFail, testdata.FileOptionsFail, testdata.MessageOptionsFail, testdata.Proto3RequiredFail},
-			ObjectsToValidatePass: []string{testdata.FieldOptionsPass, testdata.FileOptionsPass, testdata.MessageOptionsPass, testdata.Proto3RequiredPass},
 		},
 		"SelfReference": {
 			ExpectedJSONSchema:    []string{testdata.SelfReference},

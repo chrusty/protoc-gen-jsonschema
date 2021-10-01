@@ -37,7 +37,7 @@ message MessageOptions {
   bool ignore = 1;
 
   // Messages tagged with this will have all fields marked as "required":
-  bool all_field_required = 2;
+  bool all_fields_required = 2;
 }
 
 

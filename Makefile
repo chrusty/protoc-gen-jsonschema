@@ -53,6 +53,7 @@ samples:
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas -I. --proto_path=${PROTO_PATH} ${PROTO_PATH}/HiddenFields.proto || echo "No messages found (HiddenFields.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas -I. --proto_path=${PROTO_PATH} ${PROTO_PATH}/IgnoredFile.proto || echo "No messages found (IgnoredFile.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas -I. --proto_path=${PROTO_PATH} ${PROTO_PATH}/IgnoredMessage.proto || echo "No messages found (IgnoredMessage.proto)"
+	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas -I. --proto_path=${PROTO_PATH} ${PROTO_PATH}/OptionRequiredMessage.proto || echo "No messages found (OptionRequiredMessage.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas -I. --proto_path=${PROTO_PATH} ${PROTO_PATH}/Proto3Required.proto || echo "No messages found (Proto3Required.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=enforce_oneof:jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/OneOf.proto || echo "No messages found (OneOf.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=all_fields_required:jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/Proto2NestedObject.proto || echo "No messages found (Proto2NestedObject.proto)"
