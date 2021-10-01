@@ -17,8 +17,9 @@ import (
 )
 
 const (
-	defaultRefPrefix = "#/definitions/"
-	messageDelimiter = "+"
+	defaultFileExtention = "json"
+	defaultRefPrefix     = "#/definitions/"
+	messageDelimiter     = "+"
 )
 
 // Converter is everything you need to convert protos to JSONSchemas:
@@ -28,6 +29,7 @@ type Converter struct {
 	logger              *logrus.Logger
 	refPrefix           string
 	requiredFieldOption string
+	schemaFileExtention string
 	sourceInfo          *sourceCodeInfo
 	messageTargets      []string
 }
@@ -47,8 +49,9 @@ type ConverterFlags struct {
 // New returns a configured *Converter:
 func New(logger *logrus.Logger) *Converter {
 	return &Converter{
-		logger:    logger,
-		refPrefix: defaultRefPrefix,
+		logger:              logger,
+		refPrefix:           defaultRefPrefix,
+		schemaFileExtention: defaultFileExtention,
 	}
 }
 
@@ -103,6 +106,11 @@ func (c *Converter) parseGeneratorParameters(parameters string) {
 		rx := regexp.MustCompile(`messages=\[([^\]]+)\]`)
 		if matches := rx.FindStringSubmatch(parameter); len(matches) == 2 {
 			c.messageTargets = strings.Split(matches[1], messageDelimiter)
+		}
+
+		// Configure custom file extention:
+		if parameterParts := strings.Split(parameter, "file_extention="); len(parameterParts) == 2 {
+			c.schemaFileExtention = parameterParts[1]
 		}
 	}
 }
@@ -263,9 +271,9 @@ func (c *Converter) convert(req *plugin.CodeGeneratorRequest) (*plugin.CodeGener
 
 func (c *Converter) generateSchemaFilename(file *descriptor.FileDescriptorProto, protoName string) string {
 	if c.Flags.PrefixSchemaFilesWithPackage {
-		return fmt.Sprintf("%s/%s.jsonschema", file.GetPackage(), protoName)
+		return fmt.Sprintf("%s/%s.%s", file.GetPackage(), protoName, c.schemaFileExtention)
 	}
-	return fmt.Sprintf("%s.jsonschema", protoName)
+	return fmt.Sprintf("%s.%s", protoName, c.schemaFileExtention)
 }
 
 func contains(haystack []string, needle string) bool {
