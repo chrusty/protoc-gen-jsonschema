@@ -1,4 +1,5 @@
-# Protobuf to JSON-Schema compiler
+Protobuf to JSON-Schema compiler
+================================
 
 This takes protobuf definitions and converts them into JSONSchemas, which can be used to dynamically validate JSON messages.
 
@@ -7,13 +8,15 @@ Useful for people who define their data using ProtoBuf, but use JSON for the "wi
 "Heavily influenced" by [Google's protobuf-to-BigQuery-schema compiler](https://github.com/GoogleCloudPlatform/protoc-gen-bq-schema).
 
 
-## Generated Schemas
+Generated Schemas
+-----------------
 
 - One JSONSchema file is generated for each root-level proto message and ENUM. These are intended to be stand alone self-contained schemas which can be used to validate a payload derived from their source proto message
 - Nested message schemas become [referenced "definitions"](https://cswr.github.io/JsonSchema/spec/definitions_references/). This means that you know the name of the proto message they came from, and their schema is not duplicated (within the context of one JSONSchema file at least)
 
 
-## Logic
+Logic
+-----
 
 - For each proto file provided
   - Generates schema for each ENUM
@@ -35,7 +38,8 @@ Useful for people who define their data using ProtoBuf, but use JSON for the "wi
   - Bundles these into a protoc generator response
 
 
-## Installation
+Installation
+------------
 
 > Note: This tool requires Go 1.11+ to be installed.
 
@@ -47,7 +51,9 @@ go get github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema &&
 go install github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema
 ```
 
-## Usage
+
+Usage
+-----
 
 > Note: This plugin requires the [`protoc`](https://github.com/protocolbuffers/protobuf) CLI to be installed.
 
@@ -59,7 +65,11 @@ protoc \ # The protobuf compiler
 --proto_path=testdata/proto testdata/proto/ArrayOfPrimitives.proto # proto input directories and folders
 ```
 
-## Configuration
+
+Configuration Parameters
+------------------------
+
+The following configuration parameters are supported. They should be added to the protoc command and can be combined as a comma-delimited string. Some examples are included in the following Examples section.
 
 | CONFIG | DESCRIPTION |
 |--------|-------------|
@@ -74,7 +84,38 @@ protoc \ # The protobuf compiler
 |`prefix_schema_files_with_package`| Prefix the output filename with package |
 |`proto_and_json_fieldnames`| Use proto and JSON field names |
 
-## Examples
+
+Custom Proto Options
+--------------------
+
+If you don't want to use the configuration parameters (admittedly quite a nasty cli syntax) then some of the generator behaviour can be controlled using custom proto options. These are defined in [options.proto](options.proto), and your protoc command will need to include this file. See the [sample protos](internal/converter/testdata/proto) and generator commands in the [Makefile](Makefile).
+
+### Field Options
+
+These apply to specifically marked fields, giving you more finely-grained control than with the CLI flags.
+
+- [ignore](internal/converter/testdata/proto/OptionIgnoredField.proto): Ignore (omit) a specific field (`string hidden1  = 3 [(protoc.gen.jsonschema.field_options).ignore = true];`)
+- [required](internal/converter/testdata/proto/OptionRequiredField.proto): Mark a specific field as being REQUIRED (`string query = 1 [(protoc.gen.jsonschema.field_options).required = true];`)
+
+### File Options
+
+These options apply to an entire proto file.
+
+- [ignore](internal/converter/testdata/proto/OptionIgnoredFile.proto): Ignore (skip) a specific file (`option (protoc.gen.jsonschema.file_options).ignore = true;`)
+- [extention](internal/converter/testdata/proto/OptionFileExtention.proto): Specify a custom file-extention for the generated schema for this file (`option (protoc.gen.jsonschema.file_options).extention = "jsonschema";`)
+
+### Message Options
+
+These options apply to a specific proto message.
+
+- [ignore](internal/converter/testdata/proto/OptionIgnoredMessage.proto): Ignore (skip) a specific message (`option (protoc.gen.jsonschema.message_options).ignore = true;`)
+- [all_fields_required](internal/converter/testdata/proto/OptionRequiredMessage.proto): Mark all fields in a specific message as "required" (`option (protoc.gen.jsonschema.message_options).all_fields_required = true;`)
+- [allow_null_values](internal/converter/testdata/proto/OptionAllowNullValues.proto): Additionally allow null values for all fields in a message (`option (protoc.gen.jsonschema.message_options).allow_null_values = true;`)
+- [disallow_additional_properties](internal/converter/testdata/proto/OptionDisallowAdditionalProperties.proto): Only accept the specific properties, no extras (`option (protoc.gen.jsonschema.message_options).disallow_additional_properties = true;`)
+
+
+Examples
+--------
 
 ### Require all fields
 
@@ -151,39 +192,6 @@ protoc \
 --proto_path=testdata/proto testdata/proto/ArrayOfPrimitives.proto
 ```
 
-### Custom option to ignore specific fields
-
-Use the custom 'ignore' option on the fields you'd like to omit from generated schemas.
-
-```proto
-syntax = "proto3";
-package samples;
-import "options.proto";
-
-message HiddenFields {
-    string visible1 = 1 [(protoc.gen.jsonschema.field_options).ignore = false];
-    string visible2 = 2;
-    string hidden1  = 3 [(protoc.gen.jsonschema.field_options).ignore = true];
-    string hidden2  = 4 [deprecated = true, (protoc.gen.jsonschema.field_options).ignore = true];
-}
-```
-
-### Custom option to mark fields as required
-
-Use the custom 'required' option on the fields you'd like to mark as required in generated schemas.
-
-```proto
-syntax = "proto3";
-package samples;
-import "options.proto";
-
-message Proto3Required {
-  string query = 1 [(protoc.gen.jsonschema.field_options).required = true];
-  int32 page_number = 2 [deprecated = true, (protoc.gen.jsonschema.field_options).required = true];
-  int32 result_per_page = 3;
-}
-```
-
 ### Custom schema file extention
 
 The default file extention is `json`. You can override that with the "file_extention" parameter.
@@ -195,7 +203,8 @@ protoc \
 ```
 
 
-## Sample protos (for testing)
+Sample protos (for testing)
+---------------------------
 
 * Proto with a simple (flat) structure: [samples.PayloadMessage](internal/converter/testdata/proto/PayloadMessage.proto)
 * Proto containing a nested object (defined internally): [samples.NestedObject](internal/converter/testdata/proto/NestedObject.proto)
@@ -209,7 +218,9 @@ protoc \
 * Proto containing 2 messages: [samples.FirstMessage, samples.SecondMessage](internal/converter/testdata/proto/SeveralMessages.proto)
 * Proto containing 12 messages: [samples.MessageKind1 - samples.MessageKind12](internal/converter/testdata/proto/TwelveMessages.proto)
 
-## Links
+
+Links
+-----
 
 * [About JSON Schema](http://json-schema.org/)
 * [Popular GoLang JSON-Schema validation library](https://github.com/xeipuuv/gojsonschema)

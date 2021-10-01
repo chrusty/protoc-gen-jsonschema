@@ -2,7 +2,7 @@ syntax = "proto3";
 package samples;
 import "options.proto";
 
-message IgnoredMessage {
+message OptionIgnoredMessage {
     option (protoc.gen.jsonschema.message_options).ignore = true;
     string name1       = 1;
     string timestamp1  = 2;

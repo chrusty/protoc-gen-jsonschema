@@ -1,10 +1,10 @@
 package testdata
 
-const Proto3Required = `{
+const OptionRequiredField = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "$ref": "#/definitions/Proto3Required",
+    "$ref": "#/definitions/OptionRequiredField",
     "definitions": {
-        "Proto3Required": {
+        "OptionRequiredField": {
             "required": [
                 "query",
                 "page_number"
@@ -26,11 +26,11 @@ const Proto3Required = `{
     }
 }`
 
-const Proto3RequiredFail = `{
+const OptionRequiredFieldFail = `{
 	"page_number": 4
 }`
 
-const Proto3RequiredPass = `{
+const OptionRequiredFieldPass = `{
 	"query": "what?",
 	"page_number": 4
 }`
