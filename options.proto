@@ -35,6 +35,9 @@ message MessageOptions {
 
   // Messages tagged with this will not be processed
   bool ignore = 1;
+
+  // Messages tagged with this will have all fields marked as "required":
+  bool all_field_required = 2;
 }
 
 
