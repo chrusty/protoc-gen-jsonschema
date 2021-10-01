@@ -298,9 +298,9 @@ func (c *Converter) convert(request *plugin.CodeGeneratorRequest) (*plugin.CodeG
 		}
 
 		// Build a list of any messages specified by this file:
-		for _, msg := range fileDesc.GetMessageType() {
-			c.logger.WithField("msg_name", msg.GetName()).WithField("package_name", fileDesc.GetPackage()).Debug("Loading a message")
-			c.registerType(fileDesc.Package, msg)
+		for _, msgDesc := range fileDesc.GetMessageType() {
+			c.logger.WithField("msg_name", msgDesc.GetName()).WithField("package_name", fileDesc.GetPackage()).Debug("Loading a message")
+			c.registerType(fileDesc.Package, msgDesc)
 		}
 
 		// Build a list of any enums specified by this file:
