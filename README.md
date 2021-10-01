@@ -183,6 +183,16 @@ message Proto3Required {
 }
 ```
 
+### Custom schema file extention
+
+The default file extention is `jsonschema`. You can override that with the "file_extention" parameter.
+
+```sh
+protoc \
+--jsonschema_out=file_extention=jsoncruft:. \
+--proto_path=internal/converter/testdata/proto internal/converter/testdata/proto/ArrayOfPrimitives.proto
+```
+
 
 ## Sample protos (for testing)
 

@@ -107,6 +107,11 @@ func (c *Converter) parseGeneratorParameters(parameters string) {
 		if matches := rx.FindStringSubmatch(parameter); len(matches) == 2 {
 			c.messageTargets = strings.Split(matches[1], messageDelimiter)
 		}
+
+		// Configure custom file extention:
+		if parameterParts := strings.Split(parameter, "file_extention="); len(parameterParts) == 2 {
+			c.schemaFileExtention = parameterParts[1]
+		}
 	}
 }
 
