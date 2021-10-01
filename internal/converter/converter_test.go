@@ -68,6 +68,7 @@ func testConvertSampleProto(t *testing.T, sampleProto sampleProto) {
 		ProtoFile:      fileDescriptorSet.GetFile(),
 	}
 
+	// Test the TargetedMessages feature:
 	if len(sampleProto.TargetedMessages) > 0 {
 		arg := fmt.Sprintf("messages=[%s]", strings.Join(sampleProto.TargetedMessages, messageDelimiter))
 		codeGeneratorRequest.Parameter = &arg
@@ -182,12 +183,6 @@ func configureSampleProtos() map[string]sampleProto {
 			ProtoFileName:         "MessageWithComments.proto",
 			ObjectsToValidateFail: []string{testdata.MessageWithCommentsFail},
 		},
-		"CustomFileExtention": {
-			ExpectedJSONSchema: []string{testdata.FieldOptions, testdata.FileOptions, testdata.MessageOptions, testdata.CustomFileExtention},
-			ExpectedFileNames:  []string{"FieldOptions.json", "FileOptions.json", "MessageOptions.json", "CustomFileExtention.jsonschema"},
-			FilesToGenerate:    []string{"options.proto", "CustomFileExtention.proto"},
-			ProtoFileName:      "CustomFileExtention.proto",
-		},
 		"CyclicalReference": {
 			ExpectedJSONSchema: []string{testdata.CyclicalReferenceMessageM, testdata.CyclicalReferenceMessageFoo, testdata.CyclicalReferenceMessageBar, testdata.CyclicalReferenceMessageBaz},
 			FilesToGenerate:    []string{"CyclicalReference.proto"},
@@ -277,12 +272,25 @@ func configureSampleProtos() map[string]sampleProto {
 			ObjectsToValidateFail: []string{testdata.OneOfFail},
 			ObjectsToValidatePass: []string{testdata.OneOfPass},
 		},
+		"OptionAllowNullValues": {
+			ExpectedJSONSchema:    []string{testdata.OptionAllowNullValues},
+			FilesToGenerate:       []string{"OptionAllowNullValues.proto"},
+			ProtoFileName:         "OptionAllowNullValues.proto",
+			ObjectsToValidateFail: []string{testdata.OptionAllowNullValuesFail},
+			ObjectsToValidatePass: []string{testdata.OptionAllowNullValuesPass},
+		},
 		"OptionDisallowAdditionalProperties": {
 			ExpectedJSONSchema:    []string{testdata.OptionDisallowAdditionalProperties},
 			FilesToGenerate:       []string{"OptionDisallowAdditionalProperties.proto"},
 			ProtoFileName:         "OptionDisallowAdditionalProperties.proto",
 			ObjectsToValidateFail: []string{testdata.OptionDisallowAdditionalPropertiesFail},
 			ObjectsToValidatePass: []string{testdata.OptionDisallowAdditionalPropertiesPass},
+		},
+		"OptionFileExtention": {
+			ExpectedJSONSchema: []string{testdata.OptionFileExtention},
+			ExpectedFileNames:  []string{"OptionFileExtention.jsonschema"},
+			FilesToGenerate:    []string{"OptionFileExtention.proto"},
+			ProtoFileName:      "OptionFileExtention.proto",
 		},
 		"OptionIgnoredFile": {
 			ExpectedJSONSchema: []string{},
@@ -297,8 +305,8 @@ func configureSampleProtos() map[string]sampleProto {
 			ObjectsToValidatePass: []string{testdata.HiddenFieldsPass},
 		},
 		"OptionIgnoredMessage": {
-			ExpectedJSONSchema: []string{testdata.FieldOptions, testdata.FileOptions, testdata.MessageOptions, testdata.UnignoredMessage},
-			FilesToGenerate:    []string{"options.proto", "IgnoredMessage.proto"},
+			ExpectedJSONSchema: []string{testdata.UnignoredMessage},
+			FilesToGenerate:    []string{"IgnoredMessage.proto"},
 			ProtoFileName:      "IgnoredMessage.proto",
 		},
 		"OptionRequiredField": {

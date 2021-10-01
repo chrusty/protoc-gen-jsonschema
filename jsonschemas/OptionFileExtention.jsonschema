@@ -1,10 +1,8 @@
-package testdata
-
-const CustomFileExtention = `{
+{
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "$ref": "#/definitions/CustomFileExtention",
+    "$ref": "#/definitions/OptionFileExtention",
     "definitions": {
-        "CustomFileExtention": {
+        "OptionFileExtention": {
             "properties": {
                 "visible1": {
                     "type": "string"
@@ -17,4 +15,4 @@ const CustomFileExtention = `{
             "type": "object"
         }
     }
-}`
+}

@@ -14,6 +14,10 @@ const MessageOptions = `{
                     "type": "boolean",
                     "description": "Messages tagged with this will have all fields marked as \"required\":"
                 },
+                "allow_null_values": {
+                    "type": "boolean",
+                    "description": "Messages tagged with this will additionally accept null values for all properties:"
+                },
                 "disallow_additional_properties": {
                     "type": "boolean",
                     "description": "Messages tagged with this will have all fields marked as not allowing additional properties:"

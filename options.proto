@@ -39,8 +39,11 @@ message MessageOptions {
   // Messages tagged with this will have all fields marked as "required":
   bool all_fields_required = 2;
 
+  // Messages tagged with this will additionally accept null values for all properties:
+  bool allow_null_values = 3;
+
   // Messages tagged with this will have all fields marked as not allowing additional properties:
-  bool disallow_additional_properties = 3;
+  bool disallow_additional_properties = 4;
 }
 
 
