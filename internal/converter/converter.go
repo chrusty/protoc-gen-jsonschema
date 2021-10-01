@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/alecthomas/jsonschema"
+	"github.com/chrusty/protoc-gen-jsonschema/internal/protos"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/protobuf/proto"
 	descriptor "google.golang.org/protobuf/types/descriptorpb"
@@ -142,7 +143,8 @@ func (c *Converter) convertEnumType(enum *descriptor.EnumDescriptorProto) (jsons
 }
 
 // Converts a proto file into a JSON-Schema:
-func (c *Converter) convertFile(file *descriptor.FileDescriptorProto) ([]*plugin.CodeGeneratorResponse_File, error) {
+func (c *Converter) convertFile(file *descriptor.FileDescriptorProto, fileExtention string) ([]*plugin.CodeGeneratorResponse_File, error) {
+
 	// Input filename:
 	protoFileName := path.Base(file.GetName())
 
@@ -164,7 +166,7 @@ func (c *Converter) convertFile(file *descriptor.FileDescriptorProto) ([]*plugin
 	// Generate standalone ENUMs:
 	if len(file.GetMessageType()) == 0 {
 		for _, enum := range file.GetEnumType() {
-			jsonSchemaFileName := c.generateSchemaFilename(file, enum.GetName())
+			jsonSchemaFileName := c.generateSchemaFilename(file, fileExtention, enum.GetName())
 			c.logger.WithField("proto_filename", protoFileName).WithField("enum_name", enum.GetName()).WithField("jsonschema_filename", jsonSchemaFileName).Info("Generating JSON-schema for stand-alone ENUM")
 
 			// Convert the ENUM:
@@ -195,21 +197,38 @@ func (c *Converter) convertFile(file *descriptor.FileDescriptorProto) ([]*plugin
 			return nil, fmt.Errorf("no such package found: %s", file.GetPackage())
 		}
 
-		for _, msg := range file.GetMessageType() {
+		// Go through all of the messages in this file:
+		for _, msgDesc := range file.GetMessageType() {
+
+			// Check for our custom message options:
+			if opts := msgDesc.GetOptions(); opts != nil && proto.HasExtension(opts, protos.E_MessageOptions) {
+				if opt := proto.GetExtension(opts, protos.E_MessageOptions); opt != nil {
+					if messageOptions, ok := opt.(*protos.MessageOptions); ok {
+
+						// "Ignored" messages are simply skipped:
+						if messageOptions.GetIgnore() {
+							c.logger.WithField("msg_name", msgDesc.GetName()).Debug("Skipping ignored message")
+							continue
+						}
+					}
+				}
+			}
+
 			// skip if we are only generating schema for specific messages
-			if genSpecificMessages && !contains(c.messageTargets, msg.GetName()) {
+			if genSpecificMessages && !contains(c.messageTargets, msgDesc.GetName()) {
 				continue
 			}
 
-			jsonSchemaFileName := c.generateSchemaFilename(file, msg.GetName())
-			c.logger.WithField("proto_filename", protoFileName).WithField("msg_name", msg.GetName()).WithField("jsonschema_filename", jsonSchemaFileName).Info("Generating JSON-schema for MESSAGE")
-
 			// Convert the message:
-			messageJSONSchema, err := c.convertMessageType(pkg, msg)
+			messageJSONSchema, err := c.convertMessageType(pkg, msgDesc)
 			if err != nil {
 				c.logger.WithError(err).WithField("proto_filename", protoFileName).Error("Failed to convert")
 				return nil, err
 			}
+
+			// Generate a schema filename:
+			jsonSchemaFileName := c.generateSchemaFilename(file, fileExtention, msgDesc.GetName())
+			c.logger.WithField("proto_filename", protoFileName).WithField("msg_name", msgDesc.GetName()).WithField("jsonschema_filename", jsonSchemaFileName).Info("Generating JSON-schema for MESSAGE")
 
 			// Marshal the JSON-Schema into JSON:
 			jsonSchemaJSON, err := json.MarshalIndent(messageJSONSchema, "", "    ")
@@ -230,50 +249,85 @@ func (c *Converter) convertFile(file *descriptor.FileDescriptorProto) ([]*plugin
 	return response, nil
 }
 
-func (c *Converter) convert(req *plugin.CodeGeneratorRequest) (*plugin.CodeGeneratorResponse, error) {
-	c.parseGeneratorParameters(req.GetParameter())
+// convert processes a protoc CodeGeneratorRequest:
+func (c *Converter) convert(request *plugin.CodeGeneratorRequest) (*plugin.CodeGeneratorResponse, error) {
+	response := &plugin.CodeGeneratorResponse{}
 
+	// Parse the various generator parameter flags:
+	c.parseGeneratorParameters(request.GetParameter())
+
+	// Prepare a list of target files:
 	generateTargets := make(map[string]bool)
-	for _, file := range req.GetFileToGenerate() {
+	for _, file := range request.GetFileToGenerate() {
 		generateTargets[file] = true
 	}
 
-	c.sourceInfo = newSourceCodeInfo(req.GetProtoFile())
-	res := &plugin.CodeGeneratorResponse{}
-	for _, file := range req.GetProtoFile() {
-		if file.GetPackage() == "" {
-			c.logger.WithField("filename", file.GetName()).Warn("Proto file doesn't specify a package")
+	// Get the source-code info (we use this to map any code comments to JSONSchema descriptions):
+	c.sourceInfo = newSourceCodeInfo(request.GetProtoFile())
+
+	// Go through the list of proto files provided by protoc:
+	for _, fileDesc := range request.GetProtoFile() {
+
+		// Start with the default / global file extention:
+		fileExtention := c.schemaFileExtention
+
+		// Check for our custom field options:
+		if opts := fileDesc.GetOptions(); opts != nil && proto.HasExtension(opts, protos.E_FileOptions) {
+			if opt := proto.GetExtension(opts, protos.E_FileOptions); opt != nil {
+				if fileOptions, ok := opt.(*protos.FileOptions); ok {
+
+					// "Ignored" files are simply skipped:
+					if fileOptions.GetIgnore() {
+						c.logger.WithField("file_name", fileDesc.GetName()).Debug("Skipping ignored file")
+						continue
+					}
+
+					// Allow the file extention option to take precedence:
+					if fileOptions.GetExtention() != "" {
+						fileExtention = fileOptions.GetExtention()
+						c.logger.WithField("file_name", fileDesc.GetName()).WithField("extention", fileExtention).Debug("Using optional extention")
+					}
+				}
+			}
+		}
+
+		// Check that this file has a proto package:
+		if fileDesc.GetPackage() == "" {
+			c.logger.WithField("filename", fileDesc.GetName()).Warn("Proto file doesn't specify a package")
 			continue
 		}
 
-		for _, msg := range file.GetMessageType() {
-			c.logger.WithField("msg_name", msg.GetName()).WithField("package_name", file.GetPackage()).Debug("Loading a message")
-			c.registerType(file.Package, msg)
+		// Build a list of any messages specified by this file:
+		for _, msgDesc := range fileDesc.GetMessageType() {
+			c.logger.WithField("msg_name", msgDesc.GetName()).WithField("package_name", fileDesc.GetPackage()).Debug("Loading a message")
+			c.registerType(fileDesc.Package, msgDesc)
 		}
 
-		for _, en := range file.GetEnumType() {
-			c.logger.WithField("enum_name", en.GetName()).WithField("package_name", file.GetPackage()).Debug("Loading an enum")
-			c.registerEnum(file.Package, en)
+		// Build a list of any enums specified by this file:
+		for _, en := range fileDesc.GetEnumType() {
+			c.logger.WithField("enum_name", en.GetName()).WithField("package_name", fileDesc.GetPackage()).Debug("Loading an enum")
+			c.registerEnum(fileDesc.Package, en)
 		}
 
-		if _, ok := generateTargets[file.GetName()]; ok {
-			c.logger.WithField("filename", file.GetName()).Debug("Converting file")
-			converted, err := c.convertFile(file)
+		// Generate schemas for this file:
+		if _, ok := generateTargets[fileDesc.GetName()]; ok {
+			c.logger.WithField("filename", fileDesc.GetName()).Debug("Converting file")
+			converted, err := c.convertFile(fileDesc, fileExtention)
 			if err != nil {
-				res.Error = proto.String(fmt.Sprintf("Failed to convert %s: %v", file.GetName(), err))
-				return res, err
+				response.Error = proto.String(fmt.Sprintf("Failed to convert %s: %v", fileDesc.GetName(), err))
+				return response, err
 			}
-			res.File = append(res.File, converted...)
+			response.File = append(response.File, converted...)
 		}
 	}
-	return res, nil
+	return response, nil
 }
 
-func (c *Converter) generateSchemaFilename(file *descriptor.FileDescriptorProto, protoName string) string {
+func (c *Converter) generateSchemaFilename(file *descriptor.FileDescriptorProto, fileExtention, protoName string) string {
 	if c.Flags.PrefixSchemaFilesWithPackage {
-		return fmt.Sprintf("%s/%s.%s", file.GetPackage(), protoName, c.schemaFileExtention)
+		return fmt.Sprintf("%s/%s.%s", file.GetPackage(), protoName, fileExtention)
 	}
-	return fmt.Sprintf("%s.%s", protoName, c.schemaFileExtention)
+	return fmt.Sprintf("%s.%s", protoName, fileExtention)
 }
 
 func contains(haystack []string, needle string) bool {

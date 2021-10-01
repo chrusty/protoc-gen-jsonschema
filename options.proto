@@ -8,17 +8,53 @@ import "google/protobuf/descriptor.proto";
 option go_package = "./protos";
 
 
-// Custom FieldOptions:
+// Custom FieldOptions
 message FieldOptions {
 
-  // Fields tagged with this will be omitted from generated schemas:
+  // Fields tagged with this will be omitted from generated schemas
   bool ignore = 1;
 
-  // Fields tagged with this will be marked as "required" in generated schemas:
+  // Fields tagged with this will be marked as "required" in generated schemas
   bool required = 2;
+}
+
+
+// Custom FileOptions
+message FileOptions {
+
+  // Files tagged with this will not be processed
+  bool ignore = 1;
+
+  // Override the default file extention for schemas generated from this file
+  string extention = 2;
+}
+
+
+// Custom MessageOptions
+message MessageOptions {
+
+  // Messages tagged with this will not be processed
+  bool ignore = 1;
+
+  // Messages tagged with this will have all fields marked as "required":
+  bool all_fields_required = 2;
+
+  // Messages tagged with this will additionally accept null values for all properties:
+  bool allow_null_values = 3;
+
+  // Messages tagged with this will have all fields marked as not allowing additional properties:
+  bool disallow_additional_properties = 4;
 }
 
 
 extend google.protobuf.FieldOptions {
   FieldOptions field_options = 1125;
+}
+
+extend google.protobuf.FileOptions {
+  FileOptions file_options = 1126;
+}
+
+extend google.protobuf.MessageOptions {
+  MessageOptions message_options = 1127;
 }

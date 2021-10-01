@@ -1,6 +1,4 @@
-package testdata
-
-const FieldOptions = `{
+{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/FieldOptions",
     "definitions": {
@@ -20,8 +18,4 @@ const FieldOptions = `{
             "description": "Custom FieldOptions"
         }
     }
-}`
-
-const FieldOptionsFail = `{"ignore": 12345}`
-
-const FieldOptionsPass = `{"required": true}`
+}

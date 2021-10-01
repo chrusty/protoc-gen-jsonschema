@@ -1,8 +1,10 @@
-{
+package testdata
+
+const OptionRequiredField = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "$ref": "#/definitions/Proto3Required",
+    "$ref": "#/definitions/OptionRequiredField",
     "definitions": {
-        "Proto3Required": {
+        "OptionRequiredField": {
             "required": [
                 "query",
                 "page_number"
@@ -22,4 +24,13 @@
             "type": "object"
         }
     }
-}
+}`
+
+const OptionRequiredFieldFail = `{
+	"page_number": 4
+}`
+
+const OptionRequiredFieldPass = `{
+	"query": "what?",
+	"page_number": 4
+}`

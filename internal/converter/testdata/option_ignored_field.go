@@ -1,10 +1,10 @@
 package testdata
 
-const HiddenFields = `{
+const OptionIgnoredField = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "$ref": "#/definitions/HiddenFields",
+    "$ref": "#/definitions/OptionIgnoredField",
     "definitions": {
-        "HiddenFields": {
+        "OptionIgnoredField": {
             "properties": {
                 "visible1": {
                     "type": "string"
@@ -19,6 +19,6 @@ const HiddenFields = `{
     }
 }`
 
-const HiddenFieldsFail = `{"visible1": 12345}`
+const OptionIgnoredFieldFail = `{"visible1": 12345}`
 
-const HiddenFieldsPass = `{"visible2": "hello"}`
+const OptionIgnoredFieldPass = `{"visible2": "hello"}`

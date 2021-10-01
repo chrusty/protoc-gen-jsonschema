@@ -1,3 +1,5 @@
+PROTO_PATH ?= "internal/converter/testdata/proto"
+
 default: build
 
 .PHONY: build
@@ -24,7 +26,6 @@ build_linux:
 	@echo "Generating Linux-amd64 binary (protoc-gen-jsonschema.linux-amd64) ..."
 	@GOOS=linux GOARCH=amd64 go build -o protoc-gen-jsonschema.linux-amd64
 
-PROTO_PATH ?= "internal/converter/testdata/proto"
 .PHONY: samples
 samples:
 	@echo "Generating sample JSON-Schemas ..."
@@ -48,13 +49,20 @@ samples:
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/Proto2Required.proto || echo "No messages found (Proto2Required.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/Proto2NestedMessage.proto || echo "No messages found (Proto2NestedMessage.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/GoogleValue.proto || echo "No messages found (GoogleValue.proto)"
-	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas -I. --proto_path=${PROTO_PATH} ${PROTO_PATH}/HiddenFields.proto || echo "No messages found (HiddenFields.proto)"
-	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas -I. --proto_path=${PROTO_PATH} ${PROTO_PATH}/Proto3Required.proto || echo "No messages found (Proto3Required.proto)"
+	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas -I. --proto_path=${PROTO_PATH} ${PROTO_PATH}/OptionFileExtention.proto || echo "No messages found (OptionFileExtention.proto)"
+	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas -I. --proto_path=${PROTO_PATH} ${PROTO_PATH}/OptionIgnoredField.proto || echo "No messages found (HiddenFields.proto)"
+	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas -I. --proto_path=${PROTO_PATH} ${PROTO_PATH}/OptionIgnoredFile.proto || echo "No messages found (IgnoredFile.proto)"
+	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas -I. --proto_path=${PROTO_PATH} ${PROTO_PATH}/OptionIgnoredMessage.proto || echo "No messages found (IgnoredMessage.proto)"
+	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas -I. --proto_path=${PROTO_PATH} ${PROTO_PATH}/OptionAllowNullValues.proto || echo "No messages found (OptionAllowNullValues.proto)"
+	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas -I. --proto_path=${PROTO_PATH} ${PROTO_PATH}/OptionDisallowAdditionalProperties.proto || echo "No messages found (OptionDisallowAdditionalProperties.proto)"
+	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas -I. --proto_path=${PROTO_PATH} ${PROTO_PATH}/OptionRequiredMessage.proto || echo "No messages found (OptionRequiredMessage.proto)"
+	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas -I. --proto_path=${PROTO_PATH} ${PROTO_PATH}/OptionRequiredMessage.proto || echo "No messages found (Proto3Required.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=enforce_oneof:jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/OneOf.proto || echo "No messages found (OneOf.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=all_fields_required:jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/Proto2NestedObject.proto || echo "No messages found (Proto2NestedObject.proto)"
-	@PATH=./bin:$$PATH; protoc -I /usr/include --jsonschema_out=jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/WellKnown.proto || echo "No messages found (WellKnown.proto)"
+	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/WellKnown.proto || echo "No messages found (WellKnown.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/NoPackage.proto
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=messages=[MessageKind10+MessageKind11+MessageKind12]:jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/TwelveMessages.proto || echo "No messages found (TwelveMessages.proto)"
+	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas options.proto || echo "No messages found (options.proto)"
 
 .PHONY: test
 test:

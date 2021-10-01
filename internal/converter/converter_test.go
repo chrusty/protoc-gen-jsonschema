@@ -24,6 +24,7 @@ const (
 
 type sampleProto struct {
 	Flags                 ConverterFlags
+	ExpectedFileNames     []string
 	ExpectedJSONSchema    []string
 	FilesToGenerate       []string
 	ObjectsToValidateFail []string
@@ -67,6 +68,7 @@ func testConvertSampleProto(t *testing.T, sampleProto sampleProto) {
 		ProtoFile:      fileDescriptorSet.GetFile(),
 	}
 
+	// Test the TargetedMessages feature:
 	if len(sampleProto.TargetedMessages) > 0 {
 		arg := fmt.Sprintf("messages=[%s]", strings.Join(sampleProto.TargetedMessages, messageDelimiter))
 		codeGeneratorRequest.Parameter = &arg
@@ -82,7 +84,12 @@ func testConvertSampleProto(t *testing.T, sampleProto sampleProto) {
 		for responseFileIndex, responseFile := range response.File {
 
 			// Ensure that the generated schema matches the expected (canned) one:
-			assert.Equal(t, strings.TrimSpace(sampleProto.ExpectedJSONSchema[responseFileIndex]), *responseFile.Content, "Incorrect JSON-Schema returned for sample proto file (%v)", sampleProtoFileName)
+			assert.Equal(t, strings.TrimSpace(sampleProto.ExpectedJSONSchema[responseFileIndex]), responseFile.GetContent(), "Incorrect JSON-Schema returned for sample proto file (%v)", sampleProtoFileName)
+
+			// Validate the generated filenames:
+			if len(sampleProto.ExpectedFileNames) > 0 {
+				assert.Equal(t, sampleProto.ExpectedFileNames[responseFileIndex], responseFile.GetName())
+			}
 
 			// Validate any intended-to-fail data against the new schema:
 			if len(sampleProto.ObjectsToValidateFail) >= responseFileIndex+1 {
@@ -216,13 +223,6 @@ func configureSampleProtos() map[string]sampleProto {
 			ObjectsToValidateFail: []string{testdata.GoogleValueFail},
 			ObjectsToValidatePass: []string{testdata.GoogleValuePass},
 		},
-		"HiddenFields": {
-			ExpectedJSONSchema:    []string{testdata.FieldOptions, testdata.HiddenFields},
-			FilesToGenerate:       []string{"options.proto", "HiddenFields.proto"},
-			ProtoFileName:         "HiddenFields.proto",
-			ObjectsToValidateFail: []string{testdata.FieldOptionsFail, testdata.HiddenFieldsFail},
-			ObjectsToValidatePass: []string{testdata.FieldOptionsPass, testdata.HiddenFieldsPass},
-		},
 		"ImportedEnum": {
 			ExpectedJSONSchema:    []string{testdata.ImportedEnum},
 			FilesToGenerate:       []string{"ImportedEnum.proto"},
@@ -272,6 +272,57 @@ func configureSampleProtos() map[string]sampleProto {
 			ObjectsToValidateFail: []string{testdata.OneOfFail},
 			ObjectsToValidatePass: []string{testdata.OneOfPass},
 		},
+		"OptionAllowNullValues": {
+			ExpectedJSONSchema:    []string{testdata.OptionAllowNullValues},
+			FilesToGenerate:       []string{"OptionAllowNullValues.proto"},
+			ProtoFileName:         "OptionAllowNullValues.proto",
+			ObjectsToValidateFail: []string{testdata.OptionAllowNullValuesFail},
+			ObjectsToValidatePass: []string{testdata.OptionAllowNullValuesPass},
+		},
+		"OptionDisallowAdditionalProperties": {
+			ExpectedJSONSchema:    []string{testdata.OptionDisallowAdditionalProperties},
+			FilesToGenerate:       []string{"OptionDisallowAdditionalProperties.proto"},
+			ProtoFileName:         "OptionDisallowAdditionalProperties.proto",
+			ObjectsToValidateFail: []string{testdata.OptionDisallowAdditionalPropertiesFail},
+			ObjectsToValidatePass: []string{testdata.OptionDisallowAdditionalPropertiesPass},
+		},
+		"OptionFileExtention": {
+			ExpectedJSONSchema: []string{testdata.OptionFileExtention},
+			ExpectedFileNames:  []string{"OptionFileExtention.jsonschema"},
+			FilesToGenerate:    []string{"OptionFileExtention.proto"},
+			ProtoFileName:      "OptionFileExtention.proto",
+		},
+		"OptionIgnoredFile": {
+			ExpectedJSONSchema: []string{},
+			FilesToGenerate:    []string{"OptionIgnoredFile.proto"},
+			ProtoFileName:      "OptionIgnoredFile.proto",
+		},
+		"OptionIgnoredField": {
+			ExpectedJSONSchema:    []string{testdata.OptionIgnoredField},
+			FilesToGenerate:       []string{"OptionIgnoredField.proto"},
+			ProtoFileName:         "OptionIgnoredField.proto",
+			ObjectsToValidateFail: []string{testdata.OptionIgnoredFieldFail},
+			ObjectsToValidatePass: []string{testdata.OptionIgnoredFieldPass},
+		},
+		"OptionIgnoredMessage": {
+			ExpectedJSONSchema: []string{testdata.UnignoredMessage},
+			FilesToGenerate:    []string{"OptionIgnoredMessage.proto"},
+			ProtoFileName:      "OptionIgnoredMessage.proto",
+		},
+		"OptionRequiredField": {
+			ExpectedJSONSchema:    []string{testdata.OptionRequiredField},
+			FilesToGenerate:       []string{"OptionRequiredField.proto"},
+			ProtoFileName:         "OptionRequiredField.proto",
+			ObjectsToValidateFail: []string{testdata.OptionRequiredFieldFail},
+			ObjectsToValidatePass: []string{testdata.OptionRequiredFieldPass},
+		},
+		"OptionRequiredMessage": {
+			ExpectedJSONSchema:    []string{testdata.OptionRequiredMessage},
+			FilesToGenerate:       []string{"OptionRequiredMessage.proto"},
+			ProtoFileName:         "OptionRequiredMessage.proto",
+			ObjectsToValidateFail: []string{testdata.OptionRequiredMessageFail},
+			ObjectsToValidatePass: []string{testdata.OptionRequiredMessagePass},
+		},
 		"PackagePrefix": {
 			Flags:                 ConverterFlags{PrefixSchemaFilesWithPackage: true},
 			ExpectedJSONSchema:    []string{testdata.Timestamp},
@@ -308,13 +359,6 @@ func configureSampleProtos() map[string]sampleProto {
 			ProtoFileName:         "Proto2Required.proto",
 			ObjectsToValidateFail: []string{testdata.Proto2RequiredFail},
 			ObjectsToValidatePass: []string{testdata.Proto2RequiredPass},
-		},
-		"Proto3Required": {
-			ExpectedJSONSchema:    []string{testdata.FieldOptions, testdata.Proto3Required},
-			FilesToGenerate:       []string{"options.proto", "Proto3Required.proto"},
-			ProtoFileName:         "Proto3Required.proto",
-			ObjectsToValidateFail: []string{testdata.FieldOptionsFail, testdata.Proto3RequiredFail},
-			ObjectsToValidatePass: []string{testdata.FieldOptionsPass, testdata.Proto3RequiredPass},
 		},
 		"SelfReference": {
 			ExpectedJSONSchema:    []string{testdata.SelfReference},
