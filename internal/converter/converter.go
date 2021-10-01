@@ -197,21 +197,38 @@ func (c *Converter) convertFile(file *descriptor.FileDescriptorProto, fileExtent
 			return nil, fmt.Errorf("no such package found: %s", file.GetPackage())
 		}
 
-		for _, msg := range file.GetMessageType() {
+		// Go through all of the messages in this file:
+		for _, msgDesc := range file.GetMessageType() {
+
+			// Check for our custom message options:
+			if opts := msgDesc.GetOptions(); opts != nil && proto.HasExtension(opts, protos.E_MessageOptions) {
+				if opt := proto.GetExtension(opts, protos.E_MessageOptions); opt != nil {
+					if messageOptions, ok := opt.(*protos.MessageOptions); ok {
+
+						// "Ignored" messages are simply skipped:
+						if messageOptions.GetIgnore() {
+							c.logger.WithField("msg_name", msgDesc.GetName()).Debug("Skipping ignored message")
+							continue
+						}
+					}
+				}
+			}
+
 			// skip if we are only generating schema for specific messages
-			if genSpecificMessages && !contains(c.messageTargets, msg.GetName()) {
+			if genSpecificMessages && !contains(c.messageTargets, msgDesc.GetName()) {
 				continue
 			}
 
-			jsonSchemaFileName := c.generateSchemaFilename(file, fileExtention, msg.GetName())
-			c.logger.WithField("proto_filename", protoFileName).WithField("msg_name", msg.GetName()).WithField("jsonschema_filename", jsonSchemaFileName).Info("Generating JSON-schema for MESSAGE")
-
 			// Convert the message:
-			messageJSONSchema, err := c.convertMessageType(pkg, msg)
+			messageJSONSchema, err := c.convertMessageType(pkg, msgDesc)
 			if err != nil {
 				c.logger.WithError(err).WithField("proto_filename", protoFileName).Error("Failed to convert")
 				return nil, err
 			}
+
+			// Generate a schema filename:
+			jsonSchemaFileName := c.generateSchemaFilename(file, fileExtention, msgDesc.GetName())
+			c.logger.WithField("proto_filename", protoFileName).WithField("msg_name", msgDesc.GetName()).WithField("jsonschema_filename", jsonSchemaFileName).Info("Generating JSON-schema for MESSAGE")
 
 			// Marshal the JSON-Schema into JSON:
 			jsonSchemaJSON, err := json.MarshalIndent(messageJSONSchema, "", "    ")
@@ -255,8 +272,7 @@ func (c *Converter) convert(request *plugin.CodeGeneratorRequest) (*plugin.CodeG
 		fileExtention := c.schemaFileExtention
 
 		// Check for our custom field options:
-		opts := fileDesc.GetOptions()
-		if opts != nil && proto.HasExtension(opts, protos.E_FileOptions) {
+		if opts := fileDesc.GetOptions(); opts != nil && proto.HasExtension(opts, protos.E_FileOptions) {
 			if opt := proto.GetExtension(opts, protos.E_FileOptions); opt != nil {
 				if fileOptions, ok := opt.(*protos.FileOptions); ok {
 

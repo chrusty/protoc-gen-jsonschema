@@ -242,6 +242,11 @@ func configureSampleProtos() map[string]sampleProto {
 			ObjectsToValidateFail: []string{testdata.FieldOptionsFail, testdata.FileOptionsFail, testdata.MessageOptionsFail},
 			ObjectsToValidatePass: []string{testdata.FieldOptionsPass, testdata.FileOptionsPass, testdata.MessageOptionsPass},
 		},
+		"IgnoredMessage": {
+			ExpectedJSONSchema: []string{testdata.FieldOptions, testdata.FileOptions, testdata.MessageOptions, testdata.UnignoredMessage},
+			FilesToGenerate:    []string{"options.proto", "IgnoredMessage.proto"},
+			ProtoFileName:      "IgnoredMessage.proto",
+		},
 		"ImportedEnum": {
 			ExpectedJSONSchema:    []string{testdata.ImportedEnum},
 			FilesToGenerate:       []string{"ImportedEnum.proto"},
