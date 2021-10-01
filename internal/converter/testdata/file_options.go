@@ -8,12 +8,16 @@ const FileOptions = `{
             "properties": {
                 "ignore": {
                     "type": "boolean",
-                    "description": "Files tagged with this will not be processed:"
+                    "description": "Files tagged with this will not be processed"
+                },
+                "extention": {
+                    "type": "string",
+                    "description": "Override the default file extention for schemas generated from this file"
                 }
             },
             "additionalProperties": true,
             "type": "object",
-            "description": "Custom FileOptions:"
+            "description": "Custom FileOptions"
         }
     }
 }`

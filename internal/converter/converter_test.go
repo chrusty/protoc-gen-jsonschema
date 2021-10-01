@@ -24,6 +24,7 @@ const (
 
 type sampleProto struct {
 	Flags                 ConverterFlags
+	ExpectedFileNames     []string
 	ExpectedJSONSchema    []string
 	FilesToGenerate       []string
 	ObjectsToValidateFail []string
@@ -82,7 +83,12 @@ func testConvertSampleProto(t *testing.T, sampleProto sampleProto) {
 		for responseFileIndex, responseFile := range response.File {
 
 			// Ensure that the generated schema matches the expected (canned) one:
-			assert.Equal(t, strings.TrimSpace(sampleProto.ExpectedJSONSchema[responseFileIndex]), *responseFile.Content, "Incorrect JSON-Schema returned for sample proto file (%v)", sampleProtoFileName)
+			assert.Equal(t, strings.TrimSpace(sampleProto.ExpectedJSONSchema[responseFileIndex]), responseFile.GetContent(), "Incorrect JSON-Schema returned for sample proto file (%v)", sampleProtoFileName)
+
+			// Validate the generated filenames:
+			if len(sampleProto.ExpectedFileNames) > 0 {
+				assert.Equal(t, sampleProto.ExpectedFileNames[responseFileIndex], responseFile.GetName())
+			}
 
 			// Validate any intended-to-fail data against the new schema:
 			if len(sampleProto.ObjectsToValidateFail) >= responseFileIndex+1 {
@@ -175,6 +181,12 @@ func configureSampleProtos() map[string]sampleProto {
 			FilesToGenerate:       []string{"MessageWithComments.proto"},
 			ProtoFileName:         "MessageWithComments.proto",
 			ObjectsToValidateFail: []string{testdata.MessageWithCommentsFail},
+		},
+		"CustomFileExtention": {
+			ExpectedJSONSchema: []string{testdata.FieldOptions, testdata.FileOptions, testdata.MessageOptions, testdata.CustomFileExtention},
+			ExpectedFileNames:  []string{"FieldOptions.json", "FileOptions.json", "MessageOptions.json", "CustomFileExtention.jsonschema"},
+			FilesToGenerate:    []string{"options.proto", "CustomFileExtention.proto"},
+			ProtoFileName:      "CustomFileExtention.proto",
 		},
 		"CyclicalReference": {
 			ExpectedJSONSchema: []string{testdata.CyclicalReferenceMessageM, testdata.CyclicalReferenceMessageFoo, testdata.CyclicalReferenceMessageBar, testdata.CyclicalReferenceMessageBaz},

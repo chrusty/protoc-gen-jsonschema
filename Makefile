@@ -51,13 +51,14 @@ samples:
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/GoogleValue.proto || echo "No messages found (GoogleValue.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas -I. --proto_path=${PROTO_PATH} ${PROTO_PATH}/HiddenFields.proto || echo "No messages found (HiddenFields.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas -I. --proto_path=${PROTO_PATH} ${PROTO_PATH}/Proto3Required.proto || echo "No messages found (Proto3Required.proto)"
+	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas -I. --proto_path=${PROTO_PATH} ${PROTO_PATH}/IgnoredFile.proto || echo "No messages found (IgnoredFile.proto)"
+	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas -I. --proto_path=${PROTO_PATH} ${PROTO_PATH}/CustomFileExtention.proto || echo "No messages found (CustomFileExtention.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=enforce_oneof:jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/OneOf.proto || echo "No messages found (OneOf.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=all_fields_required:jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/Proto2NestedObject.proto || echo "No messages found (Proto2NestedObject.proto)"
 	@PATH=./bin:$$PATH; protoc -I /usr/include --jsonschema_out=jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/WellKnown.proto || echo "No messages found (WellKnown.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/NoPackage.proto
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=messages=[MessageKind10+MessageKind11+MessageKind12]:jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/TwelveMessages.proto || echo "No messages found (TwelveMessages.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas options.proto || echo "No messages found (options.proto)"
-	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas -I. --proto_path=${PROTO_PATH} ${PROTO_PATH}/IgnoredFile.proto || echo "No messages found (IgnoredFile.proto)"
 
 .PHONY: test
 test:

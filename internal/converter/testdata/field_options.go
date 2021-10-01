@@ -8,16 +8,16 @@ const FieldOptions = `{
             "properties": {
                 "ignore": {
                     "type": "boolean",
-                    "description": "Fields tagged with this will be omitted from generated schemas:"
+                    "description": "Fields tagged with this will be omitted from generated schemas"
                 },
                 "required": {
                     "type": "boolean",
-                    "description": "Fields tagged with this will be marked as \"required\" in generated schemas:"
+                    "description": "Fields tagged with this will be marked as \"required\" in generated schemas"
                 }
             },
             "additionalProperties": true,
             "type": "object",
-            "description": "Custom FieldOptions:"
+            "description": "Custom FieldOptions"
         }
     }
 }`

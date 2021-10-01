@@ -8,12 +8,12 @@ const MessageOptions = `{
             "properties": {
                 "ignore": {
                     "type": "boolean",
-                    "description": "Messages tagged with this will not be processed:"
+                    "description": "Messages tagged with this will not be processed"
                 }
             },
             "additionalProperties": true,
             "type": "object",
-            "description": "Custom MessageOptions:"
+            "description": "Custom MessageOptions"
         }
     }
 }`

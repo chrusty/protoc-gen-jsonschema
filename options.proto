@@ -8,29 +8,32 @@ import "google/protobuf/descriptor.proto";
 option go_package = "./protos";
 
 
-// Custom FieldOptions:
+// Custom FieldOptions
 message FieldOptions {
 
-  // Fields tagged with this will be omitted from generated schemas:
+  // Fields tagged with this will be omitted from generated schemas
   bool ignore = 1;
 
-  // Fields tagged with this will be marked as "required" in generated schemas:
+  // Fields tagged with this will be marked as "required" in generated schemas
   bool required = 2;
 }
 
 
-// Custom FileOptions:
+// Custom FileOptions
 message FileOptions {
 
-  // Files tagged with this will not be processed:
+  // Files tagged with this will not be processed
   bool ignore = 1;
+
+  // Override the default file extention for schemas generated from this file
+  string extention = 2;
 }
 
 
-// Custom MessageOptions:
+// Custom MessageOptions
 message MessageOptions {
 
-  // Messages tagged with this will not be processed:
+  // Messages tagged with this will not be processed
   bool ignore = 1;
 }
 
