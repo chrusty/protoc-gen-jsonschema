@@ -94,24 +94,24 @@ If you don't want to use the configuration parameters (admittedly quite a nasty 
 
 These apply to specifically marked fields, giving you more finely-grained control than with the CLI flags.
 
-- [ignore](internal/converter/testdata/proto/OptionIgnoredField.proto): Ignore (omit) a specific field (`string hidden1  = 3 [(protoc.gen.jsonschema.field_options).ignore = true];`)
-- [required](internal/converter/testdata/proto/OptionRequiredField.proto): Mark a specific field as being REQUIRED (`string query = 1 [(protoc.gen.jsonschema.field_options).required = true];`)
+- [ignore](internal/converter/testdata/proto/OptionIgnoredField.proto): Ignore (omit) a specific field
+- [required](internal/converter/testdata/proto/OptionRequiredField.proto): Mark a specific field as being REQUIRED
 
 ### File Options
 
 These options apply to an entire proto file.
 
-- [ignore](internal/converter/testdata/proto/OptionIgnoredFile.proto): Ignore (skip) a specific file (`option (protoc.gen.jsonschema.file_options).ignore = true;`)
-- [extention](internal/converter/testdata/proto/OptionFileExtention.proto): Specify a custom file-extention for the generated schema for this file (`option (protoc.gen.jsonschema.file_options).extention = "jsonschema";`)
+- [ignore](internal/converter/testdata/proto/OptionIgnoredFile.proto): Ignore (skip) a specific file
+- [extention](internal/converter/testdata/proto/OptionFileExtention.proto): Specify a custom file-extention for the generated schema for this file
 
 ### Message Options
 
 These options apply to a specific proto message.
 
-- [ignore](internal/converter/testdata/proto/OptionIgnoredMessage.proto): Ignore (skip) a specific message (`option (protoc.gen.jsonschema.message_options).ignore = true;`)
-- [all_fields_required](internal/converter/testdata/proto/OptionRequiredMessage.proto): Mark all fields in a specific message as "required" (`option (protoc.gen.jsonschema.message_options).all_fields_required = true;`)
-- [allow_null_values](internal/converter/testdata/proto/OptionAllowNullValues.proto): Additionally allow null values for all fields in a message (`option (protoc.gen.jsonschema.message_options).allow_null_values = true;`)
-- [disallow_additional_properties](internal/converter/testdata/proto/OptionDisallowAdditionalProperties.proto): Only accept the specific properties, no extras (`option (protoc.gen.jsonschema.message_options).disallow_additional_properties = true;`)
+- [ignore](internal/converter/testdata/proto/OptionIgnoredMessage.proto): Ignore (skip) a specific message
+- [all_fields_required](internal/converter/testdata/proto/OptionRequiredMessage.proto): Mark all fields in a specific message as "required"
+- [allow_null_values](internal/converter/testdata/proto/OptionAllowNullValues.proto): Additionally allow null values for all fields in a message
+- [disallow_additional_properties](internal/converter/testdata/proto/OptionDisallowAdditionalProperties.proto): Only accept the specific properties, no extras
 
 
 Examples

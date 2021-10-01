@@ -5,8 +5,9 @@ import "options.proto";
 option (protoc.gen.jsonschema.file_options).extention = "jsonschema";
 
 message OptionFileExtention {
-    string visible1 = 1 [(protoc.gen.jsonschema.field_options).ignore = false];
-    string visible2 = 2;
-    string hidden1  = 3 [(protoc.gen.jsonschema.field_options).ignore = true];
-    string hidden2  = 4 [deprecated = true, (protoc.gen.jsonschema.field_options).ignore = true];
+    string name2       = 1;
+    string timestamp2  = 2;
+    int32 id2          = 3;
+    float rating2      = 4;
+    bool complete2     = 5;
 }

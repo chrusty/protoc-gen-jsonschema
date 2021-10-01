@@ -6,11 +6,20 @@ const OptionFileExtention = `{
     "definitions": {
         "OptionFileExtention": {
             "properties": {
-                "visible1": {
+                "name2": {
                     "type": "string"
                 },
-                "visible2": {
+                "timestamp2": {
                     "type": "string"
+                },
+                "id2": {
+                    "type": "integer"
+                },
+                "rating2": {
+                    "type": "number"
+                },
+                "complete2": {
+                    "type": "boolean"
                 }
             },
             "additionalProperties": true,
