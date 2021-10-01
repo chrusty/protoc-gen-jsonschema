@@ -200,7 +200,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			if desc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REQUIRED {
 				jsonSchemaType.AdditionalProperties = []byte("false")
 			}
-			if c.Flags.DisallowAdditionalProperties {
+			if messageFlags.DisallowAdditionalProperties {
 				jsonSchemaType.AdditionalProperties = []byte("false")
 			}
 		}
@@ -424,6 +424,11 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 				if messageOptions.GetAllFieldsRequired() {
 					messageFlags.AllFieldsRequired = true
 				}
+
+				// DisallowAdditionalProperties:
+				if messageOptions.GetDisallowAdditionalProperties() {
+					messageFlags.DisallowAdditionalProperties = true
+				}
 			}
 		}
 	}
@@ -489,7 +494,7 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 	}
 
 	// disallowAdditionalProperties will prevent validation where extra fields are found (outside of the schema):
-	if c.Flags.DisallowAdditionalProperties {
+	if messageFlags.DisallowAdditionalProperties {
 		jsonSchemaType.AdditionalProperties = []byte("false")
 	} else {
 		jsonSchemaType.AdditionalProperties = []byte("true")

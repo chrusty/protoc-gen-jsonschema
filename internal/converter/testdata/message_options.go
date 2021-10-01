@@ -13,6 +13,10 @@ const MessageOptions = `{
                 "all_fields_required": {
                     "type": "boolean",
                     "description": "Messages tagged with this will have all fields marked as \"required\":"
+                },
+                "disallow_additional_properties": {
+                    "type": "boolean",
+                    "description": "Messages tagged with this will have all fields marked as not allowing additional properties:"
                 }
             },
             "additionalProperties": true,

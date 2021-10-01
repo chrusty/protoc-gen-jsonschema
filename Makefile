@@ -50,6 +50,7 @@ samples:
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/Proto2NestedMessage.proto || echo "No messages found (Proto2NestedMessage.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/GoogleValue.proto || echo "No messages found (GoogleValue.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas -I. --proto_path=${PROTO_PATH} ${PROTO_PATH}/CustomFileExtention.proto || echo "No messages found (CustomFileExtention.proto)"
+	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas -I. --proto_path=${PROTO_PATH} ${PROTO_PATH}/OptionDisallowAdditionalProperties.proto || echo "No messages found (OptionDisallowAdditionalProperties.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas -I. --proto_path=${PROTO_PATH} ${PROTO_PATH}/HiddenFields.proto || echo "No messages found (HiddenFields.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas -I. --proto_path=${PROTO_PATH} ${PROTO_PATH}/IgnoredFile.proto || echo "No messages found (IgnoredFile.proto)"
 	@PATH=./bin:$$PATH; protoc --jsonschema_out=jsonschemas -I. --proto_path=${PROTO_PATH} ${PROTO_PATH}/IgnoredMessage.proto || echo "No messages found (IgnoredMessage.proto)"

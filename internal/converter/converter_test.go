@@ -277,7 +277,14 @@ func configureSampleProtos() map[string]sampleProto {
 			ObjectsToValidateFail: []string{testdata.OneOfFail},
 			ObjectsToValidatePass: []string{testdata.OneOfPass},
 		},
-		"IgnoredFile": {
+		"OptionDisallowAdditionalProperties": {
+			ExpectedJSONSchema:    []string{testdata.OptionDisallowAdditionalProperties},
+			FilesToGenerate:       []string{"OptionDisallowAdditionalProperties.proto"},
+			ProtoFileName:         "OptionDisallowAdditionalProperties.proto",
+			ObjectsToValidateFail: []string{testdata.OptionDisallowAdditionalPropertiesFail},
+			ObjectsToValidatePass: []string{testdata.OptionDisallowAdditionalPropertiesPass},
+		},
+		"OptionIgnoredFile": {
 			ExpectedJSONSchema: []string{},
 			FilesToGenerate:    []string{"IgnoredFile.proto"},
 			ProtoFileName:      "IgnoredFile.proto",
