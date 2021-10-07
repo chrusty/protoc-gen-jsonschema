@@ -10,9 +10,9 @@ const FileOptions = `{
                     "type": "boolean",
                     "description": "Files tagged with this will not be processed"
                 },
-                "extention": {
+                "extension": {
                     "type": "string",
-                    "description": "Override the default file extention for schemas generated from this file"
+                    "description": "Override the default file extension for schemas generated from this file"
                 }
             },
             "additionalProperties": true,

@@ -79,7 +79,7 @@ The following configuration parameters are supported. They should be added to th
 |`disallow_additional_properties`| Disallow additional properties in schema |
 |`disallow_bigints_as_strings`| Disallow big integers as strings |
 |`enforce_oneof`| Interpret Proto "oneOf" clauses |
-|`file_extention`| Specify a custom file extention for generated schemas |
+|`file_extension`| Specify a custom file extension for generated schemas |
 |`json_fieldnames`| Use JSON field names only |
 |`prefix_schema_files_with_package`| Prefix the output filename with package |
 |`proto_and_json_fieldnames`| Use proto and JSON field names |
@@ -102,7 +102,7 @@ These apply to specifically marked fields, giving you more finely-grained contro
 These options apply to an entire proto file.
 
 - [ignore](internal/converter/testdata/proto/OptionIgnoredFile.proto): Ignore (skip) a specific file
-- [extention](internal/converter/testdata/proto/OptionFileExtention.proto): Specify a custom file-extention for the generated schema for this file
+- [extension](internal/converter/testdata/proto/OptionFileExtension.proto): Specify a custom file-extension for the generated schema for this file
 
 ### Message Options
 
@@ -192,13 +192,13 @@ protoc \
 --proto_path=testdata/proto testdata/proto/ArrayOfPrimitives.proto
 ```
 
-### Custom schema file extention
+### Custom schema file extension
 
-The default file extention is `json`. You can override that with the "file_extention" parameter.
+The default file extension is `json`. You can override that with the "file_extension" parameter.
 
 ```sh
 protoc \
---jsonschema_out=file_extention=jsonschema:. \
+--jsonschema_out=file_extension=jsonschema:. \
 --proto_path=internal/converter/testdata/proto internal/converter/testdata/proto/ArrayOfPrimitives.proto
 ```
 

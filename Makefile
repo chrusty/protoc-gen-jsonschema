@@ -49,7 +49,7 @@ samples: build
 	@protoc --plugin=bin/protoc-gen-jsonschema --jsonschema_out=jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/Proto2Required.proto || echo "No messages found (Proto2Required.proto)"
 	@protoc --plugin=bin/protoc-gen-jsonschema --jsonschema_out=jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/Proto2NestedMessage.proto || echo "No messages found (Proto2NestedMessage.proto)"
 	@protoc --plugin=bin/protoc-gen-jsonschema --jsonschema_out=jsonschemas --proto_path=${PROTO_PATH} ${PROTO_PATH}/GoogleValue.proto || echo "No messages found (GoogleValue.proto)"
-	@protoc --plugin=bin/protoc-gen-jsonschema --jsonschema_out=jsonschemas -I. --proto_path=${PROTO_PATH} ${PROTO_PATH}/OptionFileExtention.proto || echo "No messages found (OptionFileExtention.proto)"
+	@protoc --plugin=bin/protoc-gen-jsonschema --jsonschema_out=jsonschemas -I. --proto_path=${PROTO_PATH} ${PROTO_PATH}/OptionFileExtension.proto || echo "No messages found (OptionFileExtension.proto)"
 	@protoc --plugin=bin/protoc-gen-jsonschema --jsonschema_out=jsonschemas -I. --proto_path=${PROTO_PATH} ${PROTO_PATH}/OptionIgnoredField.proto || echo "No messages found (HiddenFields.proto)"
 	@protoc --plugin=bin/protoc-gen-jsonschema --jsonschema_out=jsonschemas -I. --proto_path=${PROTO_PATH} ${PROTO_PATH}/OptionIgnoredFile.proto || echo "No messages found (IgnoredFile.proto)"
 	@protoc --plugin=bin/protoc-gen-jsonschema --jsonschema_out=jsonschemas -I. --proto_path=${PROTO_PATH} ${PROTO_PATH}/OptionIgnoredMessage.proto || echo "No messages found (IgnoredMessage.proto)"

@@ -286,11 +286,11 @@ func configureSampleProtos() map[string]sampleProto {
 			ObjectsToValidateFail: []string{testdata.OptionDisallowAdditionalPropertiesFail},
 			ObjectsToValidatePass: []string{testdata.OptionDisallowAdditionalPropertiesPass},
 		},
-		"OptionFileExtention": {
-			ExpectedJSONSchema: []string{testdata.OptionFileExtention},
-			ExpectedFileNames:  []string{"OptionFileExtention.jsonschema"},
-			FilesToGenerate:    []string{"OptionFileExtention.proto"},
-			ProtoFileName:      "OptionFileExtention.proto",
+		"OptionFileExtension": {
+			ExpectedJSONSchema: []string{testdata.OptionFileExtension},
+			ExpectedFileNames:  []string{"OptionFileExtension.jsonschema"},
+			FilesToGenerate:    []string{"OptionFileExtension.proto"},
+			ProtoFileName:      "OptionFileExtension.proto",
 		},
 		"OptionIgnoredFile": {
 			ExpectedJSONSchema: []string{},
