@@ -2,9 +2,9 @@ syntax = "proto3";
 package samples;
 import "options.proto";
 
-option (protoc.gen.jsonschema.file_options).extention = "jsonschema";
+option (protoc.gen.jsonschema.file_options).extension = "jsonschema";
 
-message OptionFileExtention {
+message OptionFileExtension {
     string name2       = 1;
     string timestamp2  = 2;
     int32 id2          = 3;

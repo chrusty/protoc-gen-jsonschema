@@ -18,7 +18,7 @@ import (
 )
 
 const (
-	defaultFileExtention = "json"
+	defaultFileExtension = "json"
 	defaultRefPrefix     = "#/definitions/"
 	messageDelimiter     = "+"
 )
@@ -30,7 +30,7 @@ type Converter struct {
 	logger              *logrus.Logger
 	refPrefix           string
 	requiredFieldOption string
-	schemaFileExtention string
+	schemaFileExtension string
 	sourceInfo          *sourceCodeInfo
 	messageTargets      []string
 }
@@ -52,7 +52,7 @@ func New(logger *logrus.Logger) *Converter {
 	return &Converter{
 		logger:              logger,
 		refPrefix:           defaultRefPrefix,
-		schemaFileExtention: defaultFileExtention,
+		schemaFileExtension: defaultFileExtension,
 	}
 }
 
@@ -109,9 +109,9 @@ func (c *Converter) parseGeneratorParameters(parameters string) {
 			c.messageTargets = strings.Split(matches[1], messageDelimiter)
 		}
 
-		// Configure custom file extention:
-		if parameterParts := strings.Split(parameter, "file_extention="); len(parameterParts) == 2 {
-			c.schemaFileExtention = parameterParts[1]
+		// Configure custom file extension:
+		if parameterParts := strings.Split(parameter, "file_extension="); len(parameterParts) == 2 {
+			c.schemaFileExtension = parameterParts[1]
 		}
 	}
 }
@@ -143,7 +143,7 @@ func (c *Converter) convertEnumType(enum *descriptor.EnumDescriptorProto) (jsons
 }
 
 // Converts a proto file into a JSON-Schema:
-func (c *Converter) convertFile(file *descriptor.FileDescriptorProto, fileExtention string) ([]*plugin.CodeGeneratorResponse_File, error) {
+func (c *Converter) convertFile(file *descriptor.FileDescriptorProto, fileExtension string) ([]*plugin.CodeGeneratorResponse_File, error) {
 
 	// Input filename:
 	protoFileName := path.Base(file.GetName())
@@ -166,7 +166,7 @@ func (c *Converter) convertFile(file *descriptor.FileDescriptorProto, fileExtent
 	// Generate standalone ENUMs:
 	if len(file.GetMessageType()) == 0 {
 		for _, enum := range file.GetEnumType() {
-			jsonSchemaFileName := c.generateSchemaFilename(file, fileExtention, enum.GetName())
+			jsonSchemaFileName := c.generateSchemaFilename(file, fileExtension, enum.GetName())
 			c.logger.WithField("proto_filename", protoFileName).WithField("enum_name", enum.GetName()).WithField("jsonschema_filename", jsonSchemaFileName).Info("Generating JSON-schema for stand-alone ENUM")
 
 			// Convert the ENUM:
@@ -227,7 +227,7 @@ func (c *Converter) convertFile(file *descriptor.FileDescriptorProto, fileExtent
 			}
 
 			// Generate a schema filename:
-			jsonSchemaFileName := c.generateSchemaFilename(file, fileExtention, msgDesc.GetName())
+			jsonSchemaFileName := c.generateSchemaFilename(file, fileExtension, msgDesc.GetName())
 			c.logger.WithField("proto_filename", protoFileName).WithField("msg_name", msgDesc.GetName()).WithField("jsonschema_filename", jsonSchemaFileName).Info("Generating JSON-schema for MESSAGE")
 
 			// Marshal the JSON-Schema into JSON:
@@ -268,8 +268,8 @@ func (c *Converter) convert(request *plugin.CodeGeneratorRequest) (*plugin.CodeG
 	// Go through the list of proto files provided by protoc:
 	for _, fileDesc := range request.GetProtoFile() {
 
-		// Start with the default / global file extention:
-		fileExtention := c.schemaFileExtention
+		// Start with the default / global file extension:
+		fileExtension := c.schemaFileExtension
 
 		// Check for our custom field options:
 		if opts := fileDesc.GetOptions(); opts != nil && proto.HasExtension(opts, protos.E_FileOptions) {
@@ -282,10 +282,10 @@ func (c *Converter) convert(request *plugin.CodeGeneratorRequest) (*plugin.CodeG
 						continue
 					}
 
-					// Allow the file extention option to take precedence:
-					if fileOptions.GetExtention() != "" {
-						fileExtention = fileOptions.GetExtention()
-						c.logger.WithField("file_name", fileDesc.GetName()).WithField("extention", fileExtention).Debug("Using optional extention")
+					// Allow the file extension option to take precedence:
+					if fileOptions.GetExtension() != "" {
+						fileExtension = fileOptions.GetExtension()
+						c.logger.WithField("file_name", fileDesc.GetName()).WithField("extension", fileExtension).Debug("Using optional extension")
 					}
 				}
 			}
@@ -312,7 +312,7 @@ func (c *Converter) convert(request *plugin.CodeGeneratorRequest) (*plugin.CodeG
 		// Generate schemas for this file:
 		if _, ok := generateTargets[fileDesc.GetName()]; ok {
 			c.logger.WithField("filename", fileDesc.GetName()).Debug("Converting file")
-			converted, err := c.convertFile(fileDesc, fileExtention)
+			converted, err := c.convertFile(fileDesc, fileExtension)
 			if err != nil {
 				response.Error = proto.String(fmt.Sprintf("Failed to convert %s: %v", fileDesc.GetName(), err))
 				return response, err
@@ -323,11 +323,11 @@ func (c *Converter) convert(request *plugin.CodeGeneratorRequest) (*plugin.CodeG
 	return response, nil
 }
 
-func (c *Converter) generateSchemaFilename(file *descriptor.FileDescriptorProto, fileExtention, protoName string) string {
+func (c *Converter) generateSchemaFilename(file *descriptor.FileDescriptorProto, fileExtension, protoName string) string {
 	if c.Flags.PrefixSchemaFilesWithPackage {
-		return fmt.Sprintf("%s/%s.%s", file.GetPackage(), protoName, fileExtention)
+		return fmt.Sprintf("%s/%s.%s", file.GetPackage(), protoName, fileExtension)
 	}
-	return fmt.Sprintf("%s.%s", protoName, fileExtention)
+	return fmt.Sprintf("%s.%s", protoName, fileExtension)
 }
 
 func contains(haystack []string, needle string) bool {

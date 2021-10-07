@@ -1,8 +1,10 @@
-{
+package testdata
+
+const OptionFileExtension = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "$ref": "#/definitions/OptionFileExtention",
+    "$ref": "#/definitions/OptionFileExtension",
     "definitions": {
-        "OptionFileExtention": {
+        "OptionFileExtension": {
             "properties": {
                 "name2": {
                     "type": "string"
@@ -24,4 +26,4 @@
             "type": "object"
         }
     }
-}
+}`
