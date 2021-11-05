@@ -24,7 +24,7 @@ const GoogleValue = `{
                             "type": "string"
                         }
                     ],
-                    "description": "` + "`Value`" + ` represents a dynamically typed value which can be either\n null, a number, a string, a boolean, a recursive struct value, or a\n list of values. A producer of value is expected to set one of that\n variants, absence of any variant indicates an error.\n\n The JSON representation for ` + "`Value`" + ` is JSON value."
+                    "description": "` + "`Value`" + ` represents a dynamically typed value which can be either\n null, a number, a string, a boolean, a recursive struct value, or a\n list of values. A producer of value is expected to set one of these\n variants. Absence of any variant indicates an error.\n\n The JSON representation for ` + "`Value`" + ` is JSON value."
                 }
             },
             "additionalProperties": true,
