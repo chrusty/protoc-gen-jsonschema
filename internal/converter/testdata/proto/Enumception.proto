@@ -5,6 +5,8 @@ import "PayloadMessage.proto";
 import "ImportedEnum.proto";
 
 message Enumception {
+
+    // FailureModes enum
     enum FailureModes {
         RECURSION_ERROR = 0;
         SYNTAX_ERROR    = 1;

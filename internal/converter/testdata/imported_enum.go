@@ -19,7 +19,8 @@ const ImportedEnum = `{
         {
             "type": "integer"
         }
-    ]
+    ],
+    "description": "This is an enum"
 }`
 
 const ImportedEnumFail = `"VALUE_5"`

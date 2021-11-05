@@ -24,7 +24,8 @@ const EnumImport = `{
                         {
                             "type": "integer"
                         }
-                    ]
+                    ],
+                    "description": "This is an enum"
                 }
             },
             "additionalProperties": true,
