@@ -35,7 +35,8 @@ const EnumCeption = `{
                         {
                             "type": "integer"
                         }
-                    ]
+                    ],
+                    "description": "FailureModes enum"
                 },
                 "payload": {
                     "$ref": "#/definitions/samples.PayloadMessage",
@@ -65,7 +66,8 @@ const EnumCeption = `{
                         {
                             "type": "integer"
                         }
-                    ]
+                    ],
+                    "description": "This is an enum"
                 }
             },
             "additionalProperties": true,

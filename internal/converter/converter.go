@@ -124,7 +124,7 @@ func (c *Converter) convertEnumType(enum *descriptor.EnumDescriptorProto) (jsons
 		Version: jsonschema.Version,
 	}
 
-	// Generate a description from src comments (if available)
+	// Generate a description from src comments (if available):
 	if src := c.sourceInfo.GetEnum(enum); src != nil {
 		jsonSchemaType.Description = formatDescription(src)
 	}

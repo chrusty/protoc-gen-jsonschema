@@ -1,9 +1,14 @@
 syntax = "proto3";
 package samples;
 
+// This is an enum
 enum ImportedEnum {
+  // Zero
   VALUE_0 = 0;
+  // One
   VALUE_1 = 1;
+  // Two
   VALUE_2 = 2;
+  //Three
   VALUE_3 = 3;
 }

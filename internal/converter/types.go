@@ -166,7 +166,12 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			return nil, fmt.Errorf("unable to resolve enum type: %s", desc.GetType().String())
 		}
 
-		// We have found an enum, append its values.
+		// Generate a description from src comments (if available):
+		if src := c.sourceInfo.GetEnum(matchedEnum); src != nil {
+			jsonSchemaType.Description = formatDescription(src)
+		}
+
+		// We have found an enum, append its values:
 		for _, value := range matchedEnum.Value {
 			jsonSchemaType.Enum = append(jsonSchemaType.Enum, value.Name)
 			jsonSchemaType.Enum = append(jsonSchemaType.Enum, value.Number)
