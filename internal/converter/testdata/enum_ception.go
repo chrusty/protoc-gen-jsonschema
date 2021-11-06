@@ -61,10 +61,36 @@ const EnumCeption = `{
                     ],
                     "oneOf": [
                         {
-                            "type": "string"
+                            "title": "Zero",
+                            "const": "VALUE_0"
                         },
                         {
-                            "type": "integer"
+                            "title": "Zero",
+                            "const": 0
+                        },
+                        {
+                            "title": "One",
+                            "const": "VALUE_1"
+                        },
+                        {
+                            "title": "One",
+                            "const": 1
+                        },
+                        {
+                            "title": "Two",
+                            "const": "VALUE_2"
+                        },
+                        {
+                            "title": "Two",
+                            "const": 2
+                        },
+                        {
+                            "title": "Three",
+                            "const": "VALUE_3"
+                        },
+                        {
+                            "title": "Three",
+                            "const": 3
                         }
                     ],
                     "description": "This is an enum"

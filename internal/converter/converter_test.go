@@ -202,13 +202,6 @@ func configureSampleProtos() map[string]sampleProto {
 			ObjectsToValidateFail: []string{testdata.EnumWithMessageFail},
 			ObjectsToValidatePass: []string{testdata.EnumWithMessagePass},
 		},
-		"EnumImport": {
-			ExpectedJSONSchema:    []string{testdata.EnumImport},
-			FilesToGenerate:       []string{"ImportEnum.proto"},
-			ProtoFileName:         "ImportEnum.proto",
-			ObjectsToValidateFail: []string{testdata.EnumImportFail},
-			ObjectsToValidatePass: []string{testdata.EnumImportPass},
-		},
 		"EnumCeption": {
 			ExpectedJSONSchema:    []string{testdata.PayloadMessage, testdata.ImportedEnum, testdata.EnumCeption},
 			FilesToGenerate:       []string{"Enumception.proto", "PayloadMessage.proto", "ImportedEnum.proto"},
@@ -285,6 +278,13 @@ func configureSampleProtos() map[string]sampleProto {
 			ProtoFileName:         "OptionDisallowAdditionalProperties.proto",
 			ObjectsToValidateFail: []string{testdata.OptionDisallowAdditionalPropertiesFail},
 			ObjectsToValidatePass: []string{testdata.OptionDisallowAdditionalPropertiesPass},
+		},
+		"OptionEnumsAsConstants": {
+			ExpectedJSONSchema:    []string{testdata.OptionEnumsAsConstants},
+			FilesToGenerate:       []string{"OptionEnumsAsConstants.proto"},
+			ProtoFileName:         "OptionEnumsAsConstants.proto",
+			ObjectsToValidateFail: []string{testdata.OptionEnumsAsConstantsFail},
+			ObjectsToValidatePass: []string{testdata.OptionEnumsAsConstantsPass},
 		},
 		"OptionFileExtension": {
 			ExpectedJSONSchema: []string{testdata.OptionFileExtension},
