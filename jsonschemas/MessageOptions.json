@@ -19,6 +19,10 @@
                 "disallow_additional_properties": {
                     "type": "boolean",
                     "description": "Messages tagged with this will have all fields marked as not allowing additional properties:"
+                },
+                "enums_as_constants": {
+                    "type": "boolean",
+                    "description": "Messages tagged with this will have all nested enums encoded to use constants instead of simple types (supports value annotations):"
                 }
             },
             "additionalProperties": true,

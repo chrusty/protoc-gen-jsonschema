@@ -44,6 +44,17 @@ message MessageOptions {
 
   // Messages tagged with this will have all fields marked as not allowing additional properties:
   bool disallow_additional_properties = 4;
+
+  // Messages tagged with this will have all nested enums encoded to use constants instead of simple types (supports value annotations):
+  bool enums_as_constants = 5;
+}
+
+
+// Custom EnumOptions
+message EnumOptions {
+
+  // Enums tagged with this will have be encoded to use constants instead of simple types (supports value annotations):
+  bool enums_as_constants = 1;
 }
 
 
@@ -57,4 +68,8 @@ extend google.protobuf.FileOptions {
 
 extend google.protobuf.MessageOptions {
   MessageOptions message_options = 1127;
+}
+
+extend google.protobuf.EnumOptions {
+  EnumOptions enum_options = 1128;
 }
