@@ -1,7 +1,7 @@
 package testdata
 
 const ArrayOfPrimitives = `{
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "http://json-schema.org/draft-06/schema#",
     "$ref": "#/definitions/ArrayOfPrimitives",
     "definitions": {
         "ArrayOfPrimitives": {
@@ -105,7 +105,7 @@ const ArrayOfPrimitivesFail = `{"luckyNumbers": ["false"]}`
 const ArrayOfPrimitivesPass = `{"luckyNumbers": [1,2,3]}`
 
 const ArrayOfPrimitivesDouble = `{
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "http://json-schema.org/draft-06/schema#",
     "$ref": "#/definitions/ArrayOfPrimitives",
     "definitions": {
         "ArrayOfPrimitives": {

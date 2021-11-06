@@ -1,7 +1,7 @@
 package testdata
 
 const FieldOptions = `{
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "http://json-schema.org/draft-06/schema#",
     "$ref": "#/definitions/FieldOptions",
     "definitions": {
         "FieldOptions": {

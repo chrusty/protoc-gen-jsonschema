@@ -1,7 +1,7 @@
 package testdata
 
 const CyclicalReferenceMessageM = `{
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "http://json-schema.org/draft-06/schema#",
     "$ref": "#/definitions/M",
     "definitions": {
         "M": {
@@ -59,7 +59,7 @@ const CyclicalReferenceMessageM = `{
 }`
 
 const CyclicalReferenceMessageFoo = `{
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "http://json-schema.org/draft-06/schema#",
     "$ref": "#/definitions/Foo",
     "definitions": {
         "Foo": {
@@ -107,7 +107,7 @@ const CyclicalReferenceMessageFoo = `{
 }`
 
 const CyclicalReferenceMessageBar = `{
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "http://json-schema.org/draft-06/schema#",
     "$ref": "#/definitions/Bar",
     "definitions": {
         "Bar": {
@@ -155,7 +155,7 @@ const CyclicalReferenceMessageBar = `{
 }`
 
 const CyclicalReferenceMessageBaz = `{
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "http://json-schema.org/draft-06/schema#",
     "$ref": "#/definitions/Baz",
     "definitions": {
         "Baz": {

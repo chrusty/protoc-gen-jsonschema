@@ -1,7 +1,7 @@
 package testdata
 
 const MessageKind12 = `{
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "http://json-schema.org/draft-06/schema#",
     "$ref": "#/definitions/MessageKind12",
     "definitions": {
         "MessageKind12": {

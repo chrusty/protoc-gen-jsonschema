@@ -22,6 +22,7 @@ const (
 	defaultFileExtension = "json"
 	defaultRefPrefix     = "#/definitions/"
 	messageDelimiter     = "+"
+	versionDraft06       = "http://json-schema.org/draft-06/schema#"
 )
 
 // Converter is everything you need to convert protos to JSONSchemas:
@@ -209,7 +210,7 @@ func (c *Converter) convertFile(file *descriptor.FileDescriptorProto, fileExtens
 				c.logger.WithError(err).WithField("proto_filename", protoFileName).Error("Failed to convert")
 				return nil, err
 			}
-			enumJSONSchema.Version = jsonschema.Version
+			enumJSONSchema.Version = versionDraft06
 
 			// Marshal the JSON-Schema into JSON:
 			jsonSchemaJSON, err := json.MarshalIndent(enumJSONSchema, "", "    ")

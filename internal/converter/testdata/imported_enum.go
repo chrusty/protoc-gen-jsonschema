@@ -1,7 +1,7 @@
 package testdata
 
 const ImportedEnum = `{
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "http://json-schema.org/draft-06/schema#",
     "enum": [
         "VALUE_0",
         0,
