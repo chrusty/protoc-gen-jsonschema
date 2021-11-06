@@ -173,6 +173,14 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 
 		// We have found an enum, append its values:
 		for _, value := range matchedEnum.Value {
+
+			// Each ENUM value can have comments too:
+			if src := c.sourceInfo.GetEnumValue(value); src != nil {
+				c.logger.Errorf("Enum value: %v", formatDescription(src))
+				jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Extras: map[string]interface{}{"const": value.GetName()}, Title: formatDescription(src)})
+				jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Extras: map[string]interface{}{"const": value.GetNumber()}, Title: formatDescription(src)})
+			}
+
 			jsonSchemaType.Enum = append(jsonSchemaType.Enum, value.Name)
 			jsonSchemaType.Enum = append(jsonSchemaType.Enum, value.Number)
 		}
@@ -359,7 +367,7 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msgDesc *descriptor
 	newJSONSchema := &jsonschema.Schema{
 		Type: &jsonschema.Type{
 			Ref:     fmt.Sprintf("%s%s", c.refPrefix, msgDesc.GetName()),
-			Version: jsonschema.Version,
+			Version: "http://json-schema.org/draft-05/schema#",
 		},
 		Definitions: definitions,
 	}
