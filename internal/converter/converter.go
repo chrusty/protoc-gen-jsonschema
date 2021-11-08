@@ -158,15 +158,15 @@ func (c *Converter) convertEnumType(enum *descriptor.EnumDescriptorProto, conver
 	for _, value := range enum.Value {
 
 		// Each ENUM value can have comments too:
-		var valueTitle string
+		var valueDescription string
 		if src := c.sourceInfo.GetEnumValue(value); src != nil {
-			valueTitle = formatDescription(src)
+			valueDescription = formatDescription(src)
 		}
 
 		// If we're using constants for ENUMs then add these here, along with their title:
 		if converterFlags.EnumsAsConstants {
-			jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Extras: map[string]interface{}{"const": value.GetName()}, Title: valueTitle})
-			jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Extras: map[string]interface{}{"const": value.GetNumber()}, Title: valueTitle})
+			jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Extras: map[string]interface{}{"const": value.GetName()}, Description: valueDescription})
+			jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Extras: map[string]interface{}{"const": value.GetNumber()}, Description: valueDescription})
 		}
 
 		// Add the values to the ENUM:

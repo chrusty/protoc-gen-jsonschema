@@ -17,35 +17,35 @@
                     ],
                     "oneOf": [
                         {
-                            "title": "Zero",
+                            "description": "Zero",
                             "const": "VALUE_0"
                         },
                         {
-                            "title": "Zero",
+                            "description": "Zero",
                             "const": 0
                         },
                         {
-                            "title": "One",
+                            "description": "One",
                             "const": "VALUE_1"
                         },
                         {
-                            "title": "One",
+                            "description": "One",
                             "const": 1
                         },
                         {
-                            "title": "Two",
+                            "description": "Two",
                             "const": "VALUE_2"
                         },
                         {
-                            "title": "Two",
+                            "description": "Two",
                             "const": 2
                         },
                         {
-                            "title": "Three",
+                            "description": "Three",
                             "const": "VALUE_3"
                         },
                         {
-                            "title": "Three",
+                            "description": "Three",
                             "const": 3
                         }
                     ],
