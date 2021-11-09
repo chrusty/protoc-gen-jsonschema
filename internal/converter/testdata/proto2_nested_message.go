@@ -1,7 +1,7 @@
 package testdata
 
 const Proto2NestedMessage = `{
-    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/Proto2NestedMessage",
     "definitions": {
         "Proto2NestedMessage": {
