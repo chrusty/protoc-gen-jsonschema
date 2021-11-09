@@ -90,6 +90,12 @@ Custom Proto Options
 
 If you don't want to use the configuration parameters (admittedly quite a nasty cli syntax) then some of the generator behaviour can be controlled using custom proto options. These are defined in [options.proto](options.proto), and your protoc command will need to include this file. See the [sample protos](internal/converter/testdata/proto) and generator commands in the [Makefile](Makefile).
 
+### Enum Options
+
+These apply to specifically marked enums, giving you more finely-grained control than with the CLI flags.
+
+- [enums_as_constants](internal/converter/testdata/proto/ImportedEnum.proto): Encode ENUMs (and their annotations) as CONST
+
 ### Field Options
 
 These apply to specifically marked fields, giving you more finely-grained control than with the CLI flags.
@@ -112,6 +118,7 @@ These options apply to a specific proto message.
 - [all_fields_required](internal/converter/testdata/proto/OptionRequiredMessage.proto): Mark all fields in a specific message as "required"
 - [allow_null_values](internal/converter/testdata/proto/OptionAllowNullValues.proto): Additionally allow null values for all fields in a message
 - [disallow_additional_properties](internal/converter/testdata/proto/OptionDisallowAdditionalProperties.proto): Only accept the specific properties, no extras
+- [enums_as_constants](internal/converter/testdata/proto/OptionEnumsAsConstants.proto): Encode ENUMs (and their annotations) as CONST
 
 
 Examples

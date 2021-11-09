@@ -12,6 +12,7 @@ import (
 	"github.com/alecthomas/jsonschema"
 	"github.com/chrusty/protoc-gen-jsonschema/internal/protos"
 	"github.com/sirupsen/logrus"
+	"github.com/xeipuuv/gojsonschema"
 	"google.golang.org/protobuf/proto"
 	descriptor "google.golang.org/protobuf/types/descriptorpb"
 	plugin "google.golang.org/protobuf/types/pluginpb"
@@ -21,6 +22,8 @@ const (
 	defaultFileExtension = "json"
 	defaultRefPrefix     = "#/definitions/"
 	messageDelimiter     = "+"
+	versionDraft04       = "http://json-schema.org/draft-04/schema#"
+	versionDraft06       = "http://json-schema.org/draft-06/schema#"
 )
 
 // Converter is everything you need to convert protos to JSONSchemas:
@@ -31,6 +34,7 @@ type Converter struct {
 	refPrefix           string
 	requiredFieldOption string
 	schemaFileExtension string
+	schemaVersion       string
 	sourceInfo          *sourceCodeInfo
 	messageTargets      []string
 }
@@ -42,17 +46,19 @@ type ConverterFlags struct {
 	DisallowAdditionalProperties bool
 	DisallowBigIntsAsStrings     bool
 	EnforceOneOf                 bool
+	EnumsAsConstants             bool
 	PrefixSchemaFilesWithPackage bool
 	UseJSONFieldnamesOnly        bool
 	UseProtoAndJSONFieldNames    bool
 }
 
-// New returns a configured *Converter:
+// New returns a configured *Converter (defaulting to draft-04 version):
 func New(logger *logrus.Logger) *Converter {
 	return &Converter{
 		logger:              logger,
 		refPrefix:           defaultRefPrefix,
 		schemaFileExtension: defaultFileExtension,
+		schemaVersion:       versionDraft04,
 	}
 }
 
@@ -117,26 +123,59 @@ func (c *Converter) parseGeneratorParameters(parameters string) {
 }
 
 // Converts a proto "ENUM" into a JSON-Schema:
-func (c *Converter) convertEnumType(enum *descriptor.EnumDescriptorProto) (jsonschema.Type, error) {
+func (c *Converter) convertEnumType(enum *descriptor.EnumDescriptorProto, converterFlags ConverterFlags) (jsonschema.Type, error) {
+
+	// Set some per-enum flags from config and options:
+	if opts := enum.GetOptions(); opts != nil && proto.HasExtension(opts, protos.E_EnumOptions) {
+		if opt := proto.GetExtension(opts, protos.E_EnumOptions); opt != nil {
+			if enumOptions, ok := opt.(*protos.EnumOptions); ok {
+
+				// ENUMs as constants:
+				if enumOptions.GetEnumsAsConstants() {
+					converterFlags.EnumsAsConstants = true
+				}
+			}
+		}
+	}
 
 	// Prepare a new jsonschema.Type for our eventual return value:
-	jsonSchemaType := jsonschema.Type{
-		Version: jsonschema.Version,
-	}
+	jsonSchemaType := jsonschema.Type{}
 
 	// Generate a description from src comments (if available):
 	if src := c.sourceInfo.GetEnum(enum); src != nil {
 		jsonSchemaType.Description = formatDescription(src)
 	}
 
-	// Allow both strings and integers:
-	jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: "string"})
-	jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: "integer"})
+	// Use basic types if we're not opting to use constants for ENUMs:
+	if !converterFlags.EnumsAsConstants {
+		jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: gojsonschema.TYPE_STRING})
+		jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: gojsonschema.TYPE_INTEGER})
+	}
 
-	// Add the allowed values:
-	for _, enumValue := range enum.Value {
-		jsonSchemaType.Enum = append(jsonSchemaType.Enum, enumValue.Name)
-		jsonSchemaType.Enum = append(jsonSchemaType.Enum, enumValue.Number)
+	// Optionally allow NULL values:
+	if converterFlags.AllowNullValues {
+		jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: gojsonschema.TYPE_NULL})
+	}
+
+	// We have found an enum, append its values:
+	for _, value := range enum.Value {
+
+		// Each ENUM value can have comments too:
+		var valueDescription string
+		if src := c.sourceInfo.GetEnumValue(value); src != nil {
+			valueDescription = formatDescription(src)
+		}
+
+		// If we're using constants for ENUMs then add these here, along with their title:
+		if converterFlags.EnumsAsConstants {
+			c.schemaVersion = versionDraft06 // Const requires draft-06
+			jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Extras: map[string]interface{}{"const": value.GetName()}, Description: valueDescription})
+			jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Extras: map[string]interface{}{"const": value.GetNumber()}, Description: valueDescription})
+		}
+
+		// Add the values to the ENUM:
+		jsonSchemaType.Enum = append(jsonSchemaType.Enum, value.Name)
+		jsonSchemaType.Enum = append(jsonSchemaType.Enum, value.Number)
 	}
 
 	return jsonSchemaType, nil
@@ -170,11 +209,12 @@ func (c *Converter) convertFile(file *descriptor.FileDescriptorProto, fileExtens
 			c.logger.WithField("proto_filename", protoFileName).WithField("enum_name", enum.GetName()).WithField("jsonschema_filename", jsonSchemaFileName).Info("Generating JSON-schema for stand-alone ENUM")
 
 			// Convert the ENUM:
-			enumJSONSchema, err := c.convertEnumType(enum)
+			enumJSONSchema, err := c.convertEnumType(enum, ConverterFlags{})
 			if err != nil {
 				c.logger.WithError(err).WithField("proto_filename", protoFileName).Error("Failed to convert")
 				return nil, err
 			}
+			enumJSONSchema.Version = c.schemaVersion
 
 			// Marshal the JSON-Schema into JSON:
 			jsonSchemaJSON, err := json.MarshalIndent(enumJSONSchema, "", "    ")
@@ -271,7 +311,7 @@ func (c *Converter) convert(request *plugin.CodeGeneratorRequest) (*plugin.CodeG
 		// Start with the default / global file extension:
 		fileExtension := c.schemaFileExtension
 
-		// Check for our custom field options:
+		// Check for our custom file options:
 		if opts := fileDesc.GetOptions(); opts != nil && proto.HasExtension(opts, protos.E_FileOptions) {
 			if opt := proto.GetExtension(opts, protos.E_FileOptions); opt != nil {
 				if fileOptions, ok := opt.(*protos.FileOptions); ok {

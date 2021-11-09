@@ -1,8 +1,0 @@
-syntax = "proto3";
-package samples;
-
-import "ImportedEnum.proto";
-
-message UseImportedEnum {
-  ImportedEnum importedEnum        = 1;
-}

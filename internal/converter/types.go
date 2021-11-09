@@ -153,11 +153,6 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 		}
 
 	case descriptor.FieldDescriptorProto_TYPE_ENUM:
-		jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: gojsonschema.TYPE_STRING})
-		jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: gojsonschema.TYPE_INTEGER})
-		if messageFlags.AllowNullValues {
-			jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: gojsonschema.TYPE_NULL})
-		}
 
 		// Go through all the enums we have, see if we can match any to this field.
 		fullEnumIdentifier := strings.TrimPrefix(desc.GetTypeName(), ".")
@@ -166,16 +161,13 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			return nil, fmt.Errorf("unable to resolve enum type: %s", desc.GetType().String())
 		}
 
-		// Generate a description from src comments (if available):
-		if src := c.sourceInfo.GetEnum(matchedEnum); src != nil {
-			jsonSchemaType.Description = formatDescription(src)
+		// We already have a converter for standalone ENUMs, so just use that:
+		enumSchema, err := c.convertEnumType(matchedEnum, messageFlags)
+		if err != nil {
+			return nil, err
 		}
 
-		// We have found an enum, append its values:
-		for _, value := range matchedEnum.Value {
-			jsonSchemaType.Enum = append(jsonSchemaType.Enum, value.Name)
-			jsonSchemaType.Enum = append(jsonSchemaType.Enum, value.Number)
-		}
+		jsonSchemaType = &enumSchema
 
 	case descriptor.FieldDescriptorProto_TYPE_BOOL:
 		if messageFlags.AllowNullValues {
@@ -359,7 +351,7 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msgDesc *descriptor
 	newJSONSchema := &jsonschema.Schema{
 		Type: &jsonschema.Type{
 			Ref:     fmt.Sprintf("%s%s", c.refPrefix, msgDesc.GetName()),
-			Version: jsonschema.Version,
+			Version: c.schemaVersion,
 		},
 		Definitions: definitions,
 	}
@@ -438,6 +430,11 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 				// DisallowAdditionalProperties:
 				if messageOptions.GetDisallowAdditionalProperties() {
 					messageFlags.DisallowAdditionalProperties = true
+				}
+
+				// ENUMs as constants:
+				if messageOptions.GetEnumsAsConstants() {
+					messageFlags.EnumsAsConstants = true
 				}
 			}
 		}
