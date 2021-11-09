@@ -22,6 +22,7 @@ const (
 	defaultFileExtension = "json"
 	defaultRefPrefix     = "#/definitions/"
 	messageDelimiter     = "+"
+	versionDraft04       = "http://json-schema.org/draft-04/schema#"
 	versionDraft06       = "http://json-schema.org/draft-06/schema#"
 )
 
@@ -33,6 +34,7 @@ type Converter struct {
 	refPrefix           string
 	requiredFieldOption string
 	schemaFileExtension string
+	schemaVersion       string
 	sourceInfo          *sourceCodeInfo
 	messageTargets      []string
 }
@@ -50,12 +52,13 @@ type ConverterFlags struct {
 	UseProtoAndJSONFieldNames    bool
 }
 
-// New returns a configured *Converter:
+// New returns a configured *Converter (defaulting to draft-04 version):
 func New(logger *logrus.Logger) *Converter {
 	return &Converter{
 		logger:              logger,
 		refPrefix:           defaultRefPrefix,
 		schemaFileExtension: defaultFileExtension,
+		schemaVersion:       versionDraft04,
 	}
 }
 
@@ -165,6 +168,7 @@ func (c *Converter) convertEnumType(enum *descriptor.EnumDescriptorProto, conver
 
 		// If we're using constants for ENUMs then add these here, along with their title:
 		if converterFlags.EnumsAsConstants {
+			c.schemaVersion = versionDraft06 // Const requires draft-06
 			jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Extras: map[string]interface{}{"const": value.GetName()}, Description: valueDescription})
 			jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Extras: map[string]interface{}{"const": value.GetNumber()}, Description: valueDescription})
 		}
@@ -210,7 +214,7 @@ func (c *Converter) convertFile(file *descriptor.FileDescriptorProto, fileExtens
 				c.logger.WithError(err).WithField("proto_filename", protoFileName).Error("Failed to convert")
 				return nil, err
 			}
-			enumJSONSchema.Version = versionDraft06
+			enumJSONSchema.Version = c.schemaVersion
 
 			// Marshal the JSON-Schema into JSON:
 			jsonSchemaJSON, err := json.MarshalIndent(enumJSONSchema, "", "    ")

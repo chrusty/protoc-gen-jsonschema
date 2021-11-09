@@ -351,8 +351,7 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msgDesc *descriptor
 	newJSONSchema := &jsonschema.Schema{
 		Type: &jsonschema.Type{
 			Ref:     fmt.Sprintf("%s%s", c.refPrefix, msgDesc.GetName()),
-			Version: versionDraft06,
-			// Version: jsonschema.Version,
+			Version: c.schemaVersion,
 		},
 		Definitions: definitions,
 	}
