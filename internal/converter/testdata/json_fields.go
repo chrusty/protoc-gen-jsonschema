@@ -5,6 +5,9 @@ const JSONFields = `{
     "$ref": "#/definitions/JSONFields",
     "definitions": {
         "JSONFields": {
+            "required": [
+                "otherNumb"
+            ],
             "properties": {
                 "name": {
                     "type": "string"
@@ -23,6 +26,9 @@ const JSONFields = `{
                 },
                 "snakeNumb": {
                     "type": "string"
+                },
+                "otherNumb": {
+                    "type": "integer"
                 }
             },
             "additionalProperties": true,
@@ -31,6 +37,6 @@ const JSONFields = `{
     }
 }`
 
-const JSONFieldsFail = `{"someThing": "onetwothree"}`
+const JSONFieldsFail = `{"someThing": "onetwothree", "other_numb": 123}`
 
-const JSONFieldsPass = `{"someThing": 12345}`
+const JSONFieldsPass = `{"someThing": 12345, "otherNumb": 123}`

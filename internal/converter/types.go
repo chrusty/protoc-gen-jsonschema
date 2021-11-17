@@ -525,7 +525,11 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 					// "Required" fields are added to the list of required attributes in our schema:
 					if fieldOptions.GetRequired() {
 						c.logger.WithField("field_name", fieldDesc.GetName()).WithField("message_name", msgDesc.GetName()).Debug("Marking required field")
-						jsonSchemaType.Required = append(jsonSchemaType.Required, fieldDesc.GetName())
+						if c.Flags.UseJSONFieldnamesOnly {
+							jsonSchemaType.Required = append(jsonSchemaType.Required, fieldDesc.GetJsonName())
+						} else {
+							jsonSchemaType.Required = append(jsonSchemaType.Required, fieldDesc.GetName())
+						}
 					}
 				}
 			}
@@ -564,7 +568,11 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 
 		// Look for required fields by the proto2 "required" flag:
 		if fieldDesc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REQUIRED && fieldDesc.OneofIndex == nil {
-			jsonSchemaType.Required = append(jsonSchemaType.Required, fieldDesc.GetName())
+			if c.Flags.UseJSONFieldnamesOnly {
+				jsonSchemaType.Required = append(jsonSchemaType.Required, fieldDesc.GetJsonName())
+			} else {
+				jsonSchemaType.Required = append(jsonSchemaType.Required, fieldDesc.GetName())
+			}
 		}
 	}
 
