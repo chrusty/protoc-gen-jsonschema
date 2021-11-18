@@ -1,5 +1,6 @@
 syntax = "proto3";
 package samples;
+import "options.proto";
 
 message JSONFields {
     string name      = 1;
@@ -8,4 +9,5 @@ message JSONFields {
     float some_thing = 4 [json_name="someThing"];
     bool complete    = 5;
     int64 snake_numb = 6;
+    int32 other_numb = 7 [(protoc.gen.jsonschema.field_options).required = true];
 }
