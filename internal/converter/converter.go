@@ -13,6 +13,7 @@ import (
 	"github.com/chrusty/protoc-gen-jsonschema/internal/protos"
 	"github.com/sirupsen/logrus"
 	"github.com/xeipuuv/gojsonschema"
+	gengo "google.golang.org/protobuf/cmd/protoc-gen-go/internal_gengo"
 	"google.golang.org/protobuf/proto"
 	descriptor "google.golang.org/protobuf/types/descriptorpb"
 	plugin "google.golang.org/protobuf/types/pluginpb"
@@ -360,6 +361,11 @@ func (c *Converter) convert(request *plugin.CodeGeneratorRequest) (*plugin.CodeG
 			response.File = append(response.File, converted...)
 		}
 	}
+
+	// This is required in order to "support" optional proto3 fields:
+	// https://chromium.googlesource.com/external/github.com/protocolbuffers/protobuf/+/refs/heads/master/docs/implementing_proto3_presence.md
+	response.SupportedFeatures = &gengo.SupportedFeatures
+
 	return response, nil
 }
 
