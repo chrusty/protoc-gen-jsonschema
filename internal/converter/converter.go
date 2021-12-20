@@ -129,6 +129,9 @@ func (c *Converter) parseGeneratorParameters(parameters string) {
 // Converts a proto "ENUM" into a JSON-Schema:
 func (c *Converter) convertEnumType(enum *descriptor.EnumDescriptorProto, converterFlags ConverterFlags) (jsonschema.Type, error) {
 
+	// Inherit the CLI converterFlags:
+	converterFlags.EnumsAsStringsOnly = c.Flags.EnumsAsStringsOnly
+
 	// Set some per-enum flags from config and options:
 	if opts := enum.GetOptions(); opts != nil && proto.HasExtension(opts, protos.E_EnumOptions) {
 		if opt := proto.GetExtension(opts, protos.E_EnumOptions); opt != nil {
@@ -230,7 +233,7 @@ func (c *Converter) convertFile(file *descriptor.FileDescriptorProto, fileExtens
 			c.logger.WithField("proto_filename", protoFileName).WithField("enum_name", enum.GetName()).WithField("jsonschema_filename", jsonSchemaFileName).Info("Generating JSON-schema for stand-alone ENUM")
 
 			// Convert the ENUM:
-			enumJSONSchema, err := c.convertEnumType(enum, ConverterFlags{EnumsAsStringsOnly: c.Flags.EnumsAsStringsOnly})
+			enumJSONSchema, err := c.convertEnumType(enum, ConverterFlags{})
 			if err != nil {
 				c.logger.WithError(err).WithField("proto_filename", protoFileName).Error("Failed to convert")
 				return nil, err
