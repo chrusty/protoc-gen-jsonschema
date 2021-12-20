@@ -55,6 +55,9 @@ message EnumOptions {
 
   // Enums tagged with this will have be encoded to use constants instead of simple types (supports value annotations):
   bool enums_as_constants = 1;
+
+  // Enums tagged with this will only provide string values as options (not their numerical equivalents):
+  bool enums_as_strings_only = 2;
 }
 
 
