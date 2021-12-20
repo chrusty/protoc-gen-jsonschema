@@ -7,6 +7,10 @@
                 "enums_as_constants": {
                     "type": "boolean",
                     "description": "Enums tagged with this will have be encoded to use constants instead of simple types (supports value annotations):"
+                },
+                "enums_as_strings_only": {
+                    "type": "boolean",
+                    "description": "Enums tagged with this will only provide string values as options (not their numerical equivalents):"
                 }
             },
             "additionalProperties": true,

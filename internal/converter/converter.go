@@ -138,6 +138,11 @@ func (c *Converter) convertEnumType(enum *descriptor.EnumDescriptorProto, conver
 				if enumOptions.GetEnumsAsConstants() {
 					converterFlags.EnumsAsConstants = true
 				}
+
+				// ENUM values as strings only:
+				if enumOptions.GetEnumsAsStringsOnly() {
+					converterFlags.EnumsAsStringsOnly = true
+				}
 			}
 		}
 	}

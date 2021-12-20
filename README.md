@@ -96,6 +96,7 @@ If you don't want to use the configuration parameters (admittedly quite a nasty 
 These apply to specifically marked enums, giving you more finely-grained control than with the CLI flags.
 
 - [enums_as_constants](internal/converter/testdata/proto/ImportedEnum.proto): Encode ENUMs (and their annotations) as CONST
+- [enums_as_strings_only](internal/converter/testdata/proto/OptionEnumsAsStringsOnly.proto): ENUM values are only strings (not the numeric counterparts)
 
 ### Field Options
 
