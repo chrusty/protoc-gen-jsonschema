@@ -1,0 +1,9 @@
+syntax = "proto3";
+package samples;
+
+enum Currency {
+    NOT_SPECIFIED = 0;
+    USD = 1;
+    GBP = 2;
+    EUR = 3;
+}

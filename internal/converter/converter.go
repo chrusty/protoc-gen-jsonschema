@@ -48,6 +48,7 @@ type ConverterFlags struct {
 	DisallowBigIntsAsStrings     bool
 	EnforceOneOf                 bool
 	EnumsAsConstants             bool
+	EnumsAsStringsOnly           bool
 	PrefixSchemaFilesWithPackage bool
 	UseJSONFieldnamesOnly        bool
 	UseProtoAndJSONFieldNames    bool
@@ -98,6 +99,8 @@ func (c *Converter) parseGeneratorParameters(parameters string) {
 			c.Flags.DisallowBigIntsAsStrings = true
 		case "enforce_oneof":
 			c.Flags.EnforceOneOf = true
+		case "enum_as_strings_only":
+			c.Flags.EnumsAsStringsOnly = true
 		case "json_fieldnames":
 			c.Flags.UseJSONFieldnamesOnly = true
 		case "prefix_schema_files_with_package":
@@ -150,12 +153,20 @@ func (c *Converter) convertEnumType(enum *descriptor.EnumDescriptorProto, conver
 	// Use basic types if we're not opting to use constants for ENUMs:
 	if !converterFlags.EnumsAsConstants {
 		jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: gojsonschema.TYPE_STRING})
-		jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: gojsonschema.TYPE_INTEGER})
+		if !converterFlags.EnumsAsStringsOnly {
+			jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: gojsonschema.TYPE_INTEGER})
+		}
 	}
 
 	// Optionally allow NULL values:
 	if converterFlags.AllowNullValues {
 		jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: gojsonschema.TYPE_NULL})
+	}
+
+	// If we end up with just one option in OneOf, unwrap it
+	if len(jsonSchemaType.OneOf) == 1 {
+		jsonSchemaType.Type = jsonSchemaType.OneOf[0].Type
+		jsonSchemaType.OneOf = nil
 	}
 
 	// We have found an enum, append its values:
@@ -171,12 +182,16 @@ func (c *Converter) convertEnumType(enum *descriptor.EnumDescriptorProto, conver
 		if converterFlags.EnumsAsConstants {
 			c.schemaVersion = versionDraft06 // Const requires draft-06
 			jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Extras: map[string]interface{}{"const": value.GetName()}, Description: valueDescription})
-			jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Extras: map[string]interface{}{"const": value.GetNumber()}, Description: valueDescription})
+			if !converterFlags.EnumsAsStringsOnly {
+				jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Extras: map[string]interface{}{"const": value.GetNumber()}, Description: valueDescription})
+			}
 		}
 
 		// Add the values to the ENUM:
 		jsonSchemaType.Enum = append(jsonSchemaType.Enum, value.Name)
-		jsonSchemaType.Enum = append(jsonSchemaType.Enum, value.Number)
+		if !converterFlags.EnumsAsStringsOnly {
+			jsonSchemaType.Enum = append(jsonSchemaType.Enum, value.Number)
+		}
 	}
 
 	return jsonSchemaType, nil
@@ -210,7 +225,7 @@ func (c *Converter) convertFile(file *descriptor.FileDescriptorProto, fileExtens
 			c.logger.WithField("proto_filename", protoFileName).WithField("enum_name", enum.GetName()).WithField("jsonschema_filename", jsonSchemaFileName).Info("Generating JSON-schema for stand-alone ENUM")
 
 			// Convert the ENUM:
-			enumJSONSchema, err := c.convertEnumType(enum, ConverterFlags{})
+			enumJSONSchema, err := c.convertEnumType(enum, ConverterFlags{EnumsAsStringsOnly: c.Flags.EnumsAsStringsOnly})
 			if err != nil {
 				c.logger.WithError(err).WithField("proto_filename", protoFileName).Error("Failed to convert")
 				return nil, err

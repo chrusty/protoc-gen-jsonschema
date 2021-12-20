@@ -286,6 +286,16 @@ func configureSampleProtos() map[string]sampleProto {
 			ObjectsToValidateFail: []string{testdata.OptionEnumsAsConstantsFail},
 			ObjectsToValidatePass: []string{testdata.OptionEnumsAsConstantsPass},
 		},
+		"OptionEnumsAsStringsOnly": {
+			Flags: ConverterFlags{
+				EnumsAsStringsOnly: true,
+			},
+			ExpectedJSONSchema:    []string{testdata.OptionEnumsAsStringsOnly},
+			FilesToGenerate:       []string{"OptionEnumsAsStringsOnly.proto"},
+			ProtoFileName:         "OptionEnumsAsStringsOnly.proto",
+			ObjectsToValidateFail: []string{testdata.OptionEnumsAsStringsOnlyFail},
+			ObjectsToValidatePass: []string{testdata.OptionEnumsAsStringsOnlyPass},
+		},
 		"OptionFileExtension": {
 			ExpectedJSONSchema: []string{testdata.OptionFileExtension},
 			ExpectedFileNames:  []string{"OptionFileExtension.jsonschema"},
