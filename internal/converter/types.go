@@ -78,7 +78,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 
 	// Generate a description from src comments (if available)
 	if src := c.sourceInfo.GetField(desc); src != nil {
-		jsonSchemaType.Description = formatDescription(src)
+		_, jsonSchemaType.Description = formatTitleAndDescription(src)
 	}
 
 	// Switch the types, and pick a JSONSchema equivalent:
@@ -442,7 +442,7 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 
 	// Generate a description from src comments (if available)
 	if src := c.sourceInfo.GetMessage(msgDesc); src != nil {
-		jsonSchemaType.Description = formatDescription(src)
+		jsonSchemaType.Title, jsonSchemaType.Description = formatTitleAndDescription(src)
 	}
 
 	// Handle google's well-known types:
@@ -587,21 +587,29 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 	return jsonSchemaType, nil
 }
 
-func formatDescription(sl *descriptor.SourceCodeInfo_Location) string {
-	var lines []string
+func formatTitleAndDescription(sl *descriptor.SourceCodeInfo_Location) (title, description string) {
+	var comments []string
 	for _, str := range sl.GetLeadingDetachedComments() {
 		if s := strings.TrimSpace(str); s != "" {
-			lines = append(lines, s)
+			comments = append(comments, s)
 		}
 	}
 	if s := strings.TrimSpace(sl.GetLeadingComments()); s != "" {
-		lines = append(lines, s)
+		comments = append(comments, s)
 	}
 	if s := strings.TrimSpace(sl.GetTrailingComments()); s != "" {
-		lines = append(lines, s)
+		comments = append(comments, s)
 	}
 
-	return strings.Join(lines, "\n\n")
+	// The title becomes the first comment (if one exists):
+	if len(comments) > 1 {
+		title = comments[0]
+	}
+
+	// The description is all the comments joined together:
+	description = strings.Join(comments, "\n\n")
+
+	return
 }
 
 func dedupe(inputStrings []string) []string {

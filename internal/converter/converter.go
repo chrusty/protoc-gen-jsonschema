@@ -155,7 +155,7 @@ func (c *Converter) convertEnumType(enum *descriptor.EnumDescriptorProto, conver
 
 	// Generate a description from src comments (if available):
 	if src := c.sourceInfo.GetEnum(enum); src != nil {
-		jsonSchemaType.Description = formatDescription(src)
+		jsonSchemaType.Title, jsonSchemaType.Description = formatTitleAndDescription(src)
 	}
 
 	// Use basic types if we're not opting to use constants for ENUMs:
@@ -183,7 +183,7 @@ func (c *Converter) convertEnumType(enum *descriptor.EnumDescriptorProto, conver
 		// Each ENUM value can have comments too:
 		var valueDescription string
 		if src := c.sourceInfo.GetEnumValue(value); src != nil {
-			valueDescription = formatDescription(src)
+			_, valueDescription = formatTitleAndDescription(src)
 		}
 
 		// If we're using constants for ENUMs then add these here, along with their title:
