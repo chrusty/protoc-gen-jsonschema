@@ -20,16 +20,18 @@ import (
 )
 
 const (
-	defaultFileExtension = "json"
-	defaultRefPrefix     = "#/definitions/"
-	messageDelimiter     = "+"
-	versionDraft04       = "http://json-schema.org/draft-04/schema#"
-	versionDraft06       = "http://json-schema.org/draft-06/schema#"
+	defaultCommentDelimiter = "  "
+	defaultFileExtension    = "json"
+	defaultRefPrefix        = "#/definitions/"
+	messageDelimiter        = "+"
+	versionDraft04          = "http://json-schema.org/draft-04/schema#"
+	versionDraft06          = "http://json-schema.org/draft-06/schema#"
 )
 
 // Converter is everything you need to convert protos to JSONSchemas:
 type Converter struct {
 	Flags               ConverterFlags
+	commentDelimiter    string
 	ignoredFieldOption  string
 	logger              *logrus.Logger
 	refPrefix           string
@@ -57,6 +59,7 @@ type ConverterFlags struct {
 // New returns a configured *Converter (defaulting to draft-04 version):
 func New(logger *logrus.Logger) *Converter {
 	return &Converter{
+		commentDelimiter:    defaultCommentDelimiter,
 		logger:              logger,
 		refPrefix:           defaultRefPrefix,
 		schemaFileExtension: defaultFileExtension,
@@ -155,7 +158,7 @@ func (c *Converter) convertEnumType(enum *descriptor.EnumDescriptorProto, conver
 
 	// Generate a description from src comments (if available):
 	if src := c.sourceInfo.GetEnum(enum); src != nil {
-		jsonSchemaType.Title, jsonSchemaType.Description = formatTitleAndDescription(src)
+		jsonSchemaType.Title, jsonSchemaType.Description = c.formatTitleAndDescription(src)
 	}
 
 	// Use basic types if we're not opting to use constants for ENUMs:
@@ -183,7 +186,7 @@ func (c *Converter) convertEnumType(enum *descriptor.EnumDescriptorProto, conver
 		// Each ENUM value can have comments too:
 		var valueDescription string
 		if src := c.sourceInfo.GetEnumValue(value); src != nil {
-			_, valueDescription = formatTitleAndDescription(src)
+			_, valueDescription = c.formatTitleAndDescription(src)
 		}
 
 		// If we're using constants for ENUMs then add these here, along with their title:

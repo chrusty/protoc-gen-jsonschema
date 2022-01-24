@@ -118,7 +118,7 @@ func getDefinitionAtPath(file *descriptor.FileDescriptorProto, path []int32) pro
 }
 
 // formatTitleAndDescription returns a title string and a description string, made from proto comments:
-func formatTitleAndDescription(sl *descriptor.SourceCodeInfo_Location) (title, description string) {
+func (c *Converter) formatTitleAndDescription(sl *descriptor.SourceCodeInfo_Location) (title, description string) {
 	var comments []string
 	for _, str := range sl.GetLeadingDetachedComments() {
 		if s := strings.TrimSpace(str); s != "" {
@@ -138,7 +138,7 @@ func formatTitleAndDescription(sl *descriptor.SourceCodeInfo_Location) (title, d
 	}
 
 	// The description is all the comments joined together:
-	description = strings.Join(comments, "\n\n")
+	description = strings.Join(comments, c.commentDelimiter)
 
 	return
 }

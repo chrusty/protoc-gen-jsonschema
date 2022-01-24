@@ -14,7 +14,7 @@ const MessageWithComments = `{
             "additionalProperties": true,
             "type": "object",
             "title": "This is a leading detached comment (which becomes the title)",
-            "description": "This is a leading detached comment (which becomes the title)\n\nThis is a message level comment and talks about what this message is and why you should care about it!"
+            "description": "This is a leading detached comment (which becomes the title)  This is a message level comment and talks about what this message is and why you should care about it!"
         }
     }
 }`
