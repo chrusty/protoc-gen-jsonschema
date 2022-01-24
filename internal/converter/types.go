@@ -78,7 +78,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 
 	// Generate a description from src comments (if available)
 	if src := c.sourceInfo.GetField(desc); src != nil {
-		_, jsonSchemaType.Description = formatTitleAndDescription(src)
+		jsonSchemaType.Title, jsonSchemaType.Description = formatTitleAndDescription(src)
 	}
 
 	// Switch the types, and pick a JSONSchema equivalent:
@@ -585,31 +585,6 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 	jsonSchemaType.Required = dedupe(jsonSchemaType.Required)
 
 	return jsonSchemaType, nil
-}
-
-func formatTitleAndDescription(sl *descriptor.SourceCodeInfo_Location) (title, description string) {
-	var comments []string
-	for _, str := range sl.GetLeadingDetachedComments() {
-		if s := strings.TrimSpace(str); s != "" {
-			comments = append(comments, s)
-		}
-	}
-	if s := strings.TrimSpace(sl.GetLeadingComments()); s != "" {
-		comments = append(comments, s)
-	}
-	if s := strings.TrimSpace(sl.GetTrailingComments()); s != "" {
-		comments = append(comments, s)
-	}
-
-	// The title becomes the first comment (if one exists):
-	if len(comments) > 1 {
-		title = comments[0]
-	}
-
-	// The description is all the comments joined together:
-	description = strings.Join(comments, "\n\n")
-
-	return
 }
 
 func dedupe(inputStrings []string) []string {

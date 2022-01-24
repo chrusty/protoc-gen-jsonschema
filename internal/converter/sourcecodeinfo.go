@@ -1,6 +1,8 @@
 package converter
 
 import (
+	"strings"
+
 	"google.golang.org/protobuf/proto"
 	descriptor "google.golang.org/protobuf/types/descriptorpb"
 )
@@ -113,4 +115,30 @@ func getDefinitionAtPath(file *descriptor.FileDescriptorProto, path []int32) pro
 		}
 	}
 	return pos
+}
+
+// formatTitleAndDescription returns a title string and a description string, made from proto comments:
+func formatTitleAndDescription(sl *descriptor.SourceCodeInfo_Location) (title, description string) {
+	var comments []string
+	for _, str := range sl.GetLeadingDetachedComments() {
+		if s := strings.TrimSpace(str); s != "" {
+			comments = append(comments, s)
+		}
+	}
+	if s := strings.TrimSpace(sl.GetLeadingComments()); s != "" {
+		comments = append(comments, s)
+	}
+	if s := strings.TrimSpace(sl.GetTrailingComments()); s != "" {
+		comments = append(comments, s)
+	}
+
+	// The title becomes the first comment (if one exists):
+	if len(comments) > 1 {
+		title = comments[0]
+	}
+
+	// The description is all the comments joined together:
+	description = strings.Join(comments, "\n\n")
+
+	return
 }

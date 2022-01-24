@@ -55,7 +55,8 @@ const PayloadMessage2 = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "description": "PayloadMessage2 contains some common types\n \n PayloadMessage2 is used throughout the test suite"
         }
     }
 }`

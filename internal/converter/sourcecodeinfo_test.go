@@ -20,7 +20,7 @@ func TestSourceInfoLookup(t *testing.T) {
 	src := newSourceCodeInfo(fds.File)
 	assertCommentsMatch(t, src.GetMessage(msgWithComments), &descriptor.SourceCodeInfo_Location{
 		LeadingComments:         strPtr(" This is a message level comment and talks about what this message is and why you should care about it!\n"),
-		LeadingDetachedComments: []string{" This is a detached leading comment (which becomes the title)\n"},
+		LeadingDetachedComments: []string{" This is a leading detached comment (which becomes the title)\n"},
 	})
 	assertCommentsMatch(t, src.GetField(msgWithComments_name1), &descriptor.SourceCodeInfo_Location{
 		LeadingComments: strPtr(" This field is supposed to represent blahblahblah\n"),
