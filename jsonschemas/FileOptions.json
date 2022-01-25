@@ -15,6 +15,7 @@
             },
             "additionalProperties": true,
             "type": "object",
+            "title": "File Options",
             "description": "Custom FileOptions"
         }
     }

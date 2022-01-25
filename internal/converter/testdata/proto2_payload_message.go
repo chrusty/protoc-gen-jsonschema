@@ -47,11 +47,13 @@ const Proto2PayloadMessage = `{
                         {
                             "type": "integer"
                         }
-                    ]
+                    ],
+                    "title": "Topology"
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Proto 2 Payload Message"
         }
     }
 }`

@@ -45,7 +45,8 @@ const OptionAllowNullValues = `{
                 {
                     "type": "object"
                 }
-            ]
+            ],
+            "title": "Option Allow Null Values"
         }
     }
 }`

@@ -51,11 +51,13 @@ const OptionEnumsAsConstants = `{
                             "const": 3
                         }
                     ],
+                    "title": "Imported Enum",
                     "description": "This is an enum"
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Option Enums As Constants"
         }
     }
 }`

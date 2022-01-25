@@ -15,6 +15,7 @@
             },
             "additionalProperties": true,
             "type": "object",
+            "title": "Field Options",
             "description": "Custom FieldOptions"
         }
     }

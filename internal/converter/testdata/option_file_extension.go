@@ -23,7 +23,8 @@ const OptionFileExtension = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Option File Extension"
         }
     }
 }`

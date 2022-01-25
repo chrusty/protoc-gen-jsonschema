@@ -12,7 +12,8 @@ const CyclicalReferenceMessageM = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "M"
         },
         "samples.Bar": {
             "properties": {
@@ -25,7 +26,8 @@ const CyclicalReferenceMessageM = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Bar"
         },
         "samples.Baz": {
             "properties": {
@@ -38,7 +40,8 @@ const CyclicalReferenceMessageM = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Baz"
         },
         "samples.Foo": {
             "properties": {
@@ -53,7 +56,8 @@ const CyclicalReferenceMessageM = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Foo"
         }
     }
 }`
@@ -75,7 +79,8 @@ const CyclicalReferenceMessageFoo = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Foo"
         },
         "samples.Bar": {
             "properties": {
@@ -88,7 +93,8 @@ const CyclicalReferenceMessageFoo = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Bar"
         },
         "samples.Baz": {
             "properties": {
@@ -101,7 +107,8 @@ const CyclicalReferenceMessageFoo = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Baz"
         }
     }
 }`
@@ -121,7 +128,8 @@ const CyclicalReferenceMessageBar = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Bar"
         },
         "samples.Baz": {
             "properties": {
@@ -134,7 +142,8 @@ const CyclicalReferenceMessageBar = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Baz"
         },
         "samples.Foo": {
             "properties": {
@@ -149,7 +158,8 @@ const CyclicalReferenceMessageBar = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Foo"
         }
     }
 }`
@@ -169,7 +179,8 @@ const CyclicalReferenceMessageBaz = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Baz"
         },
         "samples.Bar": {
             "properties": {
@@ -182,7 +193,8 @@ const CyclicalReferenceMessageBaz = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Bar"
         },
         "samples.Foo": {
             "properties": {
@@ -197,7 +209,8 @@ const CyclicalReferenceMessageBaz = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Foo"
         }
     }
 }`

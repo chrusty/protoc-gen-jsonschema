@@ -93,7 +93,8 @@
                 {
                     "type": "object"
                 }
-            ]
+            ],
+            "title": "Array Of Primitives"
         }
     }
 }

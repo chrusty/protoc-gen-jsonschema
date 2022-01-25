@@ -22,11 +22,13 @@ const EnumWithMessage = `{
                         {
                             "type": "integer"
                         }
-                    ]
+                    ],
+                    "title": "Foo Bar Baz"
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "With Foo Bar Baz"
         }
     }
 }`

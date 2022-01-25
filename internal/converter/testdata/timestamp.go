@@ -12,7 +12,8 @@ const Timestamp = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Timestamp"
         }
     }
 }`

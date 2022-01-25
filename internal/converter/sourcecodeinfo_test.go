@@ -47,8 +47,3 @@ func assertCommentsMatch(t *testing.T, actual, expected *descriptor.SourceCodeIn
 			actual.GetLeadingComments(), expected.GetLeadingComments())
 	}
 }
-
-// Go doesn't have syntax for addressing a string literal, so this is the next best thing.
-func strPtr(s string) *string {
-	return &s
-}

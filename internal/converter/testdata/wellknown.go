@@ -26,6 +26,7 @@ const WellKnown = `{
                 "list_of_integers": {
                     "items": {
                         "type": "integer",
+                        "title": "Int 32 Value",
                         "description": "Wrapper message for ` + "`int32`" + `.\n\n The JSON representation for ` + "`Int32Value`" + ` is JSON number."
                     },
                     "type": "array"
@@ -42,7 +43,8 @@ const WellKnown = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Well Known"
         }
     }
 }`

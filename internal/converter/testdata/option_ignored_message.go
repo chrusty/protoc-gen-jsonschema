@@ -23,7 +23,8 @@ const UnignoredMessage = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Unignored Message"
         }
     }
 }`

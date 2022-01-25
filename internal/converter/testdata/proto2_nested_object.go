@@ -19,7 +19,8 @@ const Proto2NestedObject = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Proto 2 Nested Object"
         },
         "samples.Proto2NestedObject.NestedPayload": {
             "required": [
@@ -68,11 +69,13 @@ const Proto2NestedObject = `{
                         {
                             "type": "integer"
                         }
-                    ]
+                    ],
+                    "title": "Topology"
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Nested Payload"
         }
     }
 }`

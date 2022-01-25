@@ -16,7 +16,8 @@
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Proto 2 Nested Message"
         },
         "samples.Proto2PayloadMessage": {
             "required": [
@@ -61,11 +62,13 @@
                         {
                             "type": "integer"
                         }
-                    ]
+                    ],
+                    "title": "Topology"
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Proto 2 Payload Message"
         }
     }
 }

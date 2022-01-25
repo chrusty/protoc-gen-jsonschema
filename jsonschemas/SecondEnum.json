@@ -17,5 +17,6 @@
         {
             "type": "integer"
         }
-    ]
+    ],
+    "title": "Second Enum"
 }

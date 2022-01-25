@@ -27,7 +27,8 @@ const Maps = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Maps"
         },
         "samples.PayloadMessage": {
             "properties": {
@@ -68,11 +69,13 @@ const Maps = `{
                         {
                             "type": "integer"
                         }
-                    ]
+                    ],
+                    "title": "Topology"
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Payload Message"
         }
     }
 }`

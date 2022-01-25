@@ -4,6 +4,7 @@ package samples;
 // PayloadMessage2 contains some common types
 // 
 // PayloadMessage2 is used throughout the test suite
+// and can have multi-line comments
 message PayloadMessage2 {
     enum Topology {
         FLAT             = 0;

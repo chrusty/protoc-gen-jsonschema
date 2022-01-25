@@ -3,6 +3,8 @@ package converter
 import (
 	"strings"
 
+	"github.com/fatih/camelcase"
+	"github.com/iancoleman/strcase"
 	"google.golang.org/protobuf/proto"
 	descriptor "google.golang.org/protobuf/types/descriptorpb"
 )
@@ -118,27 +120,41 @@ func getDefinitionAtPath(file *descriptor.FileDescriptorProto, path []int32) pro
 }
 
 // formatTitleAndDescription returns a title string and a description string, made from proto comments:
-func (c *Converter) formatTitleAndDescription(sl *descriptor.SourceCodeInfo_Location) (title, description string) {
+func (c *Converter) formatTitleAndDescription(name *string, sl *descriptor.SourceCodeInfo_Location) (title, description string) {
 	var comments []string
+
+	// Default title is camel-cased & split name:
+	if name != nil {
+		camelName := strcase.ToCamel(*name)
+		splitName := camelcase.Split(camelName)
+		title = strings.Join(splitName, " ")
+	}
+
+	// Leading detached comments first:
 	for _, str := range sl.GetLeadingDetachedComments() {
 		if s := strings.TrimSpace(str); s != "" {
 			comments = append(comments, s)
+			title = s
 		}
 	}
+
+	// Leading comments next:
 	if s := strings.TrimSpace(sl.GetLeadingComments()); s != "" {
 		comments = append(comments, s)
 	}
+
+	// Trailing comments last:
 	if s := strings.TrimSpace(sl.GetTrailingComments()); s != "" {
 		comments = append(comments, s)
-	}
-
-	// The title becomes the first comment (if one exists):
-	if len(comments) > 1 {
-		title = comments[0]
 	}
 
 	// The description is all the comments joined together:
 	description = strings.Join(comments, c.commentDelimiter)
 
 	return
+}
+
+// Go doesn't have syntax for addressing a string literal, so this is the next best thing.
+func strPtr(s string) *string {
+	return &s
 }

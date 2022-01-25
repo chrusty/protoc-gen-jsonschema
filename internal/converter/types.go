@@ -78,7 +78,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 
 	// Generate a description from src comments (if available)
 	if src := c.sourceInfo.GetField(desc); src != nil {
-		jsonSchemaType.Title, jsonSchemaType.Description = c.formatTitleAndDescription(src)
+		jsonSchemaType.Title, jsonSchemaType.Description = c.formatTitleAndDescription(nil, src)
 	}
 
 	// Switch the types, and pick a JSONSchema equivalent:
@@ -442,7 +442,7 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 
 	// Generate a description from src comments (if available)
 	if src := c.sourceInfo.GetMessage(msgDesc); src != nil {
-		jsonSchemaType.Title, jsonSchemaType.Description = c.formatTitleAndDescription(src)
+		jsonSchemaType.Title, jsonSchemaType.Description = c.formatTitleAndDescription(strPtr(msgDesc.GetName()), src)
 	}
 
 	// Handle google's well-known types:

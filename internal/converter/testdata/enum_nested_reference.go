@@ -28,11 +28,13 @@ const EnumNestedReference = `{
                         {
                             "type": "integer"
                         }
-                    ]
+                    ],
+                    "title": "Topology"
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Msg"
         }
     }
 }`

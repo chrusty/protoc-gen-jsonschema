@@ -38,7 +38,8 @@ const ArrayOfObjects = `{
                 {
                     "type": "object"
                 }
-            ]
+            ],
+            "title": "Array Of Objects"
         },
         "samples.ArrayOfObjects.RepeatedPayload": {
             "properties": {
@@ -117,7 +118,8 @@ const ArrayOfObjects = `{
                         {
                             "type": "null"
                         }
-                    ]
+                    ],
+                    "title": "Topology"
                 }
             },
             "additionalProperties": true,
@@ -128,7 +130,8 @@ const ArrayOfObjects = `{
                 {
                     "type": "object"
                 }
-            ]
+            ],
+            "title": "Repeated Payload"
         }
     }
 }`

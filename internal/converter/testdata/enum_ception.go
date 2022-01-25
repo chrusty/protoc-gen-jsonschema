@@ -36,6 +36,7 @@ const EnumCeption = `{
                             "type": "integer"
                         }
                     ],
+                    "title": "Failure Modes",
                     "description": "FailureModes enum"
                 },
                 "payload": {
@@ -93,11 +94,13 @@ const EnumCeption = `{
                             "const": 3
                         }
                     ],
+                    "title": "Imported Enum",
                     "description": "This is an enum"
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Enumception"
         },
         "samples.PayloadMessage": {
             "properties": {
@@ -138,11 +141,13 @@ const EnumCeption = `{
                         {
                             "type": "integer"
                         }
-                    ]
+                    ],
+                    "title": "Topology"
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Payload Message"
         }
     }
 }`

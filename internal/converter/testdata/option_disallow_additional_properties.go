@@ -23,7 +23,8 @@ const OptionDisallowAdditionalProperties = `{
                 }
             },
             "additionalProperties": false,
-            "type": "object"
+            "type": "object",
+            "title": "Option Disallow Additional Properties"
         }
     }
 }`

@@ -31,7 +31,8 @@ const OneOf = `{
                         "baz"
                     ]
                 }
-            ]
+            ],
+            "title": "One Of"
         },
         "samples.OneOf.Bar": {
             "required": [
@@ -43,7 +44,8 @@ const OneOf = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Bar"
         },
         "samples.OneOf.Baz": {
             "required": [
@@ -55,7 +57,8 @@ const OneOf = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Baz"
         }
     }
 }`
