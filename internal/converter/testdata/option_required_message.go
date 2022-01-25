@@ -30,7 +30,8 @@ const OptionRequiredMessage = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Option Required Message"
         }
     }
 }`

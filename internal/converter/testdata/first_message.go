@@ -23,7 +23,8 @@ const FirstMessage = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "First Message"
         }
     }
 }`

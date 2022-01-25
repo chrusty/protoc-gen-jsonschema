@@ -22,11 +22,13 @@ const ArrayOfEnums = `{
                             3
                         ]
                     },
-                    "type": "array"
+                    "type": "array",
+                    "title": "Inline"
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Array Of Enums"
         }
     }
 }`

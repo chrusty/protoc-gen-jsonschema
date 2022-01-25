@@ -20,7 +20,8 @@ const Proto2Required = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Proto 2 Required"
         }
     }
 }`

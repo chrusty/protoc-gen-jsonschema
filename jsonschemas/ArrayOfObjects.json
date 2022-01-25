@@ -36,7 +36,8 @@
                 {
                     "type": "object"
                 }
-            ]
+            ],
+            "title": "Array Of Objects"
         },
         "samples.ArrayOfObjects.RepeatedPayload": {
             "properties": {
@@ -115,7 +116,8 @@
                         {
                             "type": "null"
                         }
-                    ]
+                    ],
+                    "title": "Topology"
                 }
             },
             "additionalProperties": true,
@@ -126,7 +128,8 @@
                 {
                     "type": "object"
                 }
-            ]
+            ],
+            "title": "Repeated Payload"
         }
     }
 }

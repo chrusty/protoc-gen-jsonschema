@@ -15,7 +15,8 @@ const NestedObject = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Nested Object"
         },
         "samples.NestedObject.NestedPayload": {
             "properties": {
@@ -56,11 +57,13 @@ const NestedObject = `{
                         {
                             "type": "integer"
                         }
-                    ]
+                    ],
+                    "title": "Topology"
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Nested Payload"
         }
     }
 }`

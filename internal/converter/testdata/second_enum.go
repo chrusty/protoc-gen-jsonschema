@@ -19,7 +19,8 @@ const SecondEnum = `{
         {
             "type": "integer"
         }
-    ]
+    ],
+    "title": "Second Enum"
 }`
 
 const SecondEnumFail = `"VALUE_3"`

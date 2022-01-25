@@ -13,7 +13,8 @@
                 }
             },
             "additionalProperties": false,
-            "type": "object"
+            "type": "object",
+            "title": "Nested Message"
         },
         "samples.PayloadMessage": {
             "properties": {
@@ -54,11 +55,13 @@
                         {
                             "type": "integer"
                         }
-                    ]
+                    ],
+                    "title": "Topology"
                 }
             },
             "additionalProperties": false,
-            "type": "object"
+            "type": "object",
+            "title": "Payload Message"
         }
     }
 }

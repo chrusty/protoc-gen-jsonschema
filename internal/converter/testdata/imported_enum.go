@@ -46,6 +46,7 @@ const ImportedEnum = `{
             "const": 3
         }
     ],
+    "title": "Imported Enum",
     "description": "This is an enum"
 }`
 

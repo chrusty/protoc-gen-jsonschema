@@ -8,7 +8,8 @@ const OptionEnumsAsStringsOnly = `{
         "GBP",
         "EUR"
     ],
-    "type": "string"
+    "type": "string",
+    "title": "Currency"
 }`
 
 const OptionEnumsAsStringsOnlyPass = `"NOT_SPECIFIED"`

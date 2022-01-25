@@ -43,11 +43,13 @@ const PayloadMessage = `{
                         {
                             "type": "integer"
                         }
-                    ]
+                    ],
+                    "title": "Topology"
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Payload Message"
         }
     }
 }`

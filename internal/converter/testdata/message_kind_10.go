@@ -23,7 +23,8 @@ const MessageKind10 = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Message Kind 10"
         }
     }
 }`

@@ -19,7 +19,8 @@ const FirstEnum = `{
         {
             "type": "integer"
         }
-    ]
+    ],
+    "title": "First Enum"
 }`
 
 const FirstEnumFail = `5`

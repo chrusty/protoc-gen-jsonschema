@@ -15,7 +15,8 @@ const NestedMessage = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Nested Message"
         },
         "samples.PayloadMessage": {
             "properties": {
@@ -56,11 +57,13 @@ const NestedMessage = `{
                         {
                             "type": "integer"
                         }
-                    ]
+                    ],
+                    "title": "Topology"
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Payload Message"
         }
     }
 }`

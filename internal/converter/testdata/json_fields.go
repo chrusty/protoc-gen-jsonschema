@@ -32,7 +32,8 @@ const JSONFields = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "JSON Fields"
         }
     }
 }`

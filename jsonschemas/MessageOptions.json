@@ -27,6 +27,7 @@
             },
             "additionalProperties": true,
             "type": "object",
+            "title": "Message Options",
             "description": "Custom MessageOptions"
         }
     }

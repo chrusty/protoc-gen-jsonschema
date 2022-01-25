@@ -17,7 +17,8 @@ const SelfReference = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Foo"
         }
     }
 }`

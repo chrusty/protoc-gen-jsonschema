@@ -16,7 +16,8 @@ const BytesPayload = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Bytes Payload"
         }
     }
 }`

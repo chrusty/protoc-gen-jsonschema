@@ -51,11 +51,14 @@ const PayloadMessage2 = `{
                         {
                             "type": "integer"
                         }
-                    ]
+                    ],
+                    "title": "Topology"
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Payload Message 2",
+            "description": "PayloadMessage2 contains some common types\n \n PayloadMessage2 is used throughout the test suite\n and can have multi-line comments"
         }
     }
 }`

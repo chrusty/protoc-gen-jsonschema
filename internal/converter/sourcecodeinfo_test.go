@@ -19,7 +19,8 @@ func TestSourceInfoLookup(t *testing.T) {
 	// source data for each of our above declarations.
 	src := newSourceCodeInfo(fds.File)
 	assertCommentsMatch(t, src.GetMessage(msgWithComments), &descriptor.SourceCodeInfo_Location{
-		LeadingComments: strPtr(" This is a message level comment and talks about what this message is and why you should care about it!\n"),
+		LeadingComments:         strPtr(" This is a message level comment and talks about what this message is and why you should care about it!\n"),
+		LeadingDetachedComments: []string{" This is a leading detached comment (which becomes the title)\n"},
 	})
 	assertCommentsMatch(t, src.GetField(msgWithComments_name1), &descriptor.SourceCodeInfo_Location{
 		LeadingComments: strPtr(" This field is supposed to represent blahblahblah\n"),
@@ -45,9 +46,4 @@ func assertCommentsMatch(t *testing.T, actual, expected *descriptor.SourceCodeIn
 		t.Fatalf("Wrong value for LeadingComments.\n   got: %q\n   want: %q",
 			actual.GetLeadingComments(), expected.GetLeadingComments())
 	}
-}
-
-// Go doesn't have syntax for addressing a string literal, so this is the next best thing.
-func strPtr(s string) *string {
-	return &s
 }

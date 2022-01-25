@@ -21,7 +21,8 @@
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "First Message"
         }
     }
 }

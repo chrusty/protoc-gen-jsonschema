@@ -27,7 +27,8 @@ const MessageKind12 = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Message Kind 12"
         },
         "samples.MessageKind1": {
             "properties": {
@@ -48,7 +49,8 @@ const MessageKind12 = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Message Kind 1"
         },
         "samples.MessageKind11": {
             "properties": {
@@ -75,7 +77,8 @@ const MessageKind12 = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Message Kind 11"
         },
         "samples.MessageKind2": {
             "properties": {
@@ -102,7 +105,8 @@ const MessageKind12 = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Message Kind 2"
         },
         "samples.MessageKind3": {
             "properties": {
@@ -126,7 +130,8 @@ const MessageKind12 = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Message Kind 3"
         },
         "samples.MessageKind4": {
             "properties": {
@@ -150,7 +155,8 @@ const MessageKind12 = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Message Kind 4"
         },
         "samples.MessageKind5": {
             "properties": {
@@ -174,7 +180,8 @@ const MessageKind12 = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Message Kind 5"
         },
         "samples.MessageKind6": {
             "properties": {
@@ -198,7 +205,8 @@ const MessageKind12 = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Message Kind 6"
         },
         "samples.MessageKind7": {
             "properties": {
@@ -222,7 +230,8 @@ const MessageKind12 = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Message Kind 7"
         }
     }
 }`

@@ -29,7 +29,8 @@
                         "baz"
                     ]
                 }
-            ]
+            ],
+            "title": "One Of"
         },
         "samples.OneOf.Bar": {
             "properties": {
@@ -38,7 +39,8 @@
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Bar"
         },
         "samples.OneOf.Baz": {
             "properties": {
@@ -47,7 +49,8 @@
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Baz"
         }
     }
 }

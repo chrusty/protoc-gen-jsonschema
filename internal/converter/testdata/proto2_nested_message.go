@@ -18,7 +18,8 @@ const Proto2NestedMessage = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Proto 2 Nested Message"
         },
         "samples.Proto2PayloadMessage": {
             "required": [
@@ -63,11 +64,13 @@ const Proto2NestedMessage = `{
                         {
                             "type": "integer"
                         }
-                    ]
+                    ],
+                    "title": "Topology"
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Proto 2 Payload Message"
         }
     }
 }`

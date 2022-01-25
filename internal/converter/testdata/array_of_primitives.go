@@ -95,7 +95,8 @@ const ArrayOfPrimitives = `{
                 {
                     "type": "object"
                 }
-            ]
+            ],
+            "title": "Array Of Primitives"
         }
     }
 }`
@@ -209,7 +210,8 @@ const ArrayOfPrimitivesDouble = `{
                 {
                     "type": "object"
                 }
-            ]
+            ],
+            "title": "Array Of Primitives"
         }
     }
 }`

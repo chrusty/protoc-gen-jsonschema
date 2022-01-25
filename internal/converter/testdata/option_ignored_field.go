@@ -14,7 +14,8 @@ const OptionIgnoredField = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Option Ignored Field"
         }
     }
 }`

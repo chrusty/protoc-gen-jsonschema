@@ -21,7 +21,8 @@ const OptionRequiredField = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Option Required Field"
         }
     }
 }`

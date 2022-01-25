@@ -15,6 +15,7 @@
             },
             "additionalProperties": true,
             "type": "object",
+            "title": "Enum Options",
             "description": "Custom EnumOptions"
         }
     }

@@ -29,7 +29,8 @@ const MessageKind11 = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Message Kind 11"
         },
         "samples.MessageKind1": {
             "properties": {
@@ -50,7 +51,8 @@ const MessageKind11 = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Message Kind 1"
         },
         "samples.MessageKind2": {
             "properties": {
@@ -77,7 +79,8 @@ const MessageKind11 = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Message Kind 2"
         },
         "samples.MessageKind3": {
             "properties": {
@@ -101,7 +104,8 @@ const MessageKind11 = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Message Kind 3"
         },
         "samples.MessageKind4": {
             "properties": {
@@ -125,7 +129,8 @@ const MessageKind11 = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Message Kind 4"
         }
     }
 }`

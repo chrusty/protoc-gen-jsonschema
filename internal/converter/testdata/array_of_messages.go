@@ -17,7 +17,8 @@ const ArrayOfMessages = `{
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Array Of Messages"
         },
         "samples.PayloadMessage": {
             "properties": {
@@ -58,11 +59,13 @@ const ArrayOfMessages = `{
                         {
                             "type": "integer"
                         }
-                    ]
+                    ],
+                    "title": "Topology"
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Payload Message"
         }
     }
 }`

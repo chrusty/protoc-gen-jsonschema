@@ -25,7 +25,8 @@
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Maps"
         },
         "samples.PayloadMessage": {
             "properties": {
@@ -66,11 +67,13 @@
                         {
                             "type": "integer"
                         }
-                    ]
+                    ],
+                    "title": "Topology"
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "Payload Message"
         }
     }
 }
