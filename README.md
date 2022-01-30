@@ -47,8 +47,8 @@ Install this plugin using Go:
 
 ```sh
 GO111MODULE=on \
-go get github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema &&
-go install github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema
+GOBIN=/usr/bin/ \ 
+go install github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema@latest
 ```
 
 
