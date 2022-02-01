@@ -32,10 +32,10 @@ var (
 	}
 )
 
-func (c *Converter) registerEnum(pkgName *string, enum *descriptor.EnumDescriptorProto) {
+func (c *Converter) registerEnum(pkgName string, enum *descriptor.EnumDescriptorProto) {
 	pkg := globalPkg
-	if pkgName != nil {
-		for _, node := range strings.Split(*pkgName, ".") {
+	if pkgName != "" {
+		for _, node := range strings.Split(pkgName, ".") {
 			if pkg == globalPkg && node == "" {
 				// Skips leading "."
 				continue
@@ -51,10 +51,10 @@ func (c *Converter) registerEnum(pkgName *string, enum *descriptor.EnumDescripto
 	pkg.enums[enum.GetName()] = enum
 }
 
-func (c *Converter) registerType(pkgName *string, msgDesc *descriptor.DescriptorProto) {
+func (c *Converter) registerType(pkgName string, msgDesc *descriptor.DescriptorProto) {
 	pkg := globalPkg
-	if pkgName != nil {
-		for _, node := range strings.Split(*pkgName, ".") {
+	if pkgName != "" {
+		for _, node := range strings.Split(pkgName, ".") {
 			if pkg == globalPkg && node == "" {
 				// Skips leading "."
 				continue

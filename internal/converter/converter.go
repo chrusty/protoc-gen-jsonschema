@@ -22,6 +22,7 @@ import (
 const (
 	defaultCommentDelimiter = "  "
 	defaultFileExtension    = "json"
+	defaultPackageName      = "package"
 	defaultRefPrefix        = "#/definitions/"
 	messageDelimiter        = "+"
 	versionDraft04          = "http://json-schema.org/draft-04/schema#"
@@ -359,22 +360,22 @@ func (c *Converter) convert(request *plugin.CodeGeneratorRequest) (*plugin.CodeG
 			}
 		}
 
-		// Check that this file has a proto package:
+		// Check that this file has a proto package, and give it one if not:
 		if fileDesc.GetPackage() == "" {
-			c.logger.WithField("filename", fileDesc.GetName()).Warn("Proto file doesn't specify a package")
-			continue
+			c.logger.WithField("filename", fileDesc.GetName()).WithField("default_package_name", defaultPackageName).Debug("Proto file doesn't specify a package - assuming the default")
+			fileDesc.Package = strPtr(defaultPackageName)
 		}
 
 		// Build a list of any messages specified by this file:
 		for _, msgDesc := range fileDesc.GetMessageType() {
 			c.logger.WithField("msg_name", msgDesc.GetName()).WithField("package_name", fileDesc.GetPackage()).Debug("Loading a message")
-			c.registerType(fileDesc.Package, msgDesc)
+			c.registerType(fileDesc.GetPackage(), msgDesc)
 		}
 
 		// Build a list of any enums specified by this file:
 		for _, en := range fileDesc.GetEnumType() {
 			c.logger.WithField("enum_name", en.GetName()).WithField("package_name", fileDesc.GetPackage()).Debug("Loading an enum")
-			c.registerEnum(fileDesc.Package, en)
+			c.registerEnum(fileDesc.GetPackage(), en)
 		}
 
 		// Generate schemas for this file:
