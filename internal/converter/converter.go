@@ -51,6 +51,7 @@ type ConverterFlags struct {
 	EnforceOneOf                 bool
 	EnumsAsConstants             bool
 	EnumsAsStringsOnly           bool
+	KeepNewLinesInDescription    bool
 	PrefixSchemaFilesWithPackage bool
 	UseJSONFieldnamesOnly        bool
 	UseProtoAndJSONFieldNames    bool
