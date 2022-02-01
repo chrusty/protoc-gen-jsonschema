@@ -151,6 +151,11 @@ func (c *Converter) formatTitleAndDescription(name *string, sl *descriptor.Sourc
 	// The description is all the comments joined together:
 	description = strings.Join(comments, c.commentDelimiter)
 
+	// Strip newlines:
+	if !c.Flags.KeepNewLinesInDescription {
+		description = strings.ReplaceAll(description, "\n", "")
+	}
+
 	return
 }
 
