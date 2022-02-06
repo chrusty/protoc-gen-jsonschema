@@ -19,7 +19,7 @@ generate:
 
 .PHONY: install
 install:
-	@GO111MODULE=on go get github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema && go install github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema
+	@go install github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema
 
 .PHONY: build_linux
 build_linux:
