@@ -326,6 +326,27 @@ func configureSampleProtos() map[string]sampleProto {
 			ObjectsToValidateFail: []string{testdata.OptionRequiredFieldFail},
 			ObjectsToValidatePass: []string{testdata.OptionRequiredFieldPass},
 		},
+		"OptionMinLength": {
+			ExpectedJSONSchema:    []string{testdata.OptionMinLength},
+			FilesToGenerate:       []string{"OptionMinLength.proto"},
+			ProtoFileName:         "OptionMinLength.proto",
+			ObjectsToValidateFail: []string{testdata.OptionMinLengthFail},
+			ObjectsToValidatePass: []string{testdata.OptionMinLengthPass},
+		},
+		"OptionMaxLength": {
+			ExpectedJSONSchema:    []string{testdata.OptionMaxLength},
+			FilesToGenerate:       []string{"OptionMaxLength.proto"},
+			ProtoFileName:         "OptionMaxLength.proto",
+			ObjectsToValidateFail: []string{testdata.OptionMaxLengthFail},
+			ObjectsToValidatePass: []string{testdata.OptionMaxLengthPass},
+		},
+		"OptionPattern": {
+			ExpectedJSONSchema:    []string{testdata.OptionPattern},
+			FilesToGenerate:       []string{"OptionPattern.proto"},
+			ProtoFileName:         "OptionPattern.proto",
+			ObjectsToValidateFail: []string{testdata.OptionPatternFail},
+			ObjectsToValidatePass: []string{testdata.OptionPatternPass},
+		},
 		"OptionRequiredMessage": {
 			ExpectedJSONSchema:    []string{testdata.OptionRequiredMessage},
 			FilesToGenerate:       []string{"OptionRequiredMessage.proto"},
