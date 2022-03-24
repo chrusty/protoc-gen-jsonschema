@@ -127,13 +127,41 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 		}
 
 	case descriptor.FieldDescriptorProto_TYPE_STRING:
+		stringDef := &jsonschema.Type{Type: gojsonschema.TYPE_STRING}
+		// Check for custom options
+		opts := desc.GetOptions()
+		if opts != nil && proto.HasExtension(opts, protos.E_FieldOptions) {
+			if opt := proto.GetExtension(opts, protos.E_FieldOptions); opt != nil {
+				if fieldOptions, ok := opt.(*protos.FieldOptions); ok {
+					if fieldOptions.GetMinLength() > 0 {
+						stringDef.MinLength = int(fieldOptions.GetMinLength())
+					}
+					if fieldOptions.GetMaxLength() > 0 {
+						stringDef.MaxLength = int(fieldOptions.GetMaxLength())
+					}
+					if fieldOptions.GetPattern() != "" {
+						stringDef.Pattern = fieldOptions.GetPattern()
+					}
+				}
+			}
+		}
+
 		if messageFlags.AllowNullValues {
 			jsonSchemaType.OneOf = []*jsonschema.Type{
 				{Type: gojsonschema.TYPE_NULL},
-				{Type: gojsonschema.TYPE_STRING},
+				stringDef,
 			}
 		} else {
-			jsonSchemaType.Type = gojsonschema.TYPE_STRING
+			jsonSchemaType.Type = stringDef.Type
+			if stringDef.MinLength != 0 {
+				jsonSchemaType.MinLength = stringDef.MinLength
+			}
+			if stringDef.MaxLength != 0 {
+				jsonSchemaType.MaxLength = stringDef.MaxLength
+			}
+			if stringDef.Pattern != "" {
+				jsonSchemaType.Pattern = stringDef.Pattern
+			}
 		}
 
 	case descriptor.FieldDescriptorProto_TYPE_BYTES:
