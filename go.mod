@@ -13,7 +13,7 @@ require (
 	github.com/stretchr/testify v1.4.0
 	github.com/xeipuuv/gojsonpointer v0.0.0-20190809123943-df4f5c81cb3b // indirect
 	github.com/xeipuuv/gojsonschema v1.2.0
-	golang.org/x/sys v0.0.0-20190826190057-c7b8b68b1456 // indirect
+	golang.org/x/sys v0.0.0-20220319134239-a9b59b0215f8 // indirect
 	google.golang.org/protobuf v1.27.1
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 )
