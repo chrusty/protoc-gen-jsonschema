@@ -104,7 +104,7 @@ func (c *Converter) parseGeneratorParameters(parameters string) {
 			c.Flags.DisallowBigIntsAsStrings = true
 		case "enforce_oneof":
 			c.Flags.EnforceOneOf = true
-		case "enum_as_strings_only":
+		case "enums_as_strings_only":
 			c.Flags.EnumsAsStringsOnly = true
 		case "json_fieldnames":
 			c.Flags.UseJSONFieldnamesOnly = true
