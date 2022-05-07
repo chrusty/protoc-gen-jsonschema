@@ -77,7 +77,7 @@ The following configuration parameters are supported. They should be added to th
 |`disallow_additional_properties`| Disallow additional properties in schema |
 |`disallow_bigints_as_strings`| Disallow big integers as strings |
 |`enforce_oneof`| Interpret Proto "oneOf" clauses |
-|`enum_as_strings_only`| Only include strings in the allowed values for enums |
+|`enums_as_strings_only`| Only include strings in the allowed values for enums |
 |`file_extension`| Specify a custom file extension for generated schemas |
 |`json_fieldnames`| Use JSON field names only |
 |`prefix_schema_files_with_package`| Prefix the output filename with package |
