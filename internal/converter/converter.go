@@ -10,7 +10,6 @@ import (
 	"strings"
 
 	"github.com/alecthomas/jsonschema"
-	"github.com/chrusty/protoc-gen-jsonschema/internal/protos"
 	"github.com/iancoleman/strcase"
 	"github.com/sirupsen/logrus"
 	"github.com/xeipuuv/gojsonschema"
@@ -18,6 +17,8 @@ import (
 	"google.golang.org/protobuf/proto"
 	descriptor "google.golang.org/protobuf/types/descriptorpb"
 	plugin "google.golang.org/protobuf/types/pluginpb"
+
+	"github.com/chrusty/protoc-gen-jsonschema/internal/protos"
 )
 
 const (

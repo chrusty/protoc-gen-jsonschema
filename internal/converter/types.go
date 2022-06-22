@@ -6,11 +6,12 @@ import (
 	"strings"
 
 	"github.com/alecthomas/jsonschema"
-	"github.com/chrusty/protoc-gen-jsonschema/internal/protos"
 	"github.com/iancoleman/orderedmap"
 	"github.com/xeipuuv/gojsonschema"
 	"google.golang.org/protobuf/proto"
 	descriptor "google.golang.org/protobuf/types/descriptorpb"
+
+	"github.com/chrusty/protoc-gen-jsonschema/internal/protos"
 )
 
 var (
