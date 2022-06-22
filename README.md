@@ -95,6 +95,7 @@ These apply to specifically marked enums, giving you more finely-grained control
 
 - [enums_as_constants](internal/converter/testdata/proto/ImportedEnum.proto): Encode ENUMs (and their annotations) as CONST
 - [enums_as_strings_only](internal/converter/testdata/proto/OptionEnumsAsStringsOnly.proto): ENUM values are only strings (not the numeric counterparts)
+- [enums_trim_prefix](internal/converter/testdata/proto/OptionEnumsTrimPrefix.proto): ENUM values have enum name prefix removed
 
 ### Field Options
 

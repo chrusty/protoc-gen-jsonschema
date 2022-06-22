@@ -67,6 +67,9 @@ message EnumOptions {
 
   // Enums tagged with this will only provide string values as options (not their numerical equivalents):
   bool enums_as_strings_only = 2;
+  
+  // Enums tagged with this will have enum name prefix removed from values:
+  bool enums_trim_prefix = 3;
 }
 
 
