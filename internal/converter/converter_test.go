@@ -171,6 +171,13 @@ func configureSampleProtos() map[string]sampleProto {
 			ObjectsToValidateFail: []string{testdata.ArrayOfPrimitivesDoubleFail},
 			ObjectsToValidatePass: []string{testdata.ArrayOfPrimitivesDoublePass},
 		},
+		"BigIntAsString": {
+			ExpectedJSONSchema:    []string{testdata.BigIntAsString},
+			FilesToGenerate:       []string{"BigIntAsString.proto"},
+			ProtoFileName:         "BigIntAsString.proto",
+			ObjectsToValidateFail: []string{testdata.BigIntAsStringFail},
+			ObjectsToValidatePass: []string{testdata.BigIntAsStringPass},
+		},
 		"BytesPayload": {
 			ExpectedJSONSchema:    []string{testdata.BytesPayload},
 			FilesToGenerate:       []string{"BytesPayload.proto"},
