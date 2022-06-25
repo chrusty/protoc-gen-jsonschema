@@ -172,6 +172,10 @@ func configureSampleProtos() map[string]sampleProto {
 			ObjectsToValidatePass: []string{testdata.ArrayOfPrimitivesDoublePass},
 		},
 		"BigIntAsString": {
+			Flags: ConverterFlags{
+				AllowNullValues:          true,
+				DisallowBigIntsAsStrings: true,
+			},
 			ExpectedJSONSchema:    []string{testdata.BigIntAsString},
 			FilesToGenerate:       []string{"BigIntAsString.proto"},
 			ProtoFileName:         "BigIntAsString.proto",

@@ -9,7 +9,7 @@ const BigIntAsString = `{
                 "big_number": {
                     "oneOf": [
                         {
-                            "type": "number"
+                            "type": "integer"
                         },
                         {
                             "type": "null"
