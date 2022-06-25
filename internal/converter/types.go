@@ -83,6 +83,8 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 
 	// Switch the types, and pick a JSONSchema equivalent:
 	switch desc.GetType() {
+
+	// Float32:
 	case descriptor.FieldDescriptorProto_TYPE_DOUBLE,
 		descriptor.FieldDescriptorProto_TYPE_FLOAT:
 		if messageFlags.AllowNullValues {
@@ -94,6 +96,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			jsonSchemaType.Type = gojsonschema.TYPE_NUMBER
 		}
 
+	// Int32:
 	case descriptor.FieldDescriptorProto_TYPE_INT32,
 		descriptor.FieldDescriptorProto_TYPE_UINT32,
 		descriptor.FieldDescriptorProto_TYPE_FIXED32,
@@ -108,24 +111,38 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			jsonSchemaType.Type = gojsonschema.TYPE_INTEGER
 		}
 
+	// Int64:
 	case descriptor.FieldDescriptorProto_TYPE_INT64,
 		descriptor.FieldDescriptorProto_TYPE_UINT64,
 		descriptor.FieldDescriptorProto_TYPE_FIXED64,
 		descriptor.FieldDescriptorProto_TYPE_SFIXED64,
 		descriptor.FieldDescriptorProto_TYPE_SINT64:
-		if messageFlags.AllowNullValues {
-			jsonSchemaType.OneOf = []*jsonschema.Type{
-				{Type: gojsonschema.TYPE_STRING},
-				{Type: gojsonschema.TYPE_NULL},
-			}
-		} else {
-			jsonSchemaType.Type = gojsonschema.TYPE_STRING
-		}
 
+		// As integer:
 		if c.Flags.DisallowBigIntsAsStrings {
-			jsonSchemaType.Type = gojsonschema.TYPE_INTEGER
+			if messageFlags.AllowNullValues {
+				jsonSchemaType.OneOf = []*jsonschema.Type{
+					{Type: gojsonschema.TYPE_INTEGER},
+					{Type: gojsonschema.TYPE_NULL},
+				}
+			} else {
+				jsonSchemaType.Type = gojsonschema.TYPE_INTEGER
+			}
 		}
 
+		// As string:
+		if !c.Flags.DisallowBigIntsAsStrings {
+			if messageFlags.AllowNullValues {
+				jsonSchemaType.OneOf = []*jsonschema.Type{
+					{Type: gojsonschema.TYPE_STRING},
+					{Type: gojsonschema.TYPE_NULL},
+				}
+			} else {
+				jsonSchemaType.Type = gojsonschema.TYPE_STRING
+			}
+		}
+
+	// String:
 	case descriptor.FieldDescriptorProto_TYPE_STRING:
 		stringDef := &jsonschema.Type{Type: gojsonschema.TYPE_STRING}
 		// Check for custom options
@@ -164,6 +181,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			}
 		}
 
+	// Bytes:
 	case descriptor.FieldDescriptorProto_TYPE_BYTES:
 		if messageFlags.AllowNullValues {
 			jsonSchemaType.OneOf = []*jsonschema.Type{
@@ -180,6 +198,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			jsonSchemaType.BinaryEncoding = "base64"
 		}
 
+	// ENUM:
 	case descriptor.FieldDescriptorProto_TYPE_ENUM:
 
 		// Go through all the enums we have, see if we can match any to this field.
@@ -197,6 +216,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 
 		jsonSchemaType = &enumSchema
 
+	// Bool:
 	case descriptor.FieldDescriptorProto_TYPE_BOOL:
 		if messageFlags.AllowNullValues {
 			jsonSchemaType.OneOf = []*jsonschema.Type{
@@ -207,6 +227,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			jsonSchemaType.Type = gojsonschema.TYPE_BOOLEAN
 		}
 
+	// Group (object):
 	case descriptor.FieldDescriptorProto_TYPE_GROUP, descriptor.FieldDescriptorProto_TYPE_MESSAGE:
 		switch desc.GetTypeName() {
 		// Make sure that durations match a particular string pattern (eg 3.4s):
