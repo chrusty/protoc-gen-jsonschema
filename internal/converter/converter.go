@@ -10,13 +10,15 @@ import (
 	"strings"
 
 	"github.com/alecthomas/jsonschema"
-	"github.com/chrusty/protoc-gen-jsonschema/internal/protos"
+	"github.com/iancoleman/strcase"
 	"github.com/sirupsen/logrus"
 	"github.com/xeipuuv/gojsonschema"
 	gengo "google.golang.org/protobuf/cmd/protoc-gen-go/internal_gengo"
 	"google.golang.org/protobuf/proto"
 	descriptor "google.golang.org/protobuf/types/descriptorpb"
 	plugin "google.golang.org/protobuf/types/pluginpb"
+
+	"github.com/chrusty/protoc-gen-jsonschema/internal/protos"
 )
 
 const (
@@ -52,6 +54,7 @@ type ConverterFlags struct {
 	EnforceOneOf                 bool
 	EnumsAsConstants             bool
 	EnumsAsStringsOnly           bool
+	EnumsTrimPrefix              bool
 	KeepNewLinesInDescription    bool
 	PrefixSchemaFilesWithPackage bool
 	UseJSONFieldnamesOnly        bool
@@ -106,6 +109,8 @@ func (c *Converter) parseGeneratorParameters(parameters string) {
 			c.Flags.EnforceOneOf = true
 		case "enums_as_strings_only":
 			c.Flags.EnumsAsStringsOnly = true
+		case "enums_trim_prefix":
+			c.Flags.EnumsTrimPrefix = true
 		case "json_fieldnames":
 			c.Flags.UseJSONFieldnamesOnly = true
 		case "prefix_schema_files_with_package":
@@ -151,6 +156,11 @@ func (c *Converter) convertEnumType(enum *descriptor.EnumDescriptorProto, conver
 				if enumOptions.GetEnumsAsStringsOnly() {
 					converterFlags.EnumsAsStringsOnly = true
 				}
+
+				// ENUM values trim enum name prefix:
+				if enumOptions.GetEnumsTrimPrefix() {
+					converterFlags.EnumsTrimPrefix = true
+				}
 			}
 		}
 	}
@@ -182,6 +192,9 @@ func (c *Converter) convertEnumType(enum *descriptor.EnumDescriptorProto, conver
 		jsonSchemaType.OneOf = nil
 	}
 
+	// If we need to trim prefix from enum value
+	enumNamePrefix := fmt.Sprintf("%s_", strcase.ToScreamingSnake(*enum.Name))
+
 	// We have found an enum, append its values:
 	for _, value := range enum.Value {
 
@@ -191,17 +204,24 @@ func (c *Converter) convertEnumType(enum *descriptor.EnumDescriptorProto, conver
 			_, valueDescription = c.formatTitleAndDescription(nil, src)
 		}
 
+		valueName := value.GetName()
+
+		// If enum name prefix should be removed from enum value name:
+		if converterFlags.EnumsTrimPrefix {
+			valueName = strings.TrimPrefix(valueName, enumNamePrefix)
+		}
+
 		// If we're using constants for ENUMs then add these here, along with their title:
 		if converterFlags.EnumsAsConstants {
 			c.schemaVersion = versionDraft06 // Const requires draft-06
-			jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Extras: map[string]interface{}{"const": value.GetName()}, Description: valueDescription})
+			jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Extras: map[string]interface{}{"const": valueName}, Description: valueDescription})
 			if !converterFlags.EnumsAsStringsOnly {
 				jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Extras: map[string]interface{}{"const": value.GetNumber()}, Description: valueDescription})
 			}
 		}
 
 		// Add the values to the ENUM:
-		jsonSchemaType.Enum = append(jsonSchemaType.Enum, value.Name)
+		jsonSchemaType.Enum = append(jsonSchemaType.Enum, valueName)
 		if !converterFlags.EnumsAsStringsOnly {
 			jsonSchemaType.Enum = append(jsonSchemaType.Enum, value.Number)
 		}
