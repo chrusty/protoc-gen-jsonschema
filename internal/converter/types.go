@@ -258,7 +258,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 
 	// Recurse array of primitive types:
 	if desc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REPEATED && jsonSchema.Type != gojsonschema.TYPE_OBJECT {
-		jsonSchema.Items = &jsonschema.Type{}
+		jsonSchema.Items = &jsonschema.Schema{}
 
 		if len(jsonSchema.Enum) > 0 {
 			jsonSchema.Items.Enum = jsonSchema.Enum
