@@ -1,7 +1,6 @@
 package converter
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -309,18 +308,8 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 				return nil, fmt.Errorf("Unable to find properties of MAP type")
 			}
 
-			// Make sure we have a "value":
-			value, valuePresent := recursedjsonSchema.Properties.Get("value")
-			if !valuePresent {
-				return nil, fmt.Errorf("Unable to find 'value' property of MAP type")
-			}
-
-			// Marshal the "value" properties to JSON (because that's how we can pass on AdditionalProperties):
-			additionalPropertiesJSON, err := json.Marshal(value)
-			if err != nil {
-				return nil, err
-			}
-			jsonSchema.AdditionalProperties = additionalPropertiesJSON
+			// Use the recursed schema as our additional properties:
+			jsonSchema.AdditionalProperties = recursedjsonSchema
 
 		// Arrays:
 		case desc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REPEATED:
