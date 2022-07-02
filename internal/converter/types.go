@@ -388,10 +388,8 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msgDesc *descriptor
 
 	// Put together a JSON schema with our discovered definitions, and a $ref for the root type:
 	newJSONSchema := &jsonschema.Schema{
-		Type: &jsonschema.Schema{
-			Ref:     fmt.Sprintf("%s%s", c.refPrefix, msgDesc.GetName()),
-			Version: c.schemaVersion,
-		},
+		Ref:         fmt.Sprintf("%s%s", c.refPrefix, msgDesc.GetName()),
+		Version:     c.schemaVersion,
 		Definitions: definitions,
 	}
 
