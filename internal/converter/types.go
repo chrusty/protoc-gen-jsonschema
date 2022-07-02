@@ -242,13 +242,13 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 		default:
 			jsonSchema.Type = gojsonschema.TYPE_OBJECT
 			if desc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_OPTIONAL {
-				jsonSchema.AdditionalProperties = []byte("true")
+				jsonSchema.AdditionalProperties = jsonschema.TrueSchema
 			}
 			if desc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REQUIRED {
-				jsonSchema.AdditionalProperties = []byte("false")
+				jsonSchema.AdditionalProperties = jsonschema.FalseSchema
 			}
 			if messageFlags.DisallowAdditionalProperties {
-				jsonSchema.AdditionalProperties = []byte("false")
+				jsonSchema.AdditionalProperties = jsonschema.FalseSchema
 			}
 		}
 
@@ -552,9 +552,9 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 
 	// disallowAdditionalProperties will prevent validation where extra fields are found (outside of the schema):
 	if messageFlags.DisallowAdditionalProperties {
-		jsonSchema.AdditionalProperties = []byte("false")
+		jsonSchema.AdditionalProperties = jsonschema.FalseSchema
 	} else {
-		jsonSchema.AdditionalProperties = []byte("true")
+		jsonSchema.AdditionalProperties = jsonschema.TrueSchema
 	}
 
 	c.logger.WithField("message_str", msgDesc.String()).Trace("Converting message")
