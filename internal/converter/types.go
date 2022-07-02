@@ -187,15 +187,15 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			jsonSchema.OneOf = []*jsonschema.Schema{
 				{Type: gojsonschema.TYPE_NULL},
 				{
-					Type:           gojsonschema.TYPE_STRING,
-					Format:         "binary",
-					BinaryEncoding: "base64",
+					Type:            gojsonschema.TYPE_STRING,
+					Format:          "binary",
+					ContentEncoding: "base64",
 				},
 			}
 		} else {
 			jsonSchema.Type = gojsonschema.TYPE_STRING
 			jsonSchema.Format = "binary"
-			jsonSchema.BinaryEncoding = "base64"
+			jsonSchema.ContentEncoding = "base64"
 		}
 
 	// ENUM:
