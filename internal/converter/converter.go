@@ -139,6 +139,9 @@ func (c *Converter) parseGeneratorParameters(parameters string) {
 // Converts a proto "ENUM" into a JSON-Schema:
 func (c *Converter) convertEnumType(enum *descriptor.EnumDescriptorProto, converterFlags ConverterFlags) (jsonschema.Type, error) {
 
+	// Prepare a new jsonschema.Type for our eventual return value:
+	jsonSchemaType := jsonschema.Type{}
+
 	// Inherit the CLI converterFlags:
 	converterFlags.EnumsAsStringsOnly = c.Flags.EnumsAsStringsOnly
 
@@ -161,12 +164,15 @@ func (c *Converter) convertEnumType(enum *descriptor.EnumDescriptorProto, conver
 				if enumOptions.GetEnumsTrimPrefix() {
 					converterFlags.EnumsTrimPrefix = true
 				}
+
+				// If this particular ENUM is marked with the "ignore" option then return a skipped error:
+				if enumOptions.GetIgnore() {
+					c.logger.WithField("msg_name", enum.GetName()).Debug("Skipping ignored enum")
+					return jsonSchemaType, errIgnored
+				}
 			}
 		}
 	}
-
-	// Prepare a new jsonschema.Type for our eventual return value:
-	jsonSchemaType := jsonschema.Type{}
 
 	// Generate a description from src comments (if available):
 	if src := c.sourceInfo.GetEnum(enum); src != nil {
@@ -260,8 +266,13 @@ func (c *Converter) convertFile(file *descriptor.FileDescriptorProto, fileExtens
 			// Convert the ENUM:
 			enumJSONSchema, err := c.convertEnumType(enum, ConverterFlags{})
 			if err != nil {
-				c.logger.WithError(err).WithField("proto_filename", protoFileName).Error("Failed to convert")
-				return nil, err
+				switch err {
+				case errIgnored:
+					continue // This ENUM was marked as ignore - move on to the next
+				default:
+					c.logger.WithError(err).WithField("proto_filename", protoFileName).Error("Failed to convert")
+					return nil, err
+				}
 			}
 			enumJSONSchema.Version = c.schemaVersion
 
