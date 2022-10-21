@@ -1,13 +1,14 @@
 // protoc plugin which converts .proto to JSON schema
-// It is spawned by protoc and generates JSON-schema files.
+// It is called by protoc and generates JSON-schema files.
 // "Heavily influenced" by Google's "protog-gen-bq-schema"
 //
 // usage:
-//  $ bin/protoc --jsonschema_out=path/to/outdir foo.proto
 //
+//	$ bin/protoc --jsonschema_out=path/to/outdir foo.proto
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 
@@ -17,6 +18,17 @@ import (
 
 	"github.com/chrusty/protoc-gen-jsonschema/internal/converter"
 )
+
+const version = "v1.4.0"
+
+func init() {
+	versionFlag := flag.Bool("version", false, "prints current version")
+	flag.Parse()
+	if *versionFlag {
+		fmt.Println(version)
+		os.Exit(0)
+	}
+}
 
 func main() {
 
