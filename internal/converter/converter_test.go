@@ -323,6 +323,11 @@ func configureSampleProtos() map[string]sampleProto {
 			FilesToGenerate:    []string{"OptionFileExtension.proto"},
 			ProtoFileName:      "OptionFileExtension.proto",
 		},
+		"OptionIgnoredEnum": {
+			ExpectedJSONSchema: []string{testdata.UnignoredEnum},
+			FilesToGenerate:    []string{"OptionIgnoredEnum.proto"},
+			ProtoFileName:      "OptionIgnoredEnum.proto",
+		},
 		"OptionIgnoredFile": {
 			ExpectedJSONSchema: []string{},
 			FilesToGenerate:    []string{"OptionIgnoredFile.proto"},

@@ -70,6 +70,9 @@ message EnumOptions {
   
   // Enums tagged with this will have enum name prefix removed from values:
   bool enums_trim_prefix = 3;
+
+  // Enums tagged with this will not be processed
+  bool ignore = 4;
 }
 
 

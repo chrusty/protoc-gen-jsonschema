@@ -212,7 +212,11 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 		// We already have a converter for standalone ENUMs, so just use that:
 		enumSchema, err := c.convertEnumType(matchedEnum, messageFlags)
 		if err != nil {
-			return nil, err
+			switch err {
+			case errIgnored:
+			default:
+				return nil, err
+			}
 		}
 
 		jsonSchemaType = &enumSchema
