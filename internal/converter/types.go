@@ -509,7 +509,7 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 		case "Int64Value", "UInt64Value":
 
 			// BigInt as ints
-			if c.Flags.DisallowBigIntsAsStrings {
+			if messageFlags.DisallowBigIntsAsStrings {
 				if messageFlags.AllowNullValues {
 					jsonSchemaType.OneOf = []*jsonschema.Type{
 						{Type: gojsonschema.TYPE_INTEGER},

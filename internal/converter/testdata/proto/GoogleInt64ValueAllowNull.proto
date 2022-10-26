@@ -1,0 +1,9 @@
+syntax = "proto3";
+package samples;
+import "options.proto";
+import "google/protobuf/wrappers.proto";
+
+message GoogleInt64ValueAllowNull {
+    option (protoc.gen.jsonschema.message_options).allow_null_values = true;
+    google.protobuf.Int64Value big_number = 1;
+}

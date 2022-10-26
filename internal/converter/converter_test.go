@@ -234,6 +234,22 @@ func configureSampleProtos() map[string]sampleProto {
 			ObjectsToValidateFail: []string{testdata.GoogleInt64ValueFail},
 			ObjectsToValidatePass: []string{testdata.GoogleInt64ValuePass},
 		},
+		"GoogleInt64ValueAllowNull": {
+			// Flags:                 ConverterFlags{AllowNullValues: true},
+			ExpectedJSONSchema:    []string{testdata.GoogleInt64ValueAllowNull},
+			FilesToGenerate:       []string{"GoogleInt64ValueAllowNull.proto"},
+			ProtoFileName:         "GoogleInt64ValueAllowNull.proto",
+			ObjectsToValidateFail: []string{testdata.GoogleInt64ValueAllowNullFail},
+			ObjectsToValidatePass: []string{testdata.GoogleInt64ValueAllowNullPass},
+		},
+		"GoogleInt64ValueDisallowString": {
+			Flags:                 ConverterFlags{DisallowBigIntsAsStrings: true},
+			ExpectedJSONSchema:    []string{testdata.GoogleInt64ValueDisallowString},
+			FilesToGenerate:       []string{"GoogleInt64ValueDisallowString.proto"},
+			ProtoFileName:         "GoogleInt64ValueDisallowString.proto",
+			ObjectsToValidateFail: []string{testdata.GoogleInt64ValueDisallowStringFail},
+			ObjectsToValidatePass: []string{testdata.GoogleInt64ValueDisallowStringPass},
+		},
 		"ImportedEnum": {
 			ExpectedJSONSchema:    []string{testdata.ImportedEnum},
 			FilesToGenerate:       []string{"ImportedEnum.proto"},
