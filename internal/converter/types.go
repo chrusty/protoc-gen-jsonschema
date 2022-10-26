@@ -504,8 +504,33 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 		switch *msgDesc.Name {
 		case "DoubleValue", "FloatValue":
 			jsonSchemaType.Type = gojsonschema.TYPE_NUMBER
-		case "Int32Value", "UInt32Value", "Int64Value", "UInt64Value":
+		case "Int32Value", "UInt32Value":
 			jsonSchemaType.Type = gojsonschema.TYPE_INTEGER
+		case "Int64Value", "UInt64Value":
+
+			// BigInt as ints
+			if c.Flags.DisallowBigIntsAsStrings {
+				if messageFlags.AllowNullValues {
+					jsonSchemaType.OneOf = []*jsonschema.Type{
+						{Type: gojsonschema.TYPE_INTEGER},
+						{Type: gojsonschema.TYPE_NULL},
+					}
+				} else {
+					jsonSchemaType.Type = gojsonschema.TYPE_INTEGER
+				}
+			} else {
+
+				// BigInt as strings
+				if messageFlags.AllowNullValues {
+					jsonSchemaType.OneOf = []*jsonschema.Type{
+						{Type: gojsonschema.TYPE_STRING},
+						{Type: gojsonschema.TYPE_NULL},
+					}
+				} else {
+					jsonSchemaType.Type = gojsonschema.TYPE_STRING
+				}
+			}
+
 		case "BoolValue":
 			jsonSchemaType.Type = gojsonschema.TYPE_BOOLEAN
 		case "BytesValue", "StringValue":
