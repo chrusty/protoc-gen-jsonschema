@@ -235,7 +235,7 @@ func configureSampleProtos() map[string]sampleProto {
 			ObjectsToValidatePass: []string{testdata.GoogleInt64ValuePass},
 		},
 		"GoogleInt64ValueAllowNull": {
-			// Flags:                 ConverterFlags{AllowNullValues: true},
+			Flags:                 ConverterFlags{AllowNullValues: true},
 			ExpectedJSONSchema:    []string{testdata.GoogleInt64ValueAllowNull},
 			FilesToGenerate:       []string{"GoogleInt64ValueAllowNull.proto"},
 			ProtoFileName:         "GoogleInt64ValueAllowNull.proto",
@@ -249,6 +249,17 @@ func configureSampleProtos() map[string]sampleProto {
 			ProtoFileName:         "GoogleInt64ValueDisallowString.proto",
 			ObjectsToValidateFail: []string{testdata.GoogleInt64ValueDisallowStringFail},
 			ObjectsToValidatePass: []string{testdata.GoogleInt64ValueDisallowStringPass},
+		},
+		"GoogleInt64ValueDisallowStringAllowNull": {
+			Flags: ConverterFlags{
+				DisallowBigIntsAsStrings: true,
+				AllowNullValues:          true,
+			},
+			ExpectedJSONSchema:    []string{testdata.GoogleInt64ValueDisallowStringAllowNull},
+			FilesToGenerate:       []string{"GoogleInt64ValueDisallowStringAllowNull.proto"},
+			ProtoFileName:         "GoogleInt64ValueDisallowStringAllowNull.proto",
+			ObjectsToValidateFail: []string{testdata.GoogleInt64ValueDisallowStringAllowNullFail},
+			ObjectsToValidatePass: []string{testdata.GoogleInt64ValueDisallowStringAllowNullPass},
 		},
 		"ImportedEnum": {
 			ExpectedJSONSchema:    []string{testdata.ImportedEnum},

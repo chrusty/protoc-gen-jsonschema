@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "$ref": "#/definitions/GoogleInt64ValueAllowNull",
+    "$ref": "#/definitions/GoogleInt64ValueDisallowStringAllowNull",
     "definitions": {
-        "GoogleInt64ValueAllowNull": {
+        "GoogleInt64ValueDisallowStringAllowNull": {
             "properties": {
                 "big_number": {
                     "oneOf": [
@@ -10,7 +10,7 @@
                             "type": "null"
                         },
                         {
-                            "type": "string"
+                            "type": "integer"
                         }
                     ],
                     "title": "Int 64 Value",
@@ -26,7 +26,7 @@
                     "type": "object"
                 }
             ],
-            "title": "Google Int 64 Value Allow Null"
+            "title": "Google Int 64 Value Disallow String Allow Null"
         }
     }
 }

@@ -7,7 +7,6 @@ const GoogleInt64ValueAllowNull = `{
         "GoogleInt64ValueAllowNull": {
             "properties": {
                 "big_number": {
-                    "additionalProperties": true,
                     "oneOf": [
                         {
                             "type": "null"
@@ -15,7 +14,9 @@ const GoogleInt64ValueAllowNull = `{
                         {
                             "type": "string"
                         }
-                    ]
+                    ],
+                    "title": "Int 64 Value",
+                    "description": "Wrapper message for ` + "`int64`" + `. The JSON representation for ` + "`Int64Value`" + ` is JSON string."
                 }
             },
             "additionalProperties": true,

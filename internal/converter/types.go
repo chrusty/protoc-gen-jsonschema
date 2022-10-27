@@ -507,28 +507,13 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 		case "Int32Value", "UInt32Value":
 			jsonSchemaType.Type = gojsonschema.TYPE_INTEGER
 		case "Int64Value", "UInt64Value":
-
 			// BigInt as ints
 			if messageFlags.DisallowBigIntsAsStrings {
-				if messageFlags.AllowNullValues {
-					jsonSchemaType.OneOf = []*jsonschema.Type{
-						{Type: gojsonschema.TYPE_INTEGER},
-						{Type: gojsonschema.TYPE_NULL},
-					}
-				} else {
-					jsonSchemaType.Type = gojsonschema.TYPE_INTEGER
-				}
+				jsonSchemaType.Type = gojsonschema.TYPE_INTEGER
 			} else {
 
 				// BigInt as strings
-				if messageFlags.AllowNullValues {
-					jsonSchemaType.OneOf = []*jsonschema.Type{
-						{Type: gojsonschema.TYPE_STRING},
-						{Type: gojsonschema.TYPE_NULL},
-					}
-				} else {
-					jsonSchemaType.Type = gojsonschema.TYPE_STRING
-				}
+				jsonSchemaType.Type = gojsonschema.TYPE_STRING
 			}
 
 		case "BoolValue":
@@ -552,6 +537,8 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 		// If we're allowing nulls then prepare a OneOf:
 		if messageFlags.AllowNullValues {
 			jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Type: gojsonschema.TYPE_NULL}, &jsonschema.Type{Type: jsonSchemaType.Type})
+			// and clear the Type that was previously set.
+			jsonSchemaType.Type = ""
 			return jsonSchemaType, nil
 		}
 
