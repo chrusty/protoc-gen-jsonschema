@@ -9,7 +9,6 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/alecthomas/jsonschema"
 	"github.com/iancoleman/strcase"
 	"github.com/sirupsen/logrus"
 	"github.com/xeipuuv/gojsonschema"
@@ -18,6 +17,7 @@ import (
 	descriptor "google.golang.org/protobuf/types/descriptorpb"
 	plugin "google.golang.org/protobuf/types/pluginpb"
 
+	"github.com/chrusty/protoc-gen-jsonschema/internal/converter/jsonschema"
 	"github.com/chrusty/protoc-gen-jsonschema/internal/protos"
 )
 
@@ -52,6 +52,7 @@ type ConverterFlags struct {
 	DisallowAdditionalProperties bool
 	DisallowBigIntsAsStrings     bool
 	EnforceOneOf                 bool
+	EnforceExclusiveGroups       bool
 	EnumsAsConstants             bool
 	EnumsAsStringsOnly           bool
 	EnumsTrimPrefix              bool
@@ -107,6 +108,8 @@ func (c *Converter) parseGeneratorParameters(parameters string) {
 			c.Flags.DisallowBigIntsAsStrings = true
 		case "enforce_oneof":
 			c.Flags.EnforceOneOf = true
+		case "enforce_oneof_groups":
+			c.Flags.EnforceExclusiveGroups = true
 		case "enums_as_strings_only":
 			c.Flags.EnumsAsStringsOnly = true
 		case "enums_trim_prefix":
