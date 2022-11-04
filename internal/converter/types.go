@@ -10,8 +10,8 @@ import (
 	"google.golang.org/protobuf/proto"
 	descriptor "google.golang.org/protobuf/types/descriptorpb"
 
-	"github.com/chrusty/protoc-gen-jsonschema/internal/converter/jsonschema"
-	"github.com/chrusty/protoc-gen-jsonschema/internal/protos"
+	"github.com/AppliedIntuition/protoc-gen-jsonschema/internal/converter/jsonschema"
+	"github.com/AppliedIntuition/protoc-gen-jsonschema/internal/protos"
 )
 
 var (

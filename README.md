@@ -46,7 +46,7 @@ Installation
 Install this plugin using Go:
 
 ```sh
-go install github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema@latest
+go install github.com/AppliedIntuition/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema@latest
 ```
 
 
