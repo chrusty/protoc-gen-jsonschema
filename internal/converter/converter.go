@@ -56,7 +56,7 @@ type ConverterFlags struct {
 	EnumsAsStringsOnly           bool
 	EnumsTrimPrefix              bool
 	KeepNewLinesInDescription    bool
-	PrefixSchemaFilesWithPackage bool
+	DefsInProtoFilename          bool
 	UseJSONFieldnamesOnly        bool
 	UseProtoAndJSONFieldNames    bool
 }
@@ -113,8 +113,8 @@ func (c *Converter) parseGeneratorParameters(parameters string) {
 			c.Flags.EnumsTrimPrefix = true
 		case "json_fieldnames":
 			c.Flags.UseJSONFieldnamesOnly = true
-		case "prefix_schema_files_with_package":
-			c.Flags.PrefixSchemaFilesWithPackage = true
+		case "defs_in_proto_filename":
+			c.Flags.DefsInProtoFilename = true
 		case "proto_and_json_fieldnames":
 			c.Flags.UseProtoAndJSONFieldNames = true
 		}
@@ -241,6 +241,7 @@ func (c *Converter) convertFile(file *descriptor.FileDescriptorProto, fileExtens
 
 	// Input filename:
 	protoFileName := path.Base(file.GetName())
+	jsonSchemaFileName := strings.Replace(protoFileName, ".proto", ".json", -1)
 
 	// Prepare a list of responses:
 	var response []*plugin.CodeGeneratorResponse_File
@@ -260,7 +261,7 @@ func (c *Converter) convertFile(file *descriptor.FileDescriptorProto, fileExtens
 	// Generate standalone ENUMs:
 	if len(file.GetMessageType()) == 0 {
 		for _, enum := range file.GetEnumType() {
-			jsonSchemaFileName := c.generateSchemaFilename(file, fileExtension, enum.GetName())
+			jsonSchemaFileName := c.generateSchemaFilename(file, jsonSchemaFileName, enum.GetName())
 			c.logger.WithField("proto_filename", protoFileName).WithField("enum_name", enum.GetName()).WithField("jsonschema_filename", jsonSchemaFileName).Info("Generating JSON-schema for stand-alone ENUM")
 
 			// Convert the ENUM:
@@ -297,53 +298,32 @@ func (c *Converter) convertFile(file *descriptor.FileDescriptorProto, fileExtens
 			return nil, fmt.Errorf("no such package found: %s", file.GetPackage())
 		}
 
-		// Go through all of the messages in this file:
-		for _, msgDesc := range file.GetMessageType() {
-
-			// Check for our custom message options:
-			if opts := msgDesc.GetOptions(); opts != nil && proto.HasExtension(opts, protos.E_MessageOptions) {
-				if opt := proto.GetExtension(opts, protos.E_MessageOptions); opt != nil {
-					if messageOptions, ok := opt.(*protos.MessageOptions); ok {
-
-						// "Ignored" messages are simply skipped:
-						if messageOptions.GetIgnore() {
-							c.logger.WithField("msg_name", msgDesc.GetName()).Debug("Skipping ignored message")
-							continue
-						}
-					}
-				}
-			}
-
-			// skip if we are only generating schema for specific messages
-			if genSpecificMessages && !contains(c.messageTargets, msgDesc.GetName()) {
-				continue
-			}
-
-			// Convert the message:
-			messageJSONSchema, err := c.convertMessageType(pkg, msgDesc)
-			if err != nil {
-				c.logger.WithError(err).WithField("proto_filename", protoFileName).Error("Failed to convert")
-				return nil, err
-			}
-
-			// Generate a schema filename:
-			jsonSchemaFileName := c.generateSchemaFilename(file, fileExtension, msgDesc.GetName())
-			c.logger.WithField("proto_filename", protoFileName).WithField("msg_name", msgDesc.GetName()).WithField("jsonschema_filename", jsonSchemaFileName).Info("Generating JSON-schema for MESSAGE")
-
-			// Marshal the JSON-Schema into JSON:
-			jsonSchemaJSON, err := json.MarshalIndent(messageJSONSchema, "", "    ")
-			if err != nil {
-				c.logger.WithError(err).Error("Failed to encode jsonSchema")
-				return nil, err
-			}
-
-			// Add a response:
-			resFile := &plugin.CodeGeneratorResponse_File{
-				Name:    proto.String(jsonSchemaFileName),
-				Content: proto.String(string(jsonSchemaJSON)),
-			}
-			response = append(response, resFile)
+		// Convert the message:
+		messageJSONSchema, err := c.convertMessageType(pkg, file.GetMessageType())
+		if err != nil {
+			c.logger.WithError(err).WithField("proto_filename", protoFileName).Error("Failed to convert")
+			return nil, err
 		}
+
+		// Generate a schema filename:
+		jsonSchemaFileName := c.generateSchemaFilename(file, jsonSchemaFileName, file.GetName())
+		c.logger.
+			WithField("proto_filename", protoFileName).WithField("msg_name", file.GetName()).
+			WithField("jsonschema_filename", jsonSchemaFileName).Info("Generating JSON-schema for MESSAGE")
+
+		// Marshal the JSON-Schema into JSON:
+		jsonSchemaJSON, err := json.MarshalIndent(messageJSONSchema, "", "    ")
+		if err != nil {
+			c.logger.WithError(err).Error("Failed to encode jsonSchema")
+			return nil, err
+		}
+
+		// Add a response:
+		resFile := &plugin.CodeGeneratorResponse_File{
+			Name:    proto.String(jsonSchemaFileName),
+			Content: proto.String(string(jsonSchemaJSON)),
+		}
+		response = append(response, resFile)
 	}
 
 	return response, nil
@@ -429,8 +409,8 @@ func (c *Converter) convert(request *plugin.CodeGeneratorRequest) (*plugin.CodeG
 }
 
 func (c *Converter) generateSchemaFilename(file *descriptor.FileDescriptorProto, fileExtension, protoName string) string {
-	if c.Flags.PrefixSchemaFilesWithPackage {
-		return fmt.Sprintf("%s/%s.%s", file.GetPackage(), protoName, fileExtension)
+	if c.Flags.DefsInProtoFilename {
+		return fmt.Sprintf("%s/%s", strings.Replace(file.GetPackage(), ".", "/", -1), fileExtension)
 	}
 	return fmt.Sprintf("%s.%s", protoName, fileExtension)
 }

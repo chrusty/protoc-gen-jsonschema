@@ -3,6 +3,7 @@ package converter
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/alecthomas/jsonschema"
@@ -381,32 +382,50 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 }
 
 // Converts a proto "MESSAGE" into a JSON-Schema:
-func (c *Converter) convertMessageType(curPkg *ProtoPackage, msgDesc *descriptor.DescriptorProto) (*jsonschema.Schema, error) {
+func (c *Converter) convertMessageType(curPkg *ProtoPackage, msgDescs []*descriptor.DescriptorProto) (*jsonschema.Schema, error) {
 
-	// Get a list of any nested messages in our schema:
-	duplicatedMessages, err := c.findNestedMessages(curPkg, msgDesc)
-	if err != nil {
-		return nil, err
-	}
-
-	// Build up a list of JSONSchema type definitions for every message:
 	definitions := jsonschema.Definitions{}
-	for refmsgDesc, name := range duplicatedMessages {
-		refType, err := c.recursiveConvertMessageType(curPkg, refmsgDesc, "", duplicatedMessages, true)
+	for i := range msgDescs {
+		// Get a list of any nested messages in our schema:
+		duplicatedMessages, err := c.findNestedMessages(curPkg, msgDescs[i])
 		if err != nil {
 			return nil, err
 		}
 
-		// Add the schema to our definitions:
-		definitions[name] = refType
+		// Build up a list of JSONSchema type definitions for every message:
+
+		for refmsgDesc, name := range duplicatedMessages {
+			refType, err := c.recursiveConvertMessageType(curPkg, refmsgDesc, "", duplicatedMessages, true)
+			if err != nil {
+				return nil, err
+			}
+
+			// Add the schema to our definitions:
+			definitions[name] = refType
+		}
+	}
+
+	refs := make([]*jsonschema.Type, 0)
+
+	for k, _ := range definitions {
+		log.Printf("definition: %s, curPkg.name: %s", k, curPkg.name)
+		if strings.Contains(k, curPkg.name) {
+			k = strings.Replace(k, curPkg.name, "", 1)
+			k = strings.Trim(k, ".")
+			//refs = append(refs, &jsonschema.Type{Ref: fmt.Sprintf("%s%s", c.refPrefix, k)})
+		} else {
+			refs = append(refs, &jsonschema.Type{Ref: fmt.Sprintf("%s%s", c.refPrefix, k)})
+		}
 	}
 
 	// Put together a JSON schema with our discovered definitions, and a $ref for the root type:
 	newJSONSchema := &jsonschema.Schema{
 		Type: &jsonschema.Type{
-			Ref:     fmt.Sprintf("%s%s", c.refPrefix, msgDesc.GetName()),
+			//Ref:     fmt.Sprintf("%s%s", c.refPrefix, curPkg.name),
 			Version: c.schemaVersion,
+			AnyOf:   refs,
 		},
+
 		Definitions: definitions,
 	}
 

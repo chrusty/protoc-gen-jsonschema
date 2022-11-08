@@ -113,7 +113,7 @@ func testConvertSampleProto(t *testing.T, sampleProto sampleProto) {
 	}
 
 	// Check for the correct prefix:
-	if protoConverter.Flags.PrefixSchemaFilesWithPackage {
+	if protoConverter.Flags.DefsInProtoFilename {
 		assert.Contains(t, response.File[0].GetName(), "samples")
 	} else {
 		assert.NotContains(t, response.File[0].GetName(), "samples")
@@ -381,7 +381,7 @@ func configureSampleProtos() map[string]sampleProto {
 			ObjectsToValidatePass: []string{testdata.OptionRequiredMessagePass},
 		},
 		"PackagePrefix": {
-			Flags:                 ConverterFlags{PrefixSchemaFilesWithPackage: true},
+			Flags:                 ConverterFlags{DefsInProtoFilename: true},
 			ExpectedJSONSchema:    []string{testdata.Timestamp},
 			FilesToGenerate:       []string{"Timestamp.proto"},
 			ProtoFileName:         "Timestamp.proto",

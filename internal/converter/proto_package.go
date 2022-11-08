@@ -163,5 +163,7 @@ func (c *Converter) relativelyLookupPackage(pkg *ProtoPackage, name string) (*Pr
 			return nil, false
 		}
 	}
+
+	pkg.name = strings.TrimPrefix(pkg.name, ".")
 	return pkg, true
 }
