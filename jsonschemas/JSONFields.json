@@ -3,6 +3,9 @@
     "$ref": "#/definitions/JSONFields",
     "definitions": {
         "JSONFields": {
+            "required": [
+                "otherNumb"
+            ],
             "properties": {
                 "name": {
                     "type": "string"
@@ -21,10 +24,14 @@
                 },
                 "snakeNumb": {
                     "type": "string"
+                },
+                "otherNumb": {
+                    "type": "integer"
                 }
             },
             "additionalProperties": true,
-            "type": "object"
+            "type": "object",
+            "title": "JSON Fields"
         }
     }
 }
