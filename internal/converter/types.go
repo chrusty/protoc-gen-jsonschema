@@ -561,6 +561,11 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 		jsonSchemaType.AdditionalProperties = []byte("true")
 	}
 
+	// Write the oneof declaration names to the jsonschema.
+	for _, oneofDesc := range msgDesc.OneofDecl {
+		jsonSchemaType.OneofNames = append(jsonSchemaType.OneofNames, *oneofDesc.Name);
+	}
+
 	c.logger.WithField("message_str", msgDesc.String()).Trace("Converting message")
 	for _, fieldDesc := range msgDesc.GetField() {
 

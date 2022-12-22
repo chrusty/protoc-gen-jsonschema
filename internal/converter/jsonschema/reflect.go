@@ -70,6 +70,7 @@ type Type struct {
 	MaxProperties        int                    `json:"maxProperties,omitempty"`        // section 5.13
 	MinProperties        int                    `json:"minProperties,omitempty"`        // section 5.14
 	Required             []string               `json:"required,omitempty"`             // section 5.15
+	OneofNames           []string               `json:"oneofNames,omitempty"`           // custom
 	Properties           *orderedmap.OrderedMap `json:"properties,omitempty"`           // section 5.16
 	PatternProperties    map[string]*Type       `json:"patternProperties,omitempty"`    // section 5.17
 	AdditionalProperties json.RawMessage        `json:"additionalProperties,omitempty"` // section 5.18
@@ -79,7 +80,7 @@ type Type struct {
 	AllOf                []*Type                `json:"allOf,omitempty"`                // section 5.22
 	AnyOf                []*Type                `json:"anyOf,omitempty"`                // section 5.23
 	OneOf                []*Type                `json:"oneOf,omitempty"`                // section 5.24
-	ExclusiveGroups      []*Type                `json:"exclusiveGroups,omitempty"`      // section 5.24
+	ExclusiveGroups      []*Type                `json:"exclusiveGroups,omitempty"`      // custom
 	Not                  *Type                  `json:"not,omitempty"`                  // section 5.25
 	Definitions          Definitions            `json:"definitions,omitempty"`          // section 5.26
 	// RFC draft-wright-json-schema-validation-00, section 6, 7

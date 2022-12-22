@@ -12,6 +12,10 @@ const MultipleOneOf = `{
                 "qux",
                 "something"
             ],
+            "oneofNames": [
+                "choice1",
+                "choice2"
+            ],
             "properties": {
                 "bar": {
                     "$ref": "#/definitions/samples.MultipleOneOf.Bar",

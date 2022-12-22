@@ -5,6 +5,9 @@ const MessageKind11 = `{
     "$ref": "#/definitions/MessageKind11",
     "definitions": {
         "MessageKind11": {
+            "oneofNames": [
+                "iface"
+            ],
             "properties": {
                 "name": {
                     "type": "string"

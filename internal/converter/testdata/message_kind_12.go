@@ -5,6 +5,9 @@ const MessageKind12 = `{
     "$ref": "#/definitions/MessageKind12",
     "definitions": {
         "MessageKind12": {
+            "oneofNames": [
+                "iface"
+            ],
             "properties": {
                 "name": {
                     "type": "string"
@@ -53,6 +56,9 @@ const MessageKind12 = `{
             "title": "Message Kind 1"
         },
         "samples.MessageKind11": {
+            "oneofNames": [
+                "iface"
+            ],
             "properties": {
                 "name": {
                     "type": "string"
