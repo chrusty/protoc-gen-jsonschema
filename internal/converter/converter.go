@@ -53,6 +53,7 @@ type ConverterFlags struct {
 	DisallowBigIntsAsStrings     bool
 	EnforceOneOf                 bool
 	EnforceExclusiveGroups       bool
+	EnforceOneofDeclarations     bool
 	EnumsAsConstants             bool
 	EnumsAsStringsOnly           bool
 	EnumsTrimPrefix              bool
@@ -110,6 +111,8 @@ func (c *Converter) parseGeneratorParameters(parameters string) {
 			c.Flags.EnforceOneOf = true
 		case "enforce_oneof_groups":
 			c.Flags.EnforceExclusiveGroups = true
+		case "enforce_oneof_declarations":
+			c.Flags.EnforceOneofDeclarations = true
 		case "enums_as_strings_only":
 			c.Flags.EnumsAsStringsOnly = true
 		case "enums_trim_prefix":

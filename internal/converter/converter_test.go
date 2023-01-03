@@ -277,7 +277,7 @@ func configureSampleProtos() map[string]sampleProto {
 		// 	ObjectsToValidatePass: []string{testdata.OneOfPass},
 		// },
 		"ExclusiveGroups": {
-			Flags:                 ConverterFlags{AllFieldsRequired: true, EnforceExclusiveGroups: true},
+			Flags:                 ConverterFlags{AllFieldsRequired: true, EnforceExclusiveGroups: true, EnforceOneofDeclarations: true},
 			ExpectedJSONSchema:    []string{testdata.MultipleOneOf},
 			FilesToGenerate:       []string{"MultipleOneOf.proto"},
 			ProtoFileName:         "MultipleOneOf.proto",
@@ -447,6 +447,7 @@ func configureSampleProtos() map[string]sampleProto {
 			ObjectsToValidatePass: []string{testdata.FirstMessagePass, testdata.SecondMessagePass},
 		},
 		"TargetedMessages": {
+			Flags:              ConverterFlags{EnforceOneofDeclarations: true},
 			TargetedMessages:   []string{"MessageKind10", "MessageKind11", "MessageKind12"},
 			ExpectedJSONSchema: []string{testdata.MessageKind10, testdata.MessageKind11, testdata.MessageKind12},
 			FilesToGenerate:    []string{"TwelveMessages.proto"},
