@@ -69,6 +69,19 @@ Configuration Parameters
 
 The following configuration parameters are supported. They should be added to the protoc command and can be combined as a comma-delimited string. Some examples are included in the following Examples section.
 
+Options can also be provided in this format (which is easier on the eye):
+
+```
+protoc \
+  --plugin=${HOME}/go/bin/protoc-gen-jsonschema \
+  --jsonschema_opt=enforce_oneof
+  --jsonschema_opt=file_extension=schema.json \
+  --jsonschema_opt=disallow_additional_properties \
+  --jsonschema_out=schemas \
+  --proto_path=proto
+```
+
+
 | CONFIG | DESCRIPTION |
 |--------|-------------|
 |`all_fields_required`| Require all fields in schema |
