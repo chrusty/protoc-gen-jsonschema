@@ -82,6 +82,18 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 		jsonSchemaType.Title, jsonSchemaType.Description = c.formatTitleAndDescription(nil, src)
 	}
 
+	// Write deprecated option to the jsonschema, for deprecated fields.
+	deprecated := desc.Options.GetDeprecated();
+	if deprecated {
+		jsonSchemaType.Deprecated = deprecated;
+	}
+
+	// Write uninterpreted options to jsonschema as strings.
+	uninterpretedOptions := desc.Options.GetUninterpretedOption();
+	for _, uninterpretedOption := range uninterpretedOptions {
+		jsonSchemaType.OptionStrings = append(jsonSchemaType.OptionStrings, uninterpretedOption.String());
+	}
+
 	// Switch the types, and pick a JSONSchema equivalent:
 	switch desc.GetType() {
 

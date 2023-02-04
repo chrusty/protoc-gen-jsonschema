@@ -10,4 +10,5 @@ message JSONFields {
     bool complete    = 5;
     int64 snake_numb = 6;
     int32 other_numb = 7 [(protoc.gen.jsonschema.field_options).required = true];
+    int32 old_field  = 8 [deprecated = true];
 }

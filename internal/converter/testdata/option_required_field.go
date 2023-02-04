@@ -14,7 +14,8 @@ const OptionRequiredField = `{
                     "type": "string"
                 },
                 "page_number": {
-                    "type": "integer"
+                    "type": "integer",
+                    "deprecated": true
                 },
                 "result_per_page": {
                     "type": "integer"

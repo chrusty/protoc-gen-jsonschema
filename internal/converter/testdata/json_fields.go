@@ -29,6 +29,10 @@ const JSONFields = `{
                 },
                 "otherNumb": {
                     "type": "integer"
+                },
+                "oldField": {
+                    "type": "integer",
+                    "deprecated": true
                 }
             },
             "additionalProperties": true,
