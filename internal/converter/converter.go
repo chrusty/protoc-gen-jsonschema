@@ -18,7 +18,7 @@ import (
 	descriptor "google.golang.org/protobuf/types/descriptorpb"
 	plugin "google.golang.org/protobuf/types/pluginpb"
 
-	"github.com/chrusty/protoc-gen-jsonschema/internal/protos"
+	protoc_gen_jsonschema "github.com/chrusty/protoc-gen-jsonschema"
 )
 
 const (
@@ -146,9 +146,9 @@ func (c *Converter) convertEnumType(enum *descriptor.EnumDescriptorProto, conver
 	converterFlags.EnumsAsStringsOnly = c.Flags.EnumsAsStringsOnly
 
 	// Set some per-enum flags from config and options:
-	if opts := enum.GetOptions(); opts != nil && proto.HasExtension(opts, protos.E_EnumOptions) {
-		if opt := proto.GetExtension(opts, protos.E_EnumOptions); opt != nil {
-			if enumOptions, ok := opt.(*protos.EnumOptions); ok {
+	if opts := enum.GetOptions(); opts != nil && proto.HasExtension(opts, protoc_gen_jsonschema.E_EnumOptions) {
+		if opt := proto.GetExtension(opts, protoc_gen_jsonschema.E_EnumOptions); opt != nil {
+			if enumOptions, ok := opt.(*protoc_gen_jsonschema.EnumOptions); ok {
 
 				// ENUMs as constants:
 				if enumOptions.GetEnumsAsConstants() {
@@ -301,9 +301,9 @@ func (c *Converter) convertFile(file *descriptor.FileDescriptorProto, fileExtens
 		for _, msgDesc := range file.GetMessageType() {
 
 			// Check for our custom message options:
-			if opts := msgDesc.GetOptions(); opts != nil && proto.HasExtension(opts, protos.E_MessageOptions) {
-				if opt := proto.GetExtension(opts, protos.E_MessageOptions); opt != nil {
-					if messageOptions, ok := opt.(*protos.MessageOptions); ok {
+			if opts := msgDesc.GetOptions(); opts != nil && proto.HasExtension(opts, protoc_gen_jsonschema.E_MessageOptions) {
+				if opt := proto.GetExtension(opts, protoc_gen_jsonschema.E_MessageOptions); opt != nil {
+					if messageOptions, ok := opt.(*protoc_gen_jsonschema.MessageOptions); ok {
 
 						// "Ignored" messages are simply skipped:
 						if messageOptions.GetIgnore() {
@@ -372,9 +372,9 @@ func (c *Converter) convert(request *plugin.CodeGeneratorRequest) (*plugin.CodeG
 		fileExtension := c.schemaFileExtension
 
 		// Check for our custom file options:
-		if opts := fileDesc.GetOptions(); opts != nil && proto.HasExtension(opts, protos.E_FileOptions) {
-			if opt := proto.GetExtension(opts, protos.E_FileOptions); opt != nil {
-				if fileOptions, ok := opt.(*protos.FileOptions); ok {
+		if opts := fileDesc.GetOptions(); opts != nil && proto.HasExtension(opts, protoc_gen_jsonschema.E_FileOptions) {
+			if opt := proto.GetExtension(opts, protoc_gen_jsonschema.E_FileOptions); opt != nil {
+				if fileOptions, ok := opt.(*protoc_gen_jsonschema.FileOptions); ok {
 
 					// "Ignored" files are simply skipped:
 					if fileOptions.GetIgnore() {
