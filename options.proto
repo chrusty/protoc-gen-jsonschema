@@ -5,7 +5,7 @@
 syntax = "proto3";
 package protoc.gen.jsonschema;
 import "google/protobuf/descriptor.proto";
-option go_package = "./protos";
+option go_package = "github.com/chrusty/protoc-gen-jsonschema";
 
 
 // Custom FieldOptions
