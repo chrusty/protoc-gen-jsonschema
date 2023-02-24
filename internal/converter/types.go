@@ -11,7 +11,7 @@ import (
 	"google.golang.org/protobuf/proto"
 	descriptor "google.golang.org/protobuf/types/descriptorpb"
 
-	"github.com/chrusty/protoc-gen-jsonschema/internal/protos"
+	protoc_gen_jsonschema "github.com/chrusty/protoc-gen-jsonschema"
 )
 
 var (
@@ -148,9 +148,9 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 		stringDef := &jsonschema.Type{Type: gojsonschema.TYPE_STRING}
 		// Check for custom options
 		opts := desc.GetOptions()
-		if opts != nil && proto.HasExtension(opts, protos.E_FieldOptions) {
-			if opt := proto.GetExtension(opts, protos.E_FieldOptions); opt != nil {
-				if fieldOptions, ok := opt.(*protos.FieldOptions); ok {
+		if opts != nil && proto.HasExtension(opts, protoc_gen_jsonschema.E_FieldOptions) {
+			if opt := proto.GetExtension(opts, protoc_gen_jsonschema.E_FieldOptions); opt != nil {
+				if fieldOptions, ok := opt.(*protoc_gen_jsonschema.FieldOptions); ok {
 					if fieldOptions.GetMinLength() > 0 {
 						stringDef.MinLength = int(fieldOptions.GetMinLength())
 					}
@@ -467,9 +467,9 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 
 	// Set some per-message flags from config and options:
 	messageFlags := c.Flags
-	if opts := msgDesc.GetOptions(); opts != nil && proto.HasExtension(opts, protos.E_MessageOptions) {
-		if opt := proto.GetExtension(opts, protos.E_MessageOptions); opt != nil {
-			if messageOptions, ok := opt.(*protos.MessageOptions); ok {
+	if opts := msgDesc.GetOptions(); opts != nil && proto.HasExtension(opts, protoc_gen_jsonschema.E_MessageOptions) {
+		if opt := proto.GetExtension(opts, protoc_gen_jsonschema.E_MessageOptions); opt != nil {
+			if messageOptions, ok := opt.(*protoc_gen_jsonschema.MessageOptions); ok {
 
 				// AllFieldsRequired:
 				if messageOptions.GetAllFieldsRequired() {
@@ -578,9 +578,9 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 
 		// Check for our custom field options:
 		opts := fieldDesc.GetOptions()
-		if opts != nil && proto.HasExtension(opts, protos.E_FieldOptions) {
-			if opt := proto.GetExtension(opts, protos.E_FieldOptions); opt != nil {
-				if fieldOptions, ok := opt.(*protos.FieldOptions); ok {
+		if opts != nil && proto.HasExtension(opts, protoc_gen_jsonschema.E_FieldOptions) {
+			if opt := proto.GetExtension(opts, protoc_gen_jsonschema.E_FieldOptions); opt != nil {
+				if fieldOptions, ok := opt.(*protoc_gen_jsonschema.FieldOptions); ok {
 
 					// "Ignored" fields are simply skipped:
 					if fieldOptions.GetIgnore() {
