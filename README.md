@@ -135,6 +135,22 @@ These options apply to a specific proto message.
 - [enums_as_constants](internal/converter/testdata/proto/OptionEnumsAsConstants.proto): Encode ENUMs (and their annotations) as CONST
 
 
+Validation Options
+------------------
+
+We are also beginning to support validation options from [protoc-gen-validate](https://github.com/bufbuild/protoc-gen-validate).
+
+At the moment the following are supported (but export more in the future):
+
+- Arrays
+    - MaxItems
+    - MinItems
+- Strings
+    - MaxLength
+    - MinLength
+    - Pattern
+
+
 Examples
 --------
 

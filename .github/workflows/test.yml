@@ -16,5 +16,7 @@ jobs:
       uses: arduino/setup-protoc@v1
     - name: Checkout code
       uses: actions/checkout@v2
+      with:
+        submodules: recursive
     - name: Test
       run: go test ./...
