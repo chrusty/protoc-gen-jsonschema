@@ -485,6 +485,13 @@ func configureSampleProtos() map[string]sampleProto {
 			ObjectsToValidateFail: []string{testdata.TimestampFail},
 			ObjectsToValidatePass: []string{testdata.TimestampPass},
 		},
+		"ValidationOptions": {
+			ExpectedJSONSchema:    []string{testdata.ValidationOptions},
+			FilesToGenerate:       []string{"ValidationOptions.proto"},
+			ProtoFileName:         "ValidationOptions.proto",
+			ObjectsToValidateFail: []string{testdata.ValidationOptionsFail},
+			ObjectsToValidatePass: []string{testdata.ValidationOptionsPass},
+		},
 		"WellKnown": {
 			ExpectedJSONSchema:    []string{testdata.WellKnown},
 			FilesToGenerate:       []string{"WellKnown.proto"},
