@@ -152,15 +152,20 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 		if opts != nil && proto.HasExtension(opts, protoc_gen_jsonschema.E_FieldOptions) {
 			if opt := proto.GetExtension(opts, protoc_gen_jsonschema.E_FieldOptions); opt != nil {
 				if fieldOptions, ok := opt.(*protoc_gen_jsonschema.FieldOptions); ok {
-					if fieldOptions.GetMinLength() > 0 {
-						stringDef.MinLength = int(fieldOptions.GetMinLength())
-					}
-					if fieldOptions.GetMaxLength() > 0 {
-						stringDef.MaxLength = int(fieldOptions.GetMaxLength())
-					}
-					if fieldOptions.GetPattern() != "" {
-						stringDef.Pattern = fieldOptions.GetPattern()
-					}
+					stringDef.MinLength = int(fieldOptions.GetMinLength())
+					stringDef.MaxLength = int(fieldOptions.GetMaxLength())
+					stringDef.Pattern = fieldOptions.GetPattern()
+				}
+			}
+		}
+
+		// Custom field options from protoc-gen-validate:
+		if opt := proto.GetExtension(opts, protoc_gen_validate.E_Rules); opt != nil {
+			if fieldRules, ok := opt.(*protoc_gen_validate.FieldRules); fieldRules != nil && ok {
+				if stringRules := fieldRules.GetString_(); stringRules != nil {
+					stringDef.MaxLength = int(stringRules.GetMaxLen())
+					stringDef.MinLength = int(stringRules.GetMinLen())
+					stringDef.Pattern = stringRules.GetPattern()
 				}
 			}
 		}
@@ -172,15 +177,9 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			}
 		} else {
 			jsonSchemaType.Type = stringDef.Type
-			if stringDef.MinLength != 0 {
-				jsonSchemaType.MinLength = stringDef.MinLength
-			}
-			if stringDef.MaxLength != 0 {
-				jsonSchemaType.MaxLength = stringDef.MaxLength
-			}
-			if stringDef.Pattern != "" {
-				jsonSchemaType.Pattern = stringDef.Pattern
-			}
+			jsonSchemaType.MinLength = stringDef.MinLength
+			jsonSchemaType.MaxLength = stringDef.MaxLength
+			jsonSchemaType.Pattern = stringDef.Pattern
 		}
 
 	// Bytes:
@@ -235,6 +234,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 
 	// Group (object):
 	case descriptor.FieldDescriptorProto_TYPE_GROUP, descriptor.FieldDescriptorProto_TYPE_MESSAGE:
+
 		switch desc.GetTypeName() {
 		// Make sure that durations match a particular string pattern (eg 3.4s):
 		case ".google.protobuf.Duration":
@@ -261,9 +261,21 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 		return nil, fmt.Errorf("unrecognized field type: %s", desc.GetType().String())
 	}
 
-	// Recurse array of primitive types:
+	// Recurse basic array:
 	if desc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REPEATED && jsonSchemaType.Type != gojsonschema.TYPE_OBJECT {
 		jsonSchemaType.Items = &jsonschema.Type{}
+
+		// Custom field options from protoc-gen-validate:
+		if opts := desc.GetOptions(); opts != nil && proto.HasExtension(opts, protoc_gen_validate.E_Rules) {
+			if opt := proto.GetExtension(opts, protoc_gen_validate.E_Rules); opt != nil {
+				if fieldRules, ok := opt.(*protoc_gen_validate.FieldRules); fieldRules != nil && ok {
+					if repeatedRules := fieldRules.GetRepeated(); repeatedRules != nil {
+						jsonSchemaType.MaxItems = int(repeatedRules.GetMaxItems())
+						jsonSchemaType.MinItems = int(repeatedRules.GetMinItems())
+					}
+				}
+			}
+		}
 
 		if len(jsonSchemaType.Enum) > 0 {
 			jsonSchemaType.Items.Enum = jsonSchemaType.Enum
@@ -600,25 +612,6 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 								jsonSchemaType.Required = append(jsonSchemaType.Required, fieldDesc.GetName())
 							}
 						}
-					}
-				}
-			}
-
-			// Custom field options from protoc-gen-validate:
-			if proto.HasExtension(opts, protoc_gen_validate.E_Rules) {
-				if opt := proto.GetExtension(opts, protoc_gen_validate.E_Rules); opt != nil {
-
-					// RepeatedRules (arrays):
-					if repeatedRules, ok := opt.(*protoc_gen_validate.RepeatedRules); ok {
-						jsonSchemaType.MaxItems = int(repeatedRules.GetMaxItems())
-						jsonSchemaType.MinItems = int(repeatedRules.GetMinItems())
-					}
-
-					// StringRules:
-					if stringRules, ok := opt.(*protoc_gen_validate.StringRules); ok {
-						jsonSchemaType.MaxLength = int(stringRules.GetMaxLen())
-						jsonSchemaType.MinLength = int(stringRules.GetMinLen())
-						jsonSchemaType.Pattern = stringRules.GetPattern()
 					}
 				}
 			}
