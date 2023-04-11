@@ -12,6 +12,7 @@ import (
 	descriptor "google.golang.org/protobuf/types/descriptorpb"
 
 	protoc_gen_jsonschema "github.com/chrusty/protoc-gen-jsonschema"
+	protoc_gen_validate "github.com/envoyproxy/protoc-gen-validate/validate"
 )
 
 var (
@@ -576,26 +577,48 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 	c.logger.WithField("message_str", msgDesc.String()).Trace("Converting message")
 	for _, fieldDesc := range msgDesc.GetField() {
 
-		// Check for our custom field options:
-		opts := fieldDesc.GetOptions()
-		if opts != nil && proto.HasExtension(opts, protoc_gen_jsonschema.E_FieldOptions) {
-			if opt := proto.GetExtension(opts, protoc_gen_jsonschema.E_FieldOptions); opt != nil {
-				if fieldOptions, ok := opt.(*protoc_gen_jsonschema.FieldOptions); ok {
+		// Handle various proto options:
+		if opts := fieldDesc.GetOptions(); opts != nil {
 
-					// "Ignored" fields are simply skipped:
-					if fieldOptions.GetIgnore() {
-						c.logger.WithField("field_name", fieldDesc.GetName()).WithField("message_name", msgDesc.GetName()).Debug("Skipping ignored field")
-						continue
+			// Custom field options from protoc-gen-jsonschema:
+			if proto.HasExtension(opts, protoc_gen_jsonschema.E_FieldOptions) {
+				if opt := proto.GetExtension(opts, protoc_gen_jsonschema.E_FieldOptions); opt != nil {
+					if fieldOptions, ok := opt.(*protoc_gen_jsonschema.FieldOptions); ok {
+
+						// "Ignored" fields are simply skipped:
+						if fieldOptions.GetIgnore() {
+							c.logger.WithField("field_name", fieldDesc.GetName()).WithField("message_name", msgDesc.GetName()).Debug("Skipping ignored field")
+							continue
+						}
+
+						// "Required" fields are added to the list of required attributes in our schema:
+						if fieldOptions.GetRequired() {
+							c.logger.WithField("field_name", fieldDesc.GetName()).WithField("message_name", msgDesc.GetName()).Debug("Marking required field")
+							if c.Flags.UseJSONFieldnamesOnly {
+								jsonSchemaType.Required = append(jsonSchemaType.Required, fieldDesc.GetJsonName())
+							} else {
+								jsonSchemaType.Required = append(jsonSchemaType.Required, fieldDesc.GetName())
+							}
+						}
+					}
+				}
+			}
+
+			// Custom field options from protoc-gen-validate:
+			if proto.HasExtension(opts, protoc_gen_validate.E_Rules) {
+				if opt := proto.GetExtension(opts, protoc_gen_validate.E_Rules); opt != nil {
+
+					// RepeatedRules (arrays):
+					if repeatedRules, ok := opt.(*protoc_gen_validate.RepeatedRules); ok {
+						jsonSchemaType.MaxItems = int(repeatedRules.GetMaxItems())
+						jsonSchemaType.MinItems = int(repeatedRules.GetMinItems())
 					}
 
-					// "Required" fields are added to the list of required attributes in our schema:
-					if fieldOptions.GetRequired() {
-						c.logger.WithField("field_name", fieldDesc.GetName()).WithField("message_name", msgDesc.GetName()).Debug("Marking required field")
-						if c.Flags.UseJSONFieldnamesOnly {
-							jsonSchemaType.Required = append(jsonSchemaType.Required, fieldDesc.GetJsonName())
-						} else {
-							jsonSchemaType.Required = append(jsonSchemaType.Required, fieldDesc.GetName())
-						}
+					// StringRules:
+					if stringRules, ok := opt.(*protoc_gen_validate.StringRules); ok {
+						jsonSchemaType.MaxLength = int(stringRules.GetMaxLen())
+						jsonSchemaType.MinLength = int(stringRules.GetMinLen())
+						jsonSchemaType.Pattern = stringRules.GetPattern()
 					}
 				}
 			}
