@@ -1,6 +1,6 @@
 syntax = "proto3";
 package samples;
-import "validate.proto";
+import "protoc-gen-validate/validate/validate.proto";
 
 message ValidationOptions {
     string stringWithLengthConstraints                 = 1 [(validate.rules).string = {min_len: 5, max_len: 10}];
