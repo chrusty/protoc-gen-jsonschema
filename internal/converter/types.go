@@ -532,6 +532,8 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 			jsonSchemaType.Type = gojsonschema.TYPE_STRING
 		case "Struct":
 			jsonSchemaType.Type = gojsonschema.TYPE_OBJECT
+		case "ListValue":
+			jsonSchemaType.Type = gojsonschema.TYPE_ARRAY
 		}
 
 		// If we're allowing nulls then prepare a OneOf:
