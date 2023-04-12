@@ -22,23 +22,23 @@ import (
 )
 
 const (
-	defaultCommentDelimiter = "  "
-	defaultFileExtension    = "json"
-	defaultPackageName      = "package"
-	defaultRefPrefix        = "#/definitions/"
-	messageDelimiter        = "+"
-	versionDraft04          = "http://json-schema.org/draft-04/schema#"
-	versionDraft06          = "http://json-schema.org/draft-06/schema#"
+	defaultCommentDelimiter    = "  "
+	defaultExcludeCommentToken = "@exclude"
+	defaultFileExtension       = "json"
+	defaultPackageName         = "package"
+	defaultRefPrefix           = "#/definitions/"
+	messageDelimiter           = "+"
+	versionDraft04             = "http://json-schema.org/draft-04/schema#"
+	versionDraft06             = "http://json-schema.org/draft-06/schema#"
 )
 
 // Converter is everything you need to convert protos to JSONSchemas:
 type Converter struct {
 	Flags               ConverterFlags
 	commentDelimiter    string
-	ignoredFieldOption  string
+	excludeCommentToken string
 	logger              *logrus.Logger
 	refPrefix           string
-	requiredFieldOption string
 	schemaFileExtension string
 	schemaVersion       string
 	sourceInfo          *sourceCodeInfo
@@ -65,6 +65,7 @@ type ConverterFlags struct {
 func New(logger *logrus.Logger) *Converter {
 	return &Converter{
 		commentDelimiter:    defaultCommentDelimiter,
+		excludeCommentToken: defaultExcludeCommentToken,
 		logger:              logger,
 		refPrefix:           defaultRefPrefix,
 		schemaFileExtension: defaultFileExtension,

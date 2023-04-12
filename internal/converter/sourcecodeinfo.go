@@ -10,7 +10,8 @@ import (
 )
 
 // Protobuf tag values for relevant message fields. Full list here:
-//   https://github.com/protocolbuffers/protobuf/blob/master/src/google/protobuf/descriptor.proto
+//
+//	https://github.com/protocolbuffers/protobuf/blob/master/src/google/protobuf/descriptor.proto
 const (
 	tag_FileDescriptor_messageType int32 = 4
 	tag_FileDescriptor_enumType    int32 = 5
@@ -154,6 +155,11 @@ func (c *Converter) formatTitleAndDescription(name *string, sl *descriptor.Sourc
 	// Strip newlines:
 	if !c.Flags.KeepNewLinesInDescription {
 		description = strings.ReplaceAll(description, "\n", "")
+	}
+
+	// Return an empty string if the ExcludeCommentToken is found:
+	if strings.Contains(strings.Join(comments, " "), c.excludeCommentToken) {
+		return title, ""
 	}
 
 	return
