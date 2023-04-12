@@ -9,6 +9,9 @@ const MessageWithComments = `{
                 "name1": {
                     "type": "string",
                     "description": "This field is supposed to represent blahblahblah"
+                },
+                "excludedComment": {
+                    "type": "string"
                 }
             },
             "additionalProperties": true,

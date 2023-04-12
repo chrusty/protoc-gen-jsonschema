@@ -8,4 +8,7 @@ message MessageWithComments {
 
     // This field is supposed to represent blahblahblah
     string name1 = 1;
+
+    // The comment for this field should be omitted because it contains @exclude
+    string excludedComment = 2;
 }
