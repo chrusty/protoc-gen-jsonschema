@@ -18,18 +18,19 @@ var (
 	globalPkg = newProtoPackage(nil, "")
 
 	wellKnownTypes = map[string]bool{
-		"DoubleValue": true,
-		"FloatValue":  true,
-		"Int64Value":  true,
-		"UInt64Value": true,
-		"Int32Value":  true,
-		"UInt32Value": true,
 		"BoolValue":   true,
-		"StringValue": true,
 		"BytesValue":  true,
-		"Value":       true,
+		"DoubleValue": true,
 		"Duration":    true,
+		"FloatValue":  true,
+		"Int32Value":  true,
+		"Int64Value":  true,
+		"ListValue":   true,
+		"StringValue": true,
 		"Struct":      true,
+		"UInt32Value": true,
+		"UInt64Value": true,
+		"Value":       true,
 	}
 )
 
