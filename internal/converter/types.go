@@ -19,18 +19,19 @@ var (
 	globalPkg = newProtoPackage(nil, "")
 
 	wellKnownTypes = map[string]bool{
-		"DoubleValue": true,
-		"FloatValue":  true,
-		"Int64Value":  true,
-		"UInt64Value": true,
-		"Int32Value":  true,
-		"UInt32Value": true,
 		"BoolValue":   true,
-		"StringValue": true,
 		"BytesValue":  true,
-		"Value":       true,
+		"DoubleValue": true,
 		"Duration":    true,
+		"FloatValue":  true,
+		"Int32Value":  true,
+		"Int64Value":  true,
+		"ListValue":   true,
+		"StringValue": true,
 		"Struct":      true,
+		"UInt32Value": true,
+		"UInt64Value": true,
+		"Value":       true,
 	}
 )
 
@@ -541,6 +542,8 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 			jsonSchemaType.Type = gojsonschema.TYPE_STRING
 		case "Struct":
 			jsonSchemaType.Type = gojsonschema.TYPE_OBJECT
+		case "ListValue":
+			jsonSchemaType.Type = gojsonschema.TYPE_ARRAY
 		}
 
 		// If we're allowing nulls then prepare a OneOf:
