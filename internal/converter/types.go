@@ -245,7 +245,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			jsonSchemaType.Format = "date-time"
 		case ".google.protobuf.Value", ".google.protobuf.Struct":
 			jsonSchemaType.Type = gojsonschema.TYPE_OBJECT
-			// jsonSchemaType.AdditionalProperties = []byte("true")
+			jsonSchemaType.AdditionalProperties = []byte("true")
 		default:
 			jsonSchemaType.Type = gojsonschema.TYPE_OBJECT
 			if desc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_OPTIONAL {

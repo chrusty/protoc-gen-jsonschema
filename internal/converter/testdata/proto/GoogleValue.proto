@@ -6,4 +6,5 @@ import "google/protobuf/struct.proto";
 message GoogleValue {
   google.protobuf.Value arg = 1;
   google.protobuf.ListValue some_list = 2;
+  google.protobuf.Struct some_struct = 3;
 }
