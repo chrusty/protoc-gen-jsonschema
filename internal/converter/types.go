@@ -243,6 +243,9 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 		case ".google.protobuf.Timestamp":
 			jsonSchemaType.Type = gojsonschema.TYPE_STRING
 			jsonSchemaType.Format = "date-time"
+		case ".google.protobuf.Value", ".google.protobuf.Struct":
+			jsonSchemaType.Type = gojsonschema.TYPE_OBJECT
+			jsonSchemaType.AdditionalProperties = []byte("true")
 		default:
 			jsonSchemaType.Type = gojsonschema.TYPE_OBJECT
 			if desc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_OPTIONAL {
@@ -538,10 +541,12 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 				{Type: gojsonschema.TYPE_OBJECT},
 				{Type: gojsonschema.TYPE_STRING},
 			}
+			// jsonSchemaType.AdditionalProperties = []byte("true")
 		case "Duration":
 			jsonSchemaType.Type = gojsonschema.TYPE_STRING
 		case "Struct":
 			jsonSchemaType.Type = gojsonschema.TYPE_OBJECT
+			// jsonSchemaType.AdditionalProperties = []byte("true")
 		case "ListValue":
 			jsonSchemaType.Type = gojsonschema.TYPE_ARRAY
 		}

@@ -221,6 +221,7 @@ func configureSampleProtos() map[string]sampleProto {
 			ObjectsToValidatePass: []string{testdata.PayloadMessagePass, testdata.ImportedEnumPass, testdata.EnumCeptionPass},
 		},
 		"GoogleValue": {
+			Flags:                 ConverterFlags{DisallowAdditionalProperties: true},
 			ExpectedJSONSchema:    []string{testdata.GoogleValue},
 			FilesToGenerate:       []string{"GoogleValue.proto"},
 			ProtoFileName:         "GoogleValue.proto",
