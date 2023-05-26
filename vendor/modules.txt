@@ -1,0 +1,81 @@
+# github.com/alecthomas/jsonschema v0.0.0-20210918223802-a1d3f4b43d7b
+## explicit; go 1.12
+github.com/alecthomas/jsonschema
+# github.com/chrusty/protoc-gen-jsonschema v0.0.0-20221021204243-6f71afebcafc
+## explicit; go 1.14
+github.com/chrusty/protoc-gen-jsonschema/internal/converter/testdata
+# github.com/davecgh/go-spew v1.1.1
+## explicit
+github.com/davecgh/go-spew/spew
+# github.com/fatih/camelcase v1.0.0
+## explicit
+github.com/fatih/camelcase
+# github.com/iancoleman/orderedmap v0.2.0
+## explicit
+github.com/iancoleman/orderedmap
+# github.com/iancoleman/strcase v0.2.0
+## explicit; go 1.16
+github.com/iancoleman/strcase
+# github.com/konsorten/go-windows-terminal-sequences v1.0.2
+## explicit
+github.com/konsorten/go-windows-terminal-sequences
+# github.com/pmezard/go-difflib v1.0.0
+## explicit
+github.com/pmezard/go-difflib/difflib
+# github.com/sirupsen/logrus v1.4.2
+## explicit
+github.com/sirupsen/logrus
+# github.com/stretchr/testify v1.4.0
+## explicit
+github.com/stretchr/testify/assert
+# github.com/xeipuuv/gojsonpointer v0.0.0-20190809123943-df4f5c81cb3b
+## explicit
+github.com/xeipuuv/gojsonpointer
+# github.com/xeipuuv/gojsonreference v0.0.0-20180127040603-bd5ef7bd5415
+## explicit
+github.com/xeipuuv/gojsonreference
+# github.com/xeipuuv/gojsonschema v1.2.0
+## explicit
+github.com/xeipuuv/gojsonschema
+# golang.org/x/exp v0.0.0-20230522175609-2e198f4a06a1
+## explicit; go 1.20
+golang.org/x/exp/constraints
+golang.org/x/exp/slices
+# golang.org/x/sys v0.1.0
+## explicit; go 1.17
+golang.org/x/sys/unix
+# google.golang.org/protobuf v1.27.1
+## explicit; go 1.9
+google.golang.org/protobuf/cmd/protoc-gen-go/internal_gengo
+google.golang.org/protobuf/compiler/protogen
+google.golang.org/protobuf/encoding/prototext
+google.golang.org/protobuf/encoding/protowire
+google.golang.org/protobuf/internal/descfmt
+google.golang.org/protobuf/internal/descopts
+google.golang.org/protobuf/internal/detrand
+google.golang.org/protobuf/internal/encoding/defval
+google.golang.org/protobuf/internal/encoding/messageset
+google.golang.org/protobuf/internal/encoding/tag
+google.golang.org/protobuf/internal/encoding/text
+google.golang.org/protobuf/internal/errors
+google.golang.org/protobuf/internal/filedesc
+google.golang.org/protobuf/internal/filetype
+google.golang.org/protobuf/internal/flags
+google.golang.org/protobuf/internal/genid
+google.golang.org/protobuf/internal/impl
+google.golang.org/protobuf/internal/order
+google.golang.org/protobuf/internal/pragma
+google.golang.org/protobuf/internal/set
+google.golang.org/protobuf/internal/strs
+google.golang.org/protobuf/internal/version
+google.golang.org/protobuf/proto
+google.golang.org/protobuf/reflect/protodesc
+google.golang.org/protobuf/reflect/protoreflect
+google.golang.org/protobuf/reflect/protoregistry
+google.golang.org/protobuf/runtime/protoiface
+google.golang.org/protobuf/runtime/protoimpl
+google.golang.org/protobuf/types/descriptorpb
+google.golang.org/protobuf/types/pluginpb
+# gopkg.in/yaml.v2 v2.4.0
+## explicit; go 1.15
+gopkg.in/yaml.v2

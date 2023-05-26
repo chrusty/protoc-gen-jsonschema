@@ -9,6 +9,7 @@ import (
 	"github.com/alecthomas/jsonschema"
 	"github.com/iancoleman/orderedmap"
 	"github.com/xeipuuv/gojsonschema"
+	"golang.org/x/exp/slices"
 	"google.golang.org/protobuf/proto"
 	descriptor "google.golang.org/protobuf/types/descriptorpb"
 
@@ -384,8 +385,12 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 // Converts a proto "MESSAGE" into a JSON-Schema:
 func (c *Converter) convertMessageType(curPkg *ProtoPackage, msgDescs []*descriptor.DescriptorProto) (*jsonschema.Schema, error) {
 
+	titles := make([]string, 0)
+
 	definitions := jsonschema.Definitions{}
 	for i := range msgDescs {
+		//log.Printf("msgDescs[i]: %s", msgDescs[i].GetName())
+
 		// Get a list of any nested messages in our schema:
 		duplicatedMessages, err := c.findNestedMessages(curPkg, msgDescs[i])
 		if err != nil {
@@ -400,20 +405,33 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msgDescs []*descrip
 				return nil, err
 			}
 
-			// Add the schema to our definitions:
-			definitions[name] = refType
+			if !slices.Contains(titles, refType.Title) {
+				titles = append(titles, refType.Title)
+				log.Printf("definitions not contains: %s", refType.Title)
+				definitions[name] = refType
+			} else {
+				continue
+			}
 		}
 	}
 
 	refs := make([]*jsonschema.Type, 0)
 
-	for k, _ := range definitions {
-		log.Printf("definition: %s, curPkg.name: %s", k, curPkg.name)
+	//defTitles := make([]string, 0)
+	for k, def := range definitions {
+		//log.Printf("definition: %s, curPkg.name: %s", k, curPkg.name)
 		if strings.Contains(k, curPkg.name) {
 			k = strings.Replace(k, curPkg.name, "", 1)
 			k = strings.Trim(k, ".")
 			//refs = append(refs, &jsonschema.Type{Ref: fmt.Sprintf("%s%s", c.refPrefix, k)})
 		} else {
+
+			log.Printf("definition: %s, curPkg.name: %s", def.Title, curPkg.name)
+			//if slices.Contains(defTitles, def.Title) {
+			//	continue
+			//}
+
+			//defTitles = append(defTitles, def.Title)
 			refs = append(refs, &jsonschema.Type{Ref: fmt.Sprintf("%s%s", c.refPrefix, k)})
 		}
 	}
