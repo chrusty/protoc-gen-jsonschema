@@ -15,14 +15,14 @@
                     ]
                 },
                 "payload": {
-                    "items": {
-                        "$ref": "#/definitions/samples.PayloadMessage"
-                    },
                     "oneOf": [
                         {
                             "type": "null"
                         },
                         {
+                            "items": {
+                                "$ref": "#/definitions/samples.PayloadMessage"
+                            },
                             "type": "array"
                         }
                     ]

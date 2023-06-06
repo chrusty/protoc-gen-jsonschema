@@ -382,9 +382,10 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 		if messageFlags.AllowNullValues {
 			jsonSchemaType.OneOf = []*jsonschema.Type{
 				{Type: gojsonschema.TYPE_NULL},
-				{Type: jsonSchemaType.Type},
+				{Type: jsonSchemaType.Type, Items: jsonSchemaType.Items},
 			}
 			jsonSchemaType.Type = ""
+			jsonSchemaType.Items = nil
 		}
 	}
 

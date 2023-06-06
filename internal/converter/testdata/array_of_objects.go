@@ -17,14 +17,14 @@ const ArrayOfObjects = `{
                     ]
                 },
                 "payload": {
-                    "items": {
-                        "$ref": "#/definitions/samples.ArrayOfObjects.RepeatedPayload"
-                    },
                     "oneOf": [
                         {
                             "type": "null"
                         },
                         {
+                            "items": {
+                                "$ref": "#/definitions/samples.ArrayOfObjects.RepeatedPayload"
+                            },
                             "type": "array"
                         }
                     ]

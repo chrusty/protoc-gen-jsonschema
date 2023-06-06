@@ -28,6 +28,10 @@
                 "some_list": {
                     "additionalProperties": true,
                     "type": "array"
+                },
+                "some_struct": {
+                    "additionalProperties": true,
+                    "type": "object"
                 }
             },
             "additionalProperties": true,
