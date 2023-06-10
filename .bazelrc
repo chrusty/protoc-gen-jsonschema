@@ -1,0 +1,2 @@
+# avoid "C++ versions less than C++14 are not supported." errors
+build --host_cxxopt=-std=c++14
