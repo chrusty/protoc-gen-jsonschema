@@ -4,6 +4,7 @@ go 1.14
 
 require (
 	github.com/fatih/camelcase v1.0.0
+	github.com/golang/protobuf v1.5.0
 	github.com/iancoleman/orderedmap v0.2.0
 	github.com/iancoleman/strcase v0.2.0
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect

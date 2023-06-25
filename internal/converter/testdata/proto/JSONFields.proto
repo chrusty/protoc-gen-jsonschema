@@ -11,4 +11,5 @@ message JSONFields {
     int64 snake_numb = 6;
     int32 other_numb = 7 [(protoc.gen.jsonschema.field_options).required = true];
     int32 old_field  = 8 [deprecated = true];
+    int32 with_manual = 9 [(protoc.gen.jsonschema.manual_link) = "manual-link"];
 }

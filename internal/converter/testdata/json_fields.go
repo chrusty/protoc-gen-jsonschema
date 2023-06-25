@@ -33,6 +33,12 @@ const JSONFields = `{
                 "oldField": {
                     "type": "integer",
                     "deprecated": true
+                },
+                "withManual": {
+                    "type": "integer",
+                    "options": {
+                        "manualLink": "manual-link"
+                    }
                 }
             },
             "additionalProperties": true,

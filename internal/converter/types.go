@@ -83,15 +83,19 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 	}
 
 	// Write deprecated option to the jsonschema, for deprecated fields.
-	deprecated := desc.Options.GetDeprecated();
+	deprecated := desc.Options.GetDeprecated()
 	if deprecated {
-		jsonSchemaType.Deprecated = deprecated;
+		jsonSchemaType.Deprecated = deprecated
 	}
 
-	// Write uninterpreted options to jsonschema as strings.
-	uninterpretedOptions := desc.Options.GetUninterpretedOption();
-	for _, uninterpretedOption := range uninterpretedOptions {
-		jsonSchemaType.OptionStrings = append(jsonSchemaType.OptionStrings, uninterpretedOption.String());
+	// Populate options as string.
+	options := desc.GetOptions()
+	if options != nil && proto.HasExtension(options, protos.E_ManualLink) {
+		fieldOptionsValues := proto.GetExtension(options, protos.E_ManualLink)
+		if jsonSchemaType.Options == nil {
+			jsonSchemaType.Options = &jsonschema.Type{}
+		}
+		jsonSchemaType.Options.ManualLink = fieldOptionsValues.(string)
 	}
 
 	// Switch the types, and pick a JSONSchema equivalent:
@@ -576,7 +580,7 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 	// Write the oneof declaration names to the jsonschema.
 	if c.Flags.EnforceOneofDeclarations {
 		for _, oneofDesc := range msgDesc.OneofDecl {
-			jsonSchemaType.OneofNames = append(jsonSchemaType.OneofNames, *oneofDesc.Name);
+			jsonSchemaType.OneofNames = append(jsonSchemaType.OneofNames, *oneofDesc.Name)
 		}
 	}
 

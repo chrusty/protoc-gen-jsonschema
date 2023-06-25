@@ -78,6 +78,10 @@ message EnumOptions {
 
 extend google.protobuf.FieldOptions {
   FieldOptions field_options = 1125;
+
+  // Custom Options
+
+  string manual_link = 50015;
 }
 
 extend google.protobuf.FileOptions {
