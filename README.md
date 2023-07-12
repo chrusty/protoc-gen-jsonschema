@@ -95,6 +95,7 @@ protoc \
 |`json_fieldnames`| Use JSON field names only |
 |`prefix_schema_files_with_package`| Prefix the output filename with package |
 |`proto_and_json_fieldnames`| Use proto and JSON field names |
+|`type_names_with_no_package`| When generating type names and refs, do not include the full package in the type name |
 
 
 Custom Proto Options
@@ -239,6 +240,16 @@ protoc \
 --proto_path=internal/converter/testdata/proto internal/converter/testdata/proto/ArrayOfPrimitives.proto
 ```
 
+### Generate type names without fully qualified package
+
+By default, referenced type names will be generated using the fully qualified package and type name. e.g `packageName.TypeName`.
+Setting this option will generate type names and their references only as `TypeName`
+
+```sh
+protoc \
+--jsonschema_out=type_names_with_no_package:. \
+--proto_path=internal/converter/testdata/proto internal/converter/testdata/proto/ArrayOfPrimitives.proto
+```
 
 Sample protos (for testing)
 ---------------------------
