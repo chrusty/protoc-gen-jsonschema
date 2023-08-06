@@ -626,7 +626,12 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 
 		// If this field is part of a OneOf declaration then build that here:
 		if c.Flags.EnforceOneOf && fieldDesc.OneofIndex != nil {
-			jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Required: []string{fieldDesc.GetName()}})
+			if c.Flags.UseJSONFieldnamesOnly {
+				jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Required: []string{fieldDesc.GetJsonName()}})
+			} else {
+				jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Required: []string{fieldDesc.GetName()}})
+			}
+
 		}
 
 		// Figure out which field names we want to use:
