@@ -6,19 +6,44 @@ const Maps = `{
     "definitions": {
         "Maps": {
             "properties": {
-                "map_of_strings": {
+                "map_of_strings_to_strings": {
+                    "mapKey": "string",
                     "additionalProperties": {
                         "type": "string"
                     },
                     "type": "object"
                 },
-                "map_of_ints": {
+                "map_of_strings_to_ints": {
+                    "mapKey": "string",
                     "additionalProperties": {
                         "type": "integer"
                     },
                     "type": "object"
                 },
-                "map_of_messages": {
+                "map_of_strings_to_messages": {
+                    "mapKey": "string",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/samples.PayloadMessage",
+                        "additionalProperties": true
+                    },
+                    "type": "object"
+                },
+                "map_of_ints_to_strings": {
+                    "mapKey": "integer",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "type": "object"
+                },
+                "map_of_ints_to_ints": {
+                    "mapKey": "integer",
+                    "additionalProperties": {
+                        "type": "integer"
+                    },
+                    "type": "object"
+                },
+                "map_of_ints_to_messages": {
+                    "mapKey": "integer",
                     "additionalProperties": {
                         "$ref": "#/definitions/samples.PayloadMessage",
                         "additionalProperties": true
@@ -81,7 +106,7 @@ const Maps = `{
 }`
 
 const MapsFail = `{
-	"map_of_strings": {
+	"map_of_strings_to_strings": {
 		"one": 1,
 		"two": 2,
 		"three": 3
@@ -89,7 +114,7 @@ const MapsFail = `{
 }`
 
 const MapsPass = `{
-	"map_of_strings": {
+	"map_of_strings_to_strings": {
 		"one": "1",
 		"two": "2",
 		"three": "3"

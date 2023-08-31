@@ -11,6 +11,7 @@ const WellKnown = `{
                     "type": "string"
                 },
                 "map_of_integers": {
+                    "mapKey": "integer",
                     "additionalProperties": {
                         "additionalProperties": true,
                         "type": "integer"
@@ -18,6 +19,7 @@ const WellKnown = `{
                     "type": "object"
                 },
                 "map_of_scalar_integers": {
+                    "mapKey": "integer",
                     "additionalProperties": {
                         "type": "integer"
                     },

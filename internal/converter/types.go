@@ -342,6 +342,18 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			}
 			jsonSchemaType.AdditionalProperties = additionalPropertiesJSON
 
+			switch *recordType.Field[0].Type {
+			case descriptor.FieldDescriptorProto_TYPE_STRING:
+				jsonSchemaType.MapKey = "string"
+			case descriptor.FieldDescriptorProto_TYPE_INT32, descriptor.FieldDescriptorProto_TYPE_SINT32, descriptor.FieldDescriptorProto_TYPE_SFIXED32, descriptor.FieldDescriptorProto_TYPE_UINT32, descriptor.FieldDescriptorProto_TYPE_FIXED32, descriptor.FieldDescriptorProto_TYPE_INT64, descriptor.FieldDescriptorProto_TYPE_SINT64, descriptor.FieldDescriptorProto_TYPE_SFIXED64, descriptor.FieldDescriptorProto_TYPE_UINT64, descriptor.FieldDescriptorProto_TYPE_FIXED64:
+				jsonSchemaType.MapKey = "integer"
+			case descriptor.FieldDescriptorProto_TYPE_DOUBLE, descriptor.FieldDescriptorProto_TYPE_FLOAT:
+				jsonSchemaType.MapKey = "number"
+			case descriptor.FieldDescriptorProto_TYPE_BOOL:
+				// Idk why anyone would map a bool to something but here you go anyways.
+				jsonSchemaType.MapKey = "boolean"
+			}
+
 		// Arrays:
 		case desc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REPEATED:
 			jsonSchemaType.Items = recursedJSONSchemaType
@@ -618,7 +630,7 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 			c.logger.WithError(err).WithField("field_name", fieldDesc.GetName()).WithField("message_name", msgDesc.GetName()).Error("Failed to convert field")
 			return nil, err
 		}
-		c.logger.WithField("field_name", fieldDesc.GetName()).WithField("type", recursedJSONSchemaType.Type).Trace("Converted field")
+		c.logger.WithField("field_name", fieldDesc.GetName()).WithField("type", recursedJSONSchemaType.Type).WithField("mapKey", recursedJSONSchemaType.MapKey).Trace("Converted field")
 
 		// If this field is part of a OneOf declaration then build that here:
 		if c.Flags.EnforceOneOf && fieldDesc.OneofIndex != nil {
