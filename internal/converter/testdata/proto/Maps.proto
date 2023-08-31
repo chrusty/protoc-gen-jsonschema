@@ -4,7 +4,10 @@ package samples;
 import "PayloadMessage.proto";
 
 message Maps {
-    map<string,string> map_of_strings          = 1;
-    map<string,int32> map_of_ints              = 2;
-    map<string,PayloadMessage> map_of_messages = 3;
+    map<string,string> map_of_strings_to_strings          = 1;
+    map<string,int32>  map_of_strings_to_ints             = 2;
+    map<string,PayloadMessage> map_of_strings_to_messages = 3;
+    map<int32,string> map_of_ints_to_strings              = 4;
+    map<int32,int32> map_of_ints_to_ints                  = 5;
+    map<int32,PayloadMessage> map_of_ints_to_messages     = 6;
 }
