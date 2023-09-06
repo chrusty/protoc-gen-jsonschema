@@ -1,0 +1,33 @@
+syntax="proto3";
+package samples;
+
+message MultipleOneOf {
+
+	oneof choice1 {
+		Bar bar = 1;
+		Baz baz = 2;
+	}
+
+	oneof choice2 {
+		Foo foo = 3;
+		Qux qux = 4;
+	}
+
+	bool something = 5;
+
+	message Bar {
+		int32 bar_field = 1;
+	}
+	
+	message Baz {
+		string baz_field = 1;
+	}
+
+	message Foo {
+		int32 foo_field = 1;
+	}
+	
+	message Qux {
+		string qux_field = 1;
+	}
+}

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/alecthomas/jsonschema"
 	"github.com/iancoleman/orderedmap"
 	"github.com/xeipuuv/gojsonschema"
 	"google.golang.org/protobuf/proto"
@@ -13,6 +12,8 @@ import (
 
 	protoc_gen_jsonschema "github.com/chrusty/protoc-gen-jsonschema"
 	protoc_gen_validate "github.com/envoyproxy/protoc-gen-validate/validate"
+	"github.com/chrusty/protoc-gen-jsonschema/internal/converter/jsonschema"
+	// "github.com/chrusty/protoc-gen-jsonschema/internal/protos"
 )
 
 var (
@@ -632,6 +633,15 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 				jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Required: []string{fieldDesc.GetName()}})
 			}
 
+		}
+
+		// If this field is part of a OneOf declaration then build that here:
+		if c.Flags.EnforceExclusiveGroups && fieldDesc.OneofIndex != nil {
+			for len(jsonSchemaType.ExclusiveGroups) < int(*fieldDesc.OneofIndex)+1 {
+				jsonSchemaType.ExclusiveGroups = append(jsonSchemaType.ExclusiveGroups, &jsonschema.Type{})
+			}
+			jsonSchemaType.ExclusiveGroups[*fieldDesc.OneofIndex].Required = append(jsonSchemaType.ExclusiveGroups[*fieldDesc.OneofIndex].Required, fieldDesc.GetName())
+			// jsonSchemaType.ExclusiveGroups[int(fieldDesc.OneofIndex)] = &jsonschema.Type{Required: []string{fieldDesc.GetName()}}
 		}
 
 		// Figure out which field names we want to use:
