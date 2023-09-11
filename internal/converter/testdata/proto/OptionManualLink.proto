@@ -1,0 +1,9 @@
+syntax = "proto3";
+package samples;
+import "options.proto";
+
+message OptionManualLink {
+    option (protoc.gen.jsonschema.message_manual_link) = "https://www.google.com";
+    string name2       = 1;
+    int32 id2          = 2;
+}

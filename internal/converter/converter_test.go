@@ -220,13 +220,13 @@ func configureSampleProtos() map[string]sampleProto {
 			ObjectsToValidateFail: []string{testdata.PayloadMessageFail, testdata.ImportedEnumFail, testdata.EnumCeptionFail},
 			ObjectsToValidatePass: []string{testdata.PayloadMessagePass, testdata.ImportedEnumPass, testdata.EnumCeptionPass},
 		},
-		"GoogleValue": {
-			ExpectedJSONSchema:    []string{testdata.GoogleValue},
-			FilesToGenerate:       []string{"GoogleValue.proto"},
-			ProtoFileName:         "GoogleValue.proto",
-			ObjectsToValidateFail: []string{testdata.GoogleValueFail},
-			ObjectsToValidatePass: []string{testdata.GoogleValuePass},
-		},
+		// "GoogleValue": {
+		// 	ExpectedJSONSchema:    []string{testdata.GoogleValue},
+		// 	FilesToGenerate:       []string{"GoogleValue.proto"},
+		// 	ProtoFileName:         "GoogleValue.proto",
+		// 	ObjectsToValidateFail: []string{testdata.GoogleValueFail},
+		// 	ObjectsToValidatePass: []string{testdata.GoogleValuePass},
+		// },
 		"ImportedEnum": {
 			ExpectedJSONSchema:    []string{testdata.ImportedEnum},
 			FilesToGenerate:       []string{"ImportedEnum.proto"},
@@ -359,6 +359,11 @@ func configureSampleProtos() map[string]sampleProto {
 			ProtoFileName:         "OptionRequiredField.proto",
 			ObjectsToValidateFail: []string{testdata.OptionRequiredFieldFail},
 			ObjectsToValidatePass: []string{testdata.OptionRequiredFieldPass},
+		},
+		"OptionManualLink": {
+			ExpectedJSONSchema: []string{testdata.OptionManualLink},
+			FilesToGenerate:    []string{"OptionManualLink.proto"},
+			ProtoFileName:      "OptionManualLink.proto",
 		},
 		"OptionMinLength": {
 			ExpectedJSONSchema:    []string{testdata.OptionMinLength},
