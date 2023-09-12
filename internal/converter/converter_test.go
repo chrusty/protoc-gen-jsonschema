@@ -360,6 +360,11 @@ func configureSampleProtos() map[string]sampleProto {
 			ObjectsToValidateFail: []string{testdata.OptionRequiredFieldFail},
 			ObjectsToValidatePass: []string{testdata.OptionRequiredFieldPass},
 		},
+		"OptionManualLink": {
+			ExpectedJSONSchema: []string{testdata.OptionManualLink},
+			FilesToGenerate:    []string{"OptionManualLink.proto"},
+			ProtoFileName:      "OptionManualLink.proto",
+		},
 		"OptionMinLength": {
 			ExpectedJSONSchema:    []string{testdata.OptionMinLength},
 			FilesToGenerate:       []string{"OptionMinLength.proto"},

@@ -495,7 +495,8 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 
 	// Set some per-message flags from config and options:
 	messageFlags := c.Flags
-	if opts := msgDesc.GetOptions(); opts != nil && proto.HasExtension(opts, protos.E_MessageOptions) {
+	opts := msgDesc.GetOptions()
+	if opts != nil && proto.HasExtension(opts, protos.E_MessageOptions) {
 		if opt := proto.GetExtension(opts, protos.E_MessageOptions); opt != nil {
 			if messageOptions, ok := opt.(*protos.MessageOptions); ok {
 
@@ -519,7 +520,15 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 					messageFlags.EnumsAsConstants = true
 				}
 			}
+
 		}
+	}
+	if opts != nil && proto.HasExtension(opts, protos.E_MessageManualLink) {
+		messageManualLink := proto.GetExtension(opts, protos.E_MessageManualLink)
+		if jsonSchemaType.Options == nil {
+			jsonSchemaType.Options = &jsonschema.Type{}
+		}
+		jsonSchemaType.Options.ManualLink = messageManualLink.(string)
 	}
 
 	// Generate a description from src comments (if available)

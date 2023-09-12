@@ -90,6 +90,8 @@ extend google.protobuf.FileOptions {
 
 extend google.protobuf.MessageOptions {
   MessageOptions message_options = 1127;
+
+  string message_manual_link = 50000;
 }
 
 extend google.protobuf.EnumOptions {
