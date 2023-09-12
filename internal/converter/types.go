@@ -259,6 +259,12 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 		case ".google.protobuf.Timestamp":
 			jsonSchemaType.Type = gojsonschema.TYPE_STRING
 			jsonSchemaType.Format = "date-time"
+		case ".google.protobuf.Empty":
+			jsonSchemaType.Type = gojsonschema.TYPE_OBJECT
+			jsonSchemaType.Format = "empty"
+		case ".google.protobuf.Struct":
+			jsonSchemaType.Type = gojsonschema.TYPE_OBJECT
+			jsonSchemaType.Format = "struct"
 		default:
 			jsonSchemaType.Type = gojsonschema.TYPE_OBJECT
 			if desc.GetLabel() == descriptor.FieldDescriptorProto_LABEL_OPTIONAL {
@@ -548,8 +554,12 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 			}
 		case "Duration":
 			jsonSchemaType.Type = gojsonschema.TYPE_STRING
+		case "Empty":
+			jsonSchemaType.Type = gojsonschema.TYPE_OBJECT
+			jsonSchemaType.Format = "empty"
 		case "Struct":
 			jsonSchemaType.Type = gojsonschema.TYPE_OBJECT
+			jsonSchemaType.Format = "struct"
 		}
 
 		// If we're allowing nulls then prepare a OneOf:
