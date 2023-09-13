@@ -40,8 +40,12 @@ const WellKnown = `{
                     "format": "regex"
                 },
                 "struct": {
-                    "additionalProperties": true,
-                    "type": "object"
+                    "type": "object",
+                    "format": "struct"
+                },
+                "empty": {
+                    "type": "object",
+                    "format": "empty"
                 }
             },
             "additionalProperties": true,
