@@ -239,8 +239,6 @@ func (c *Converter) convertEnumType(enum *descriptor.EnumDescriptorProto, conver
 		}
 	}
 
-	fmt.Println(&jsonSchemaType)
-
 	return jsonSchemaType, nil
 }
 
@@ -289,12 +287,12 @@ func (c *Converter) convertFile(file *descriptor.FileDescriptorProto, fileExtens
 				enumJSONSchema.FullRef = fmt.Sprintf("%s%s.%s", c.refPrefix, pkgName, enum.GetName())
 			}
 
-		// Marshal the JSON-Schema into JSON:
-		jsonSchemaJSON, err := json.MarshalIndent(enumJSONSchema, "", "    ")
-		if err != nil {
-			c.logger.WithError(err).Error("Failed to encode jsonSchema")
-			return nil, err
-		}
+			// Marshal the JSON-Schema into JSON:
+			jsonSchemaJSON, err := json.MarshalIndent(enumJSONSchema, "", "    ")
+			if err != nil {
+				c.logger.WithError(err).Error("Failed to encode jsonSchema")
+				return nil, err
+			}
 
 			// Add a response:
 			resFile := &plugin.CodeGeneratorResponse_File{
