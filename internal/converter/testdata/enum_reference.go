@@ -45,6 +45,10 @@ const EnumReference1 = `{
                         }
                     ],
                     "title": "Nested Enum"
+                },
+                "var": {
+                    "$ref": "#/definitions/samples.MessageWithEnums.DefinedUsedMessage",
+                    "additionalProperties": true
                 }
             },
             "additionalProperties": true,
@@ -69,6 +73,51 @@ const EnumReference1 = `{
                 }
             ],
             "title": "Enum One"
+        },
+        "samples.MessageWithEnums.DefinedUnusedEnum": {
+            "enum": [
+                "Var",
+                0
+            ],
+            "oneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "integer"
+                }
+            ],
+            "title": "Defined Unused Enum"
+        },
+        "samples.MessageWithEnums.DefinedUnusedMessage": {
+            "properties": {
+                "var": {
+                    "type": "boolean"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Defined Unused Message"
+        },
+        "samples.MessageWithEnums.DefinedUnusedMessage.NestedUnusedMessage": {
+            "properties": {
+                "foo": {
+                    "type": "boolean"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Nested Unused Message"
+        },
+        "samples.MessageWithEnums.DefinedUsedMessage": {
+            "properties": {
+                "var": {
+                    "type": "boolean"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Defined Used Message"
         },
         "samples.MessageWithEnums.NestedEnum": {
             "enum": [

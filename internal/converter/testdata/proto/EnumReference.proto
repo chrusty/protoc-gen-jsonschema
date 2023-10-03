@@ -10,10 +10,26 @@ enum EnumOne {
 message MessageWithEnums {
   EnumOne enumFieldOne = 1;
   NestedEnum enumFieldTwo = 2;
+  DefinedUsedMessage var = 3;
 
   enum NestedEnum {
     Foo = 0;
     Bar = 1;
     Baz = 2;
+  }
+
+  message DefinedUnusedMessage {
+    bool var = 1;
+    message NestedUnusedMessage {
+      bool foo = 1;
+    }
+  }
+
+  message DefinedUsedMessage {
+    bool var = 1;
+  }
+
+  enum DefinedUnusedEnum {
+    Var = 0;
   }
 }
