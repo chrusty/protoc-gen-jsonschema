@@ -435,10 +435,14 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msgDesc *descriptor
 		definitions[name] = refType
 	}
 
+	_, pkgName, _ := c.lookupType(curPkg, msgDesc.GetName())
+	pkgName = strings.Trim(pkgName, ".")
+
 	// Put together a JSON schema with our discovered definitions, and a $ref for the root type:
 	newJSONSchema := &jsonschema.Schema{
 		Type: &jsonschema.Type{
 			Ref:     fmt.Sprintf("%s%s", c.refPrefix, msgDesc.GetName()),
+			FullRef:     fmt.Sprintf("%s%s.%s", c.refPrefix, pkgName, msgDesc.GetName()),
 			Version: c.schemaVersion,
 		},
 		Definitions: definitions,
