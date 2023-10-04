@@ -3,6 +3,7 @@ package testdata
 const BigIntAsString = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/BigIntAsString",
+    "$fullRef": "#/definitions/samples.BigIntAsString",
     "definitions": {
         "BigIntAsString": {
             "properties": {

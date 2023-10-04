@@ -3,6 +3,7 @@ package testdata
 const OptionManualLink = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/OptionManualLink",
+    "$fullRef": "#/definitions/samples.OptionManualLink",
     "definitions": {
         "OptionManualLink": {
             "properties": {

@@ -3,6 +3,7 @@ package testdata
 const JSONFields = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/JSONFields",
+    "$fullRef": "#/definitions/samples.JSONFields",
     "definitions": {
         "JSONFields": {
             "required": [

@@ -2,6 +2,7 @@ package testdata
 
 const FirstEnum = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
+    "$fullRef": "#/definitions/samples.FirstEnum",
     "enum": [
         "VALUE_0",
         0,

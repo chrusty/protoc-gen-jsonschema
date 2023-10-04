@@ -3,6 +3,7 @@ package testdata
 const OptionIgnoredField = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/OptionIgnoredField",
+    "$fullRef": "#/definitions/samples.OptionIgnoredField",
     "definitions": {
         "OptionIgnoredField": {
             "properties": {

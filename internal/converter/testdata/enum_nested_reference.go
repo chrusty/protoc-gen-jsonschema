@@ -3,6 +3,7 @@ package testdata
 const EnumNestedReference = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/Msg",
+    "$fullRef": "#/definitions/samples.Msg",
     "definitions": {
         "Msg": {
             "properties": {

@@ -3,6 +3,7 @@ package testdata
 const MultipleOneOf = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/MultipleOneOf",
+    "$fullRef": "#/definitions/samples.MultipleOneOf",
     "definitions": {
         "MultipleOneOf": {
             "required": [

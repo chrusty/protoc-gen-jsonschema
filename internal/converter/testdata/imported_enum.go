@@ -2,6 +2,7 @@ package testdata
 
 const ImportedEnum = `{
     "$schema": "http://json-schema.org/draft-06/schema#",
+    "$fullRef": "#/definitions/samples.ImportedEnum",
     "enum": [
         "VALUE_0",
         0,

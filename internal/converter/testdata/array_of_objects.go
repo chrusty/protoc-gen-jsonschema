@@ -3,6 +3,7 @@ package testdata
 const ArrayOfObjects = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/ArrayOfObjects",
+    "$fullRef": "#/definitions/samples.ArrayOfObjects",
     "definitions": {
         "ArrayOfObjects": {
             "properties": {
