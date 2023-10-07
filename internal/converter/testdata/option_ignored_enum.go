@@ -2,6 +2,7 @@ package testdata
 
 const UnignoredEnum = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
+    "$fullRef": "#/definitions/samples.UnignoredEnum",
     "enum": [
         "VALUE_4",
         0,

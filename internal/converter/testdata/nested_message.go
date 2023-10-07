@@ -3,6 +3,7 @@ package testdata
 const NestedMessage = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/NestedMessage",
+    "$fullRef": "#/definitions/samples.NestedMessage",
     "definitions": {
         "NestedMessage": {
             "properties": {

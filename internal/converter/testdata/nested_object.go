@@ -3,6 +3,7 @@ package testdata
 const NestedObject = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/NestedObject",
+    "$fullRef": "#/definitions/samples.NestedObject",
     "definitions": {
         "NestedObject": {
             "properties": {

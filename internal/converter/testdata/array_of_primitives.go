@@ -3,6 +3,7 @@ package testdata
 const ArrayOfPrimitives = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/ArrayOfPrimitives",
+    "$fullRef": "#/definitions/samples.ArrayOfPrimitives",
     "definitions": {
         "ArrayOfPrimitives": {
             "properties": {
@@ -108,6 +109,7 @@ const ArrayOfPrimitivesPass = `{"luckyNumbers": [1,2,3]}`
 const ArrayOfPrimitivesDouble = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/ArrayOfPrimitives",
+    "$fullRef": "#/definitions/samples.ArrayOfPrimitives",
     "definitions": {
         "ArrayOfPrimitives": {
             "properties": {

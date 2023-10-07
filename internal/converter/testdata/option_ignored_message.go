@@ -3,6 +3,7 @@ package testdata
 const UnignoredMessage = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/UnignoredMessage",
+    "$fullRef": "#/definitions/samples.UnignoredMessage",
     "definitions": {
         "UnignoredMessage": {
             "properties": {

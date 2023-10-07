@@ -3,6 +3,7 @@ package testdata
 const PayloadMessage = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/PayloadMessage",
+    "$fullRef": "#/definitions/samples.PayloadMessage",
     "definitions": {
         "PayloadMessage": {
             "properties": {

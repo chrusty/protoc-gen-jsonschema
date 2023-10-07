@@ -3,6 +3,7 @@ package testdata
 const ArrayOfMessages = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/ArrayOfMessages",
+    "$fullRef": "#/definitions/samples.ArrayOfMessages",
     "definitions": {
         "ArrayOfMessages": {
             "properties": {

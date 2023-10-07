@@ -3,6 +3,7 @@ package testdata
 const OptionAllowNullValues = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/OptionAllowNullValues",
+    "$fullRef": "#/definitions/samples.OptionAllowNullValues",
     "definitions": {
         "OptionAllowNullValues": {
             "properties": {
