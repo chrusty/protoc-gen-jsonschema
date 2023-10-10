@@ -27,6 +27,7 @@ const Proto2PayloadMessage = `{
                     "type": "boolean"
                 },
                 "topology": {
+                    "$ref": "#/definitions/samples.Proto2PayloadMessage.Topology",
                     "enum": [
                         "FLAT",
                         0,
@@ -55,6 +56,31 @@ const Proto2PayloadMessage = `{
             "additionalProperties": true,
             "type": "object",
             "title": "Proto 2 Payload Message"
+        },
+        "samples.Proto2PayloadMessage.Topology": {
+            "enum": [
+                "FLAT",
+                0,
+                "NESTED_OBJECT",
+                1,
+                "NESTED_MESSAGE",
+                2,
+                "ARRAY_OF_TYPE",
+                3,
+                "ARRAY_OF_OBJECT",
+                4,
+                "ARRAY_OF_MESSAGE",
+                5
+            ],
+            "oneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "integer"
+                }
+            ],
+            "title": "Topology"
         }
     }
 }`

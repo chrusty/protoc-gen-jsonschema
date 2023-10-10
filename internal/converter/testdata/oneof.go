@@ -3,6 +3,7 @@ package testdata
 const OneOf = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/OneOf",
+    "$fullRef": "#/definitions/samples.OneOf",
     "definitions": {
         "OneOf": {
             "properties": {

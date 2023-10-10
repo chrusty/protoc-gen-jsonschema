@@ -3,6 +3,7 @@ package testdata
 const EnumReference1 = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/MessageWithEnums",
+    "$fullRef": "#/definitions/samples.MessageWithEnums",
     "definitions": {
         "MessageWithEnums": {
             "properties": {
@@ -94,6 +95,7 @@ const EnumReference1 = `{
 
 const EnumReference2 = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
+    "$fullRef": "#/definitions/samples.EnumOne",
     "enum": [
         "Foo",
         0,

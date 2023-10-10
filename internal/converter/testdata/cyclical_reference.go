@@ -64,7 +64,7 @@ const CyclicalReferenceMessageM = `{
 }`
 
 const CyclicalReferenceMessageFoo = `{
-"$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/Foo",
     "$fullRef": "#/definitions/samples.Foo",
     "definitions": {

@@ -281,6 +281,11 @@ func (c *Converter) convertFile(file *descriptor.FileDescriptorProto, fileExtens
 		}
 		enumJSONSchema.Version = c.schemaVersion
 
+		// if len(file.GetMessageType()) == 0 {
+		pkgName := file.GetPackage()
+		enumJSONSchema.FullRef = fmt.Sprintf("%s%s.%s", c.refPrefix, pkgName, enum.GetName())
+		// }
+
 		// Marshal the JSON-Schema into JSON:
 		jsonSchemaJSON, err := json.MarshalIndent(enumJSONSchema, "", "    ")
 		if err != nil {
