@@ -122,14 +122,14 @@ func testConvertSampleProto(t *testing.T, sampleProto sampleProto) {
 
 func configureSampleProtos() map[string]sampleProto {
 	return map[string]sampleProto{
-		// "AllRequired": {
-		// 	Flags:                 ConverterFlags{AllFieldsRequired: true},
-		// 	ExpectedJSONSchema:    []string{testdata.PayloadMessage2},
-		// 	FilesToGenerate:       []string{"PayloadMessage2.proto"},
-		// 	ProtoFileName:         "PayloadMessage2.proto",
-		// 	ObjectsToValidateFail: []string{testdata.PayloadMessage2Fail},
-		// 	ObjectsToValidatePass: []string{testdata.PayloadMessage2Pass},
-		// },
+		"AllRequired": {
+			Flags:                 ConverterFlags{AllFieldsRequired: true},
+			ExpectedJSONSchema:    []string{testdata.PayloadMessage2},
+			FilesToGenerate:       []string{"PayloadMessage2.proto"},
+			ProtoFileName:         "PayloadMessage2.proto",
+			ObjectsToValidateFail: []string{testdata.PayloadMessage2Fail},
+			ObjectsToValidatePass: []string{testdata.PayloadMessage2Pass},
+		},
 		// "ArrayOfEnums": {
 		// 	ExpectedJSONSchema:    []string{testdata.ArrayOfEnums},
 		// 	FilesToGenerate:       []string{"ArrayOfEnums.proto"},
@@ -137,13 +137,13 @@ func configureSampleProtos() map[string]sampleProto {
 		// 	ObjectsToValidateFail: []string{testdata.ArrayOfEnumsFail},
 		// 	ObjectsToValidatePass: []string{testdata.ArrayOfEnumsPass},
 		// },
-		// "ArrayOfMessages": {
-		// 	ExpectedJSONSchema:    []string{testdata.PayloadMessage, testdata.ArrayOfMessages},
-		// 	FilesToGenerate:       []string{"ArrayOfMessages.proto", "PayloadMessage.proto"},
-		// 	ProtoFileName:         "ArrayOfMessages.proto",
-		// 	ObjectsToValidateFail: []string{testdata.PayloadMessageFail, testdata.ArrayOfMessagesFail},
-		// 	ObjectsToValidatePass: []string{testdata.PayloadMessagePass, testdata.ArrayOfMessagesPass},
-		// },
+		"ArrayOfMessages": {
+			ExpectedJSONSchema:    []string{testdata.PayloadMessage, testdata.ArrayOfMessages},
+			FilesToGenerate:       []string{"ArrayOfMessages.proto", "PayloadMessage.proto"},
+			ProtoFileName:         "ArrayOfMessages.proto",
+			ObjectsToValidateFail: []string{testdata.PayloadMessageFail, testdata.ArrayOfMessagesFail},
+			ObjectsToValidatePass: []string{testdata.PayloadMessagePass, testdata.ArrayOfMessagesPass},
+		},
 		// "ArrayOfObjects": {
 		// 	Flags:                 ConverterFlags{AllowNullValues: true},
 		// 	ExpectedJSONSchema:    []string{testdata.ArrayOfObjects},
@@ -152,53 +152,53 @@ func configureSampleProtos() map[string]sampleProto {
 		// 	ObjectsToValidateFail: []string{testdata.ArrayOfObjectsFail},
 		// 	ObjectsToValidatePass: []string{testdata.ArrayOfObjectsPass},
 		// },
-		// "ArrayOfPrimitives": {
-		// 	Flags:                 ConverterFlags{AllowNullValues: true},
-		// 	ExpectedJSONSchema:    []string{testdata.ArrayOfPrimitives},
-		// 	FilesToGenerate:       []string{"ArrayOfPrimitives.proto"},
-		// 	ProtoFileName:         "ArrayOfPrimitives.proto",
-		// 	ObjectsToValidateFail: []string{testdata.ArrayOfPrimitivesFail},
-		// 	ObjectsToValidatePass: []string{testdata.ArrayOfPrimitivesPass},
-		// },
-		// "ArrayOfPrimitivesDouble": {
-		// 	Flags: ConverterFlags{
-		// 		AllowNullValues:           true,
-		// 		UseProtoAndJSONFieldNames: true,
-		// 	},
-		// 	ExpectedJSONSchema:    []string{testdata.ArrayOfPrimitivesDouble},
-		// 	FilesToGenerate:       []string{"ArrayOfPrimitives.proto"},
-		// 	ProtoFileName:         "ArrayOfPrimitives.proto",
-		// 	ObjectsToValidateFail: []string{testdata.ArrayOfPrimitivesDoubleFail},
-		// 	ObjectsToValidatePass: []string{testdata.ArrayOfPrimitivesDoublePass},
-		// },
-		// "BigIntAsString": {
-		// 	Flags: ConverterFlags{
-		// 		AllowNullValues:          true,
-		// 		DisallowBigIntsAsStrings: true,
-		// 	},
-		// 	ExpectedJSONSchema:    []string{testdata.BigIntAsString},
-		// 	FilesToGenerate:       []string{"BigIntAsString.proto"},
-		// 	ProtoFileName:         "BigIntAsString.proto",
-		// 	ObjectsToValidateFail: []string{testdata.BigIntAsStringFail},
-		// 	ObjectsToValidatePass: []string{testdata.BigIntAsStringPass},
-		// },
-		// "BytesPayload": {
-		// 	ExpectedJSONSchema:    []string{testdata.BytesPayload},
-		// 	FilesToGenerate:       []string{"BytesPayload.proto"},
-		// 	ProtoFileName:         "BytesPayload.proto",
-		// 	ObjectsToValidateFail: []string{testdata.BytesPayloadFail},
-		// },
-		// "Comments": {
-		// 	ExpectedJSONSchema:    []string{testdata.MessageWithComments},
-		// 	FilesToGenerate:       []string{"MessageWithComments.proto"},
-		// 	ProtoFileName:         "MessageWithComments.proto",
-		// 	ObjectsToValidateFail: []string{testdata.MessageWithCommentsFail},
-		// },
-		// "CyclicalReference": {
-		// 	ExpectedJSONSchema: []string{testdata.CyclicalReferenceMessageM, testdata.CyclicalReferenceMessageFoo, testdata.CyclicalReferenceMessageBar, testdata.CyclicalReferenceMessageBaz},
-		// 	FilesToGenerate:    []string{"CyclicalReference.proto"},
-		// 	ProtoFileName:      "CyclicalReference.proto",
-		// },
+		"ArrayOfPrimitives": {
+			Flags:                 ConverterFlags{AllowNullValues: true},
+			ExpectedJSONSchema:    []string{testdata.ArrayOfPrimitives},
+			FilesToGenerate:       []string{"ArrayOfPrimitives.proto"},
+			ProtoFileName:         "ArrayOfPrimitives.proto",
+			ObjectsToValidateFail: []string{testdata.ArrayOfPrimitivesFail},
+			ObjectsToValidatePass: []string{testdata.ArrayOfPrimitivesPass},
+		},
+		"ArrayOfPrimitivesDouble": {
+			Flags: ConverterFlags{
+				AllowNullValues:           true,
+				UseProtoAndJSONFieldNames: true,
+			},
+			ExpectedJSONSchema:    []string{testdata.ArrayOfPrimitivesDouble},
+			FilesToGenerate:       []string{"ArrayOfPrimitives.proto"},
+			ProtoFileName:         "ArrayOfPrimitives.proto",
+			ObjectsToValidateFail: []string{testdata.ArrayOfPrimitivesDoubleFail},
+			ObjectsToValidatePass: []string{testdata.ArrayOfPrimitivesDoublePass},
+		},
+		"BigIntAsString": {
+			Flags: ConverterFlags{
+				AllowNullValues:          true,
+				DisallowBigIntsAsStrings: true,
+			},
+			ExpectedJSONSchema:    []string{testdata.BigIntAsString},
+			FilesToGenerate:       []string{"BigIntAsString.proto"},
+			ProtoFileName:         "BigIntAsString.proto",
+			ObjectsToValidateFail: []string{testdata.BigIntAsStringFail},
+			ObjectsToValidatePass: []string{testdata.BigIntAsStringPass},
+		},
+		"BytesPayload": {
+			ExpectedJSONSchema:    []string{testdata.BytesPayload},
+			FilesToGenerate:       []string{"BytesPayload.proto"},
+			ProtoFileName:         "BytesPayload.proto",
+			ObjectsToValidateFail: []string{testdata.BytesPayloadFail},
+		},
+		"Comments": {
+			ExpectedJSONSchema:    []string{testdata.MessageWithComments},
+			FilesToGenerate:       []string{"MessageWithComments.proto"},
+			ProtoFileName:         "MessageWithComments.proto",
+			ObjectsToValidateFail: []string{testdata.MessageWithCommentsFail},
+		},
+		"CyclicalReference": {
+			ExpectedJSONSchema: []string{testdata.CyclicalReferenceMessageM, testdata.CyclicalReferenceMessageFoo, testdata.CyclicalReferenceMessageBar, testdata.CyclicalReferenceMessageBaz},
+			FilesToGenerate:    []string{"CyclicalReference.proto"},
+			ProtoFileName:      "CyclicalReference.proto",
+		},
 		// "EnumNestedReference": {
 		// 	ExpectedJSONSchema:    []string{testdata.EnumNestedReference},
 		// 	FilesToGenerate:       []string{"EnumNestedReference.proto"},
