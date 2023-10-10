@@ -3,6 +3,7 @@ package testdata
 const MessageKind11 = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/MessageKind11",
+    "$fullRef": "#/definitions/samples.MessageKind11",
     "definitions": {
         "MessageKind11": {
             "oneofNames": [

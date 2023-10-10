@@ -3,6 +3,7 @@ package testdata
 const OptionPattern = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/OptionPattern",
+    "$fullRef": "#/definitions/samples.OptionPattern",
     "definitions": {
         "OptionPattern": {
             "required": [

@@ -3,6 +3,7 @@ package testdata
 const CyclicalReferenceMessageM = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/M",
+    "$fullRef": "#/definitions/samples.M",
     "definitions": {
         "M": {
             "properties": {
@@ -65,6 +66,7 @@ const CyclicalReferenceMessageM = `{
 const CyclicalReferenceMessageFoo = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/Foo",
+    "$fullRef": "#/definitions/samples.Foo",
     "definitions": {
         "Foo": {
             "properties": {
@@ -116,6 +118,7 @@ const CyclicalReferenceMessageFoo = `{
 const CyclicalReferenceMessageBar = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/Bar",
+    "$fullRef": "#/definitions/samples.Bar",
     "definitions": {
         "Bar": {
             "properties": {
@@ -167,6 +170,7 @@ const CyclicalReferenceMessageBar = `{
 const CyclicalReferenceMessageBaz = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/Baz",
+    "$fullRef": "#/definitions/samples.Baz",
     "definitions": {
         "Baz": {
             "properties": {

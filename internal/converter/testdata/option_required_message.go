@@ -3,6 +3,7 @@ package testdata
 const OptionRequiredMessage = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/OptionRequiredMessage",
+    "$fullRef": "#/definitions/samples.OptionRequiredMessage",
     "definitions": {
         "OptionRequiredMessage": {
             "required": [

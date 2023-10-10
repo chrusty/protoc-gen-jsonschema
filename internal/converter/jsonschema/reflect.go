@@ -53,6 +53,7 @@ type Type struct {
 	// RFC draft-wright-json-schema-00
 	Version string `json:"$schema,omitempty"` // section 6.1
 	Ref     string `json:"$ref,omitempty"`    // section 7
+	FullRef     string `json:"$fullRef,omitempty"`    // section 7
 	// RFC draft-wright-json-schema-validation-00, section 5
 	MultipleOf           int                    `json:"multipleOf,omitempty"`           // section 5.1
 	Maximum              int                    `json:"maximum,omitempty"`              // section 5.2

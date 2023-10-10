@@ -3,6 +3,7 @@ package testdata
 const Maps = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/Maps",
+    "$fullRef": "#/definitions/samples.Maps",
     "definitions": {
         "Maps": {
             "properties": {

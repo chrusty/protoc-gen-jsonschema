@@ -3,6 +3,7 @@ package testdata
 const Proto2NestedMessage = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/Proto2NestedMessage",
+    "$fullRef": "#/definitions/samples.Proto2NestedMessage",
     "definitions": {
         "Proto2NestedMessage": {
             "required": [

@@ -3,6 +3,7 @@ package testdata
 const BytesPayload = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/BytesPayload",
+    "$fullRef": "#/definitions/samples.BytesPayload",
     "definitions": {
         "BytesPayload": {
             "properties": {

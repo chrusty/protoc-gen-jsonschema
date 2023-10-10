@@ -3,6 +3,7 @@ package testdata
 const OptionFileExtension = `{
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$ref": "#/definitions/OptionFileExtension",
+    "$fullRef": "#/definitions/samples.OptionFileExtension",
     "definitions": {
         "OptionFileExtension": {
             "properties": {
