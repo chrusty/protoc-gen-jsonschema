@@ -1,0 +1,19 @@
+syntax = "proto3";
+package samples;
+
+enum EnumOne {
+    Foo = 0;
+    Bar = 1;
+    Baz = 2;
+}
+
+message MessageWithEnums {
+  EnumOne enumFieldOne = 1;
+  NestedEnum enumFieldTwo = 2;
+
+  enum NestedEnum {
+    Foo = 0;
+    Bar = 1;
+    Baz = 2;
+  }
+}

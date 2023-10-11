@@ -206,12 +206,17 @@ func configureSampleProtos() map[string]sampleProto {
 			ObjectsToValidateFail: []string{testdata.EnumNestedReferenceFail},
 			ObjectsToValidatePass: []string{testdata.EnumNestedReferencePass},
 		},
+		"EnumReference": {
+			ExpectedJSONSchema:    []string{testdata.EnumReference2, testdata.EnumReference1},
+			FilesToGenerate:       []string{"EnumReference.proto"},
+			ProtoFileName:         "EnumReference.proto",
+		},
 		"EnumWithMessage": {
-			ExpectedJSONSchema:    []string{testdata.EnumWithMessage},
+			ExpectedJSONSchema:    []string{testdata.EnumWithMessageEnum, testdata.EnumWithMessage},
 			FilesToGenerate:       []string{"EnumWithMessage.proto"},
 			ProtoFileName:         "EnumWithMessage.proto",
-			ObjectsToValidateFail: []string{testdata.EnumWithMessageFail},
-			ObjectsToValidatePass: []string{testdata.EnumWithMessagePass},
+			ObjectsToValidateFail: []string{testdata.EnumWithMessageEnumFail, testdata.EnumWithMessageFail},
+			ObjectsToValidatePass: []string{testdata.EnumWithMessageEnumPass, testdata.EnumWithMessagePass},
 		},
 		"EnumCeption": {
 			ExpectedJSONSchema:    []string{testdata.PayloadMessage, testdata.ImportedEnum, testdata.EnumCeption},
@@ -268,14 +273,14 @@ func configureSampleProtos() map[string]sampleProto {
 			FilesToGenerate:    []string{},
 			ProtoFileName:      "NoPackage.proto",
 		},
-		// "OneOf": {
-		// 	Flags:                 ConverterFlags{AllFieldsRequired: true, EnforceOneOf: true},
-		// 	ExpectedJSONSchema:    []string{testdata.OneOf},
-		// 	FilesToGenerate:       []string{"OneOf.proto"},
-		// 	ProtoFileName:         "OneOf.proto",
-		// 	ObjectsToValidateFail: []string{testdata.OneOfFail},
-		// 	ObjectsToValidatePass: []string{testdata.OneOfPass},
-		// },
+		"OneOf": {
+			Flags:                 ConverterFlags{AllFieldsRequired: true, EnforceOneOf: true},
+			ExpectedJSONSchema:    []string{testdata.OneOf},
+			FilesToGenerate:       []string{"OneOf.proto"},
+			ProtoFileName:         "OneOf.proto",
+			ObjectsToValidateFail: []string{testdata.OneOfFail},
+			ObjectsToValidatePass: []string{testdata.OneOfPass},
+		},
 		"ExclusiveGroups": {
 			Flags:                 ConverterFlags{AllFieldsRequired: true, EnforceExclusiveGroups: true, EnforceOneofDeclarations: true},
 			ExpectedJSONSchema:    []string{testdata.MultipleOneOf},
