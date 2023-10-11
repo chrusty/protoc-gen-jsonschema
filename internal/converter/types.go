@@ -225,17 +225,17 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			return nil, fmt.Errorf("unable to resolve enum type: %s", desc.GetType().String())
 		}
 
-		// We already have a converter for standalone ENUMs, so just use that:
-		enumSchema, err := c.convertEnumType(matchedEnum, messageFlags)
-		if err != nil {
-			switch err {
-			case errIgnored:
-			default:
-				return nil, err
-			}
-		}
+		// // We already have a converter for standalone ENUMs, so just use that:
+		// enumSchema, err := c.convertEnumType(matchedEnum, messageFlags)
+		// if err != nil {
+		// 	switch err {
+		// 	case errIgnored:
+		// 	default:
+		// 		return nil, err
+		// 	}
+		// }
 
-		jsonSchemaType = &enumSchema
+		// jsonSchemaType = &enumSchema
 		jsonSchemaType.Ref = fmt.Sprintf("%s%s", c.refPrefix, enums[matchedEnum])
 
 	// Bool:
