@@ -8,10 +8,12 @@ const EnumReference1 = `{
         "MessageWithEnums": {
             "properties": {
                 "enumFieldOne": {
-                    "$ref": "#/definitions/samples.EnumOne"
+                    "$ref": "#/definitions/samples.EnumOne",
+                    "title": "Enum One"
                 },
                 "enumFieldTwo": {
-                    "$ref": "#/definitions/samples.MessageWithEnums.NestedEnum"
+                    "$ref": "#/definitions/samples.MessageWithEnums.NestedEnum",
+                    "title": "Nested Enum"
                 }
             },
             "additionalProperties": true,

@@ -39,7 +39,8 @@ const ArrayOfMessages = `{
                     "type": "boolean"
                 },
                 "topology": {
-                    "$ref": "#/definitions/samples.PayloadMessage.Topology"
+                    "$ref": "#/definitions/samples.PayloadMessage.Topology",
+                    "title": "Topology"
                 }
             },
             "additionalProperties": true,

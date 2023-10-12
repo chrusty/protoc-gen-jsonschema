@@ -12,7 +12,8 @@ const ArrayOfEnums = `{
                 },
                 "stuff": {
                     "items": {
-                        "$ref": "#/definitions/samples.ArrayOfEnums.inline"
+                        "$ref": "#/definitions/samples.ArrayOfEnums.inline",
+                        "title": "Inline"
                     },
                     "type": "array"
                 }

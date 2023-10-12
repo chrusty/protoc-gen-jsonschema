@@ -235,8 +235,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			}
 		}
 
-		// jsonSchemaType = &enumSchema
-		jsonSchemaType.Enum = enumSchema.Enum
+		jsonSchemaType = &enumSchema
 		jsonSchemaType.Ref = fmt.Sprintf("%s%s", c.refPrefix, enums[matchedEnum])
 
 	// Bool:
@@ -289,9 +288,16 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 		jsonSchemaType.Items = &jsonschema.Type{}
 
 		if len(jsonSchemaType.Enum) > 0 {
-			jsonSchemaType.Enum = nil
-			jsonSchemaType.Items.OneOf = nil
+			// Set fields in jsonSchemaType.Items
+			jsonSchemaType.Items.Title = jsonSchemaType.Title
+			jsonSchemaType.Items.Description = jsonSchemaType.Description
 			jsonSchemaType.Items.Ref = jsonSchemaType.Ref
+			
+			// Unset fields in jsonSchemaType
+			jsonSchemaType.Title = ""
+			jsonSchemaType.Description = ""
+			jsonSchemaType.Enum = nil
+			jsonSchemaType.OneOf = nil
 			jsonSchemaType.Ref = ""
 		} else {
 			jsonSchemaType.Items.Type = jsonSchemaType.Type
@@ -416,6 +422,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 
 	if len(jsonSchemaType.Enum) > 0 {
 		jsonSchemaType.Enum = nil
+		jsonSchemaType.OneOf = nil
 	}
 	return jsonSchemaType, nil
 }
@@ -447,7 +454,7 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msgDesc *descriptor
 		definitions[name] = refType
 	}
 
-	// Build up a list of JSONSchema type definitions for every message:
+	// Build up a list of JSONSchema type definitions for every enum:
 	for _, name := range enums {
 		fullEnumIdentifier := strings.TrimPrefix(name, ".")
 		matchedEnum, _, _ := c.lookupEnum(curPkg, fullEnumIdentifier)

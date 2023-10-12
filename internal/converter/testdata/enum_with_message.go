@@ -9,22 +9,6 @@ const EnumWithMessage = `{
             "properties": {
                 "enumField": {
                     "$ref": "#/definitions/samples.FooBarBaz",
-                    "enum": [
-                        "Foo",
-                        0,
-                        "Bar",
-                        1,
-                        "Baz",
-                        2
-                    ],
-                    "oneOf": [
-                        {
-                            "type": "string"
-                        },
-                        {
-                            "type": "integer"
-                        }
-                    ],
                     "title": "Foo Bar Baz"
                 }
             },
