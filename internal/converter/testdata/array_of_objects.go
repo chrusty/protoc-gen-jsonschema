@@ -95,7 +95,8 @@ const ArrayOfObjects = `{
                     ]
                 },
                 "topology": {
-                    "$ref": "#/definitions/samples.ArrayOfObjects.RepeatedPayload.Topology"
+                    "$ref": "#/definitions/samples.ArrayOfObjects.RepeatedPayload.Topology",
+                    "title": "Topology"
                 }
             },
             "additionalProperties": true,

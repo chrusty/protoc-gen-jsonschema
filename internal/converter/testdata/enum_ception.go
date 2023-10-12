@@ -23,7 +23,8 @@ const EnumCeption = `{
                     "type": "boolean"
                 },
                 "failureMode": {
-                    "$ref": "#/definitions/samples.Enumception.FailureModes"
+                    "$ref": "#/definitions/samples.Enumception.FailureModes",
+                    "title": "Failure Modes",
                     "description": "FailureModes enum"
                 },
                 "payload": {
@@ -37,7 +38,8 @@ const EnumCeption = `{
                     "type": "array"
                 },
                 "importedEnum": {
-                    "$ref": "#/definitions/samples.ImportedEnum"
+                    "$ref": "#/definitions/samples.ImportedEnum",
+                    "title": "Imported Enum",
                     "description": "This is an enum"
                 }
             },
@@ -129,7 +131,8 @@ const EnumCeption = `{
                     "type": "boolean"
                 },
                 "topology": {
-                    "$ref": "#/definitions/samples.PayloadMessage.Topology"
+                    "$ref": "#/definitions/samples.PayloadMessage.Topology",
+                    "title": "Topology"
                 }
             },
             "additionalProperties": true,
