@@ -225,17 +225,18 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			return nil, fmt.Errorf("unable to resolve enum type: %s", desc.GetType().String())
 		}
 
-		// // We already have a converter for standalone ENUMs, so just use that:
-		// enumSchema, err := c.convertEnumType(matchedEnum, messageFlags)
-		// if err != nil {
-		// 	switch err {
-		// 	case errIgnored:
-		// 	default:
-		// 		return nil, err
-		// 	}
-		// }
+		// We already have a converter for standalone ENUMs, so just use that:
+		enumSchema, err := c.convertEnumType(matchedEnum, messageFlags)
+		if err != nil {
+			switch err {
+			case errIgnored:
+			default:
+				return nil, err
+			}
+		}
 
 		// jsonSchemaType = &enumSchema
+		jsonSchemaType.Enum = enumSchema.Enum
 		jsonSchemaType.Ref = fmt.Sprintf("%s%s", c.refPrefix, enums[matchedEnum])
 
 	// Bool:
@@ -288,7 +289,6 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 		jsonSchemaType.Items = &jsonschema.Type{}
 
 		if len(jsonSchemaType.Enum) > 0 {
-			jsonSchemaType.Items.Enum = jsonSchemaType.Enum
 			jsonSchemaType.Enum = nil
 			jsonSchemaType.Items.OneOf = nil
 			jsonSchemaType.Items.Ref = jsonSchemaType.Ref
@@ -414,6 +414,9 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 
 	jsonSchemaType.Required = dedupe(jsonSchemaType.Required)
 
+	if len(jsonSchemaType.Enum) > 0 {
+		jsonSchemaType.Enum = nil
+	}
 	return jsonSchemaType, nil
 }
 

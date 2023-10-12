@@ -8,44 +8,10 @@ const EnumReference1 = `{
         "MessageWithEnums": {
             "properties": {
                 "enumFieldOne": {
-                    "$ref": "#/definitions/samples.EnumOne",
-                    "enum": [
-                        "Foo",
-                        0,
-                        "Bar",
-                        1,
-                        "Baz",
-                        2
-                    ],
-                    "oneOf": [
-                        {
-                            "type": "string"
-                        },
-                        {
-                            "type": "integer"
-                        }
-                    ],
-                    "title": "Enum One"
+                    "$ref": "#/definitions/samples.EnumOne"
                 },
                 "enumFieldTwo": {
-                    "$ref": "#/definitions/samples.MessageWithEnums.NestedEnum",
-                    "enum": [
-                        "Foo",
-                        0,
-                        "Bar",
-                        1,
-                        "Baz",
-                        2
-                    ],
-                    "oneOf": [
-                        {
-                            "type": "string"
-                        },
-                        {
-                            "type": "integer"
-                        }
-                    ],
-                    "title": "Nested Enum"
+                    "$ref": "#/definitions/samples.MessageWithEnums.NestedEnum"
                 }
             },
             "additionalProperties": true,
