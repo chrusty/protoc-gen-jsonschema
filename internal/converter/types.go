@@ -90,12 +90,21 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 
 	// Populate options as string.
 	options := desc.GetOptions()
-	if options != nil && proto.HasExtension(options, protos.E_ManualLink) {
-		fieldOptionsValues := proto.GetExtension(options, protos.E_ManualLink)
-		if jsonSchemaType.Options == nil {
-			jsonSchemaType.Options = &jsonschema.Type{}
+	if options != nil {
+		if proto.HasExtension(options, protos.E_ManualLink) {
+			fieldOptionsValues := proto.GetExtension(options, protos.E_ManualLink)
+			if jsonSchemaType.Options == nil {
+				jsonSchemaType.Options = &jsonschema.Type{}
+			}
+			jsonSchemaType.Options.ManualLink = fieldOptionsValues.(string)
 		}
-		jsonSchemaType.Options.ManualLink = fieldOptionsValues.(string)
+		if proto.HasExtension(options, protos.E_IgnoreInAutocomplete) {
+			fieldOptionsValues := proto.GetExtension(options, protos.E_IgnoreInAutocomplete)
+			if jsonSchemaType.Options == nil {
+				jsonSchemaType.Options = &jsonschema.Type{}
+			}
+			jsonSchemaType.Options.IgnoreInAutocomplete = fieldOptionsValues.(bool)
+		}
 	}
 
 	// Switch the types, and pick a JSONSchema equivalent:
