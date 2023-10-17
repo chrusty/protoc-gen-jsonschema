@@ -8,6 +8,7 @@ enum EnumOne {
 }
 
 message MessageWithEnums {
+  // Comment about EnumOne.
   EnumOne enumFieldOne = 1;
   NestedEnum enumFieldTwo = 2;
 
