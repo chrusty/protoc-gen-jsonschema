@@ -9,8 +9,7 @@ const OptionEnumsAsConstants = `{
             "properties": {
                 "importedEnum": {
                     "$ref": "#/definitions/samples.ImportedEnum",
-                    "title": "Imported Enum",
-                    "description": "This is an enum"
+                    "title": "Imported Enum"
                 }
             },
             "additionalProperties": true,

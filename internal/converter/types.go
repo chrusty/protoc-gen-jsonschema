@@ -226,6 +226,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 
 	// ENUM:
 	case descriptor.FieldDescriptorProto_TYPE_ENUM:
+		fieldDescription := jsonSchemaType.Description
 
 		// Go through all the enums we have, see if we can match any to this field.
 		fullEnumIdentifier := strings.TrimPrefix(desc.GetTypeName(), ".")
@@ -245,6 +246,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 		}
 
 		jsonSchemaType = &enumSchema
+		jsonSchemaType.Description = fieldDescription
 		jsonSchemaType.Ref = fmt.Sprintf("%s%s", c.refPrefix, enums[matchedEnum])
 
 	// Bool:

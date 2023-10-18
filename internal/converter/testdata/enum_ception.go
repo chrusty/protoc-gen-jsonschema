@@ -24,8 +24,7 @@ const EnumCeption = `{
                 },
                 "failureMode": {
                     "$ref": "#/definitions/samples.Enumception.FailureModes",
-                    "title": "Failure Modes",
-                    "description": "FailureModes enum"
+                    "title": "Failure Modes"
                 },
                 "payload": {
                     "$ref": "#/definitions/samples.PayloadMessage",
@@ -39,8 +38,7 @@ const EnumCeption = `{
                 },
                 "importedEnum": {
                     "$ref": "#/definitions/samples.ImportedEnum",
-                    "title": "Imported Enum",
-                    "description": "This is an enum"
+                    "title": "Imported Enum"
                 }
             },
             "additionalProperties": true,

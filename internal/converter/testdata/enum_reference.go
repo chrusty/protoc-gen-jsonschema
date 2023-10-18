@@ -9,7 +9,8 @@ const EnumReference1 = `{
             "properties": {
                 "enumFieldOne": {
                     "$ref": "#/definitions/samples.EnumOne",
-                    "title": "Enum One"
+                    "title": "Enum One",
+                    "description": "Comment about EnumOne."
                 },
                 "enumFieldTwo": {
                     "$ref": "#/definitions/samples.MessageWithEnums.NestedEnum",
