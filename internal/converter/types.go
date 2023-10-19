@@ -301,12 +301,10 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 		if len(jsonSchemaType.Enum) > 0 {
 			// Set fields in jsonSchemaType.Items
 			jsonSchemaType.Items.Title = jsonSchemaType.Title
-			jsonSchemaType.Items.Description = jsonSchemaType.Description
 			jsonSchemaType.Items.Ref = jsonSchemaType.Ref
 			
 			// Unset fields in jsonSchemaType
 			jsonSchemaType.Title = ""
-			jsonSchemaType.Description = ""
 			jsonSchemaType.Enum = nil
 			jsonSchemaType.OneOf = nil
 			jsonSchemaType.Ref = ""

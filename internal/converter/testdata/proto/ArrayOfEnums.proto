@@ -9,5 +9,6 @@ message ArrayOfEnums {
         FIZZ = 2;
         BUZZ = 3;
     }
+    // Comment about inline stuff.
     repeated inline stuff = 2;
 }
