@@ -95,6 +95,7 @@ protoc \
 |`json_fieldnames`| Use JSON field names only |
 |`prefix_schema_files_with_package`| Prefix the output filename with package |
 |`proto_and_json_fieldnames`| Use proto and JSON field names |
+|`keep_new_lines_in_description`| Keep new lines in the description |
 
 
 Custom Proto Options

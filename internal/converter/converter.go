@@ -118,6 +118,8 @@ func (c *Converter) parseGeneratorParameters(parameters string) {
 			c.Flags.PrefixSchemaFilesWithPackage = true
 		case "proto_and_json_fieldnames":
 			c.Flags.UseProtoAndJSONFieldNames = true
+		case "keep_new_lines_in_description":
+			c.Flags.KeepNewLinesInDescription = true
 		}
 
 		// look for specific message targets
