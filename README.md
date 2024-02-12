@@ -139,17 +139,50 @@ These options apply to a specific proto message.
 Validation Options
 ------------------
 
-We are also beginning to support validation options from [protoc-gen-validate](https://github.com/bufbuild/protoc-gen-validate).
+In addition to [options.proto](options.proto) you can add validation options to your protobuf structs using a couple well-known protobuf libraries as well: [protoc-gen-validate](https://github.com/bufbuild/protoc-gen-validate) and the newer [protovalidate](https://github.com/bufbuild/protovalidate).
 
-At the moment the following are supported (but export more in the future):
+### Field constraints
 
-- Arrays
-    - MaxItems
-    - MinItems
-- Strings
-    - MaxLength
-    - MinLength
-    - Pattern
+- [protovalidate](https://github.com/bufbuild/protovalidate)
+  - (buf.validate.field).required
+  - (buf.validate.field).repeated.min_items
+  - (buf.validate.field).repeated.max_items
+  - (buf.validate.field).string.min_len
+  - (buf.validate.field).string.max_len
+  - (buf.validate.field).string.pattern
+  - (buf.validate.field).int32.gt
+  - (buf.validate.field).int32.lt
+  - (buf.validate.field).int32.gte
+  - (buf.validate.field).int32.lte
+  - (buf.validate.field).int64.gt
+  - (buf.validate.field).int64.lt
+  - (buf.validate.field).int64.gte
+  - (buf.validate.field).int64.lte
+  - (buf.validate.field).float.gt
+  - (buf.validate.field).float.lt
+  - (buf.validate.field).float.gte
+  - (buf.validate.field).float.lte
+  - (buf.validate.field).string.email
+  - (buf.validate.field).string.uuid
+  - (buf.validate.field).string.uri
+  - (buf.validate.field).string.hostname
+  - (buf.validate.field).string.ipv4
+  - (buf.validate.field).string.ipv6
+  - (buf.validate.field).uint32.gt
+  - (buf.validate.field).uint32.lt
+  - (buf.validate.field).uint32.gte
+  - (buf.validate.field).uint32.lte
+  - (buf.validate.field).uint64.gt
+  - (buf.validate.field).uint64.lt
+  - (buf.validate.field).uint64.gte
+  - (buf.validate.field).uint64.lte
+- [protoc-gen-validate](https://github.com/bufbuild/protoc-gen-validate)
+  - (validate.rules).message.required
+  - (validate.rules).string.min_length
+  - (validate.rules).string.max_length
+  - (validate.rules).repeated.min_items
+  - (validate.rules).repeated.max_items
+  - (validate.rules).string.pattern
 
 
 Examples

@@ -11,6 +11,7 @@ import (
 	"google.golang.org/protobuf/proto"
 	descriptor "google.golang.org/protobuf/types/descriptorpb"
 
+	protovalidate_pb "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	protoc_gen_jsonschema "github.com/chrusty/protoc-gen-jsonschema"
 	protoc_gen_validate "github.com/envoyproxy/protoc-gen-validate/validate"
 )
@@ -99,6 +100,8 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			jsonSchemaType.Type = gojsonschema.TYPE_NUMBER
 		}
 
+		addFloatFieldConstraints(jsonSchemaType, desc)
+
 	// Int32:
 	case descriptor.FieldDescriptorProto_TYPE_INT32,
 		descriptor.FieldDescriptorProto_TYPE_UINT32,
@@ -113,6 +116,8 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 		} else {
 			jsonSchemaType.Type = gojsonschema.TYPE_INTEGER
 		}
+
+		addInt32FieldConstraints(jsonSchemaType, desc)
 
 	// Int64:
 	case descriptor.FieldDescriptorProto_TYPE_INT64,
@@ -145,29 +150,13 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			}
 		}
 
+		addInt64FieldConstraints(jsonSchemaType, desc)
+
 	// String:
 	case descriptor.FieldDescriptorProto_TYPE_STRING:
 		stringDef := &jsonschema.Type{Type: gojsonschema.TYPE_STRING}
 
-		// Custom field options from protoc-gen-jsonschema:
-		if opt := proto.GetExtension(desc.GetOptions(), protoc_gen_jsonschema.E_FieldOptions); opt != nil {
-			if fieldOptions, ok := opt.(*protoc_gen_jsonschema.FieldOptions); ok {
-				stringDef.MinLength = int(fieldOptions.GetMinLength())
-				stringDef.MaxLength = int(fieldOptions.GetMaxLength())
-				stringDef.Pattern = fieldOptions.GetPattern()
-			}
-		}
-
-		// Custom field options from protoc-gen-validate:
-		if opt := proto.GetExtension(desc.GetOptions(), protoc_gen_validate.E_Rules); opt != nil {
-			if fieldRules, ok := opt.(*protoc_gen_validate.FieldRules); fieldRules != nil && ok {
-				if stringRules := fieldRules.GetString_(); stringRules != nil {
-					stringDef.MaxLength = int(stringRules.GetMaxLen())
-					stringDef.MinLength = int(stringRules.GetMinLen())
-					stringDef.Pattern = stringRules.GetPattern()
-				}
-			}
-		}
+		addStringFieldConstraints(stringDef, desc)
 
 		if messageFlags.AllowNullValues {
 			jsonSchemaType.OneOf = []*jsonschema.Type{
@@ -176,6 +165,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			}
 		} else {
 			jsonSchemaType.Type = stringDef.Type
+			jsonSchemaType.Format = stringDef.Format
 			jsonSchemaType.MinLength = stringDef.MinLength
 			jsonSchemaType.MaxLength = stringDef.MaxLength
 			jsonSchemaType.Pattern = stringDef.Pattern
@@ -277,6 +267,17 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 			}
 		}
 
+		// Custom field options from protovalidate
+		if opt := proto.GetExtension(desc.GetOptions(), protovalidate_pb.E_Field); opt != nil {
+			if fieldOptions, ok := opt.(*protovalidate_pb.FieldConstraints); ok {
+				if _, ok := fieldOptions.GetType().(*protovalidate_pb.FieldConstraints_Repeated); ok {
+					constraints := fieldOptions.GetRepeated()
+					jsonSchemaType.MaxItems = int(constraints.GetMaxItems())
+					jsonSchemaType.MinItems = int(constraints.GetMinItems())
+				}
+			}
+		}
+
 		if len(jsonSchemaType.Enum) > 0 {
 			jsonSchemaType.Items.Enum = jsonSchemaType.Enum
 			jsonSchemaType.Enum = nil
@@ -346,9 +347,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 
 			// Build up the list of required fields:
 			if messageFlags.AllFieldsRequired && len(recursedJSONSchemaType.OneOf) == 0 && recursedJSONSchemaType.Properties != nil {
-				for _, property := range recursedJSONSchemaType.Properties.Keys() {
-					jsonSchemaType.Items.Required = append(jsonSchemaType.Items.Required, property)
-				}
+				jsonSchemaType.Items.Required = append(jsonSchemaType.Items.Required, recursedJSONSchemaType.Properties.Keys()...)
 			}
 			jsonSchemaType.Items.Required = dedupe(jsonSchemaType.Items.Required)
 
@@ -372,9 +371,7 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 
 			// Build up the list of required fields:
 			if messageFlags.AllFieldsRequired && len(recursedJSONSchemaType.OneOf) == 0 && recursedJSONSchemaType.Properties != nil {
-				for _, property := range recursedJSONSchemaType.Properties.Keys() {
-					jsonSchemaType.Required = append(jsonSchemaType.Required, property)
-				}
+				jsonSchemaType.Required = append(jsonSchemaType.Required, recursedJSONSchemaType.Properties.Keys()...)
 			}
 		}
 
@@ -408,9 +405,9 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msgDesc *descriptor
 	for refmsgDesc, nameWithPackage := range duplicatedMessages {
 		var typeName string
 		if c.Flags.TypeNamesWithNoPackage {
-			typeName = refmsgDesc.GetName();
+			typeName = refmsgDesc.GetName()
 		} else {
-			typeName = nameWithPackage;
+			typeName = nameWithPackage
 		}
 		refType, err := c.recursiveConvertMessageType(curPkg, refmsgDesc, "", duplicatedMessages, true)
 		if err != nil {
@@ -577,9 +574,9 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 	if nameWithPackage, ok := duplicatedMessages[msgDesc]; ok && !ignoreDuplicatedMessages {
 		var typeName string
 		if c.Flags.TypeNamesWithNoPackage {
-			typeName = msgDesc.GetName();
+			typeName = msgDesc.GetName()
 		} else {
-			typeName = nameWithPackage;
+			typeName = nameWithPackage
 		}
 		return &jsonschema.Type{
 			Ref: fmt.Sprintf("%s%s", c.refPrefix, typeName),
@@ -624,6 +621,24 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 					} else {
 						jsonSchemaType.Required = append(jsonSchemaType.Required, fieldDesc.GetName())
 					}
+				}
+			}
+		}
+
+		// Determine if it's required by PGV
+		if opt := proto.GetExtension(fieldDesc.GetOptions(), protoc_gen_validate.E_Rules); opt != nil {
+			if fieldRules, ok := opt.(*protoc_gen_validate.FieldRules); fieldRules != nil && ok {
+				if fieldRules.Message.GetRequired() {
+					jsonSchemaType.Required = append(jsonSchemaType.Required, fieldDesc.GetJsonName())
+				}
+			}
+		}
+
+		// Determine if field is required by protovalidate
+		if opt := proto.GetExtension(fieldDesc.GetOptions(), protovalidate_pb.E_Field); opt != nil {
+			if fieldOptions, ok := opt.(*protovalidate_pb.FieldConstraints); ok {
+				if fieldOptions != nil && fieldOptions.Required {
+					jsonSchemaType.Required = append(jsonSchemaType.Required, fieldDesc.GetJsonName())
 				}
 			}
 		}
@@ -708,4 +723,209 @@ func dedupe(inputStrings []string) []string {
 		}
 	}
 	return outputStrings
+}
+
+func addStringFieldConstraints(t *jsonschema.Type, desc *descriptor.FieldDescriptorProto) {
+	// Custom field options from protoc-gen-jsonschema:
+	if opt := proto.GetExtension(desc.GetOptions(), protoc_gen_jsonschema.E_FieldOptions); opt != nil {
+		if fieldOptions, ok := opt.(*protoc_gen_jsonschema.FieldOptions); ok {
+			t.MinLength = int(fieldOptions.GetMinLength())
+			t.MaxLength = int(fieldOptions.GetMaxLength())
+			if pattern := fieldOptions.GetPattern(); pattern != "" {
+				t.Format = "regex"
+				t.Pattern = pattern
+			}
+		}
+	}
+
+	// Custom field options from protoc-gen-validate:
+	if opt := proto.GetExtension(desc.GetOptions(), protoc_gen_validate.E_Rules); opt != nil {
+		if fieldRules, ok := opt.(*protoc_gen_validate.FieldRules); fieldRules != nil && ok {
+			if stringRules := fieldRules.GetString_(); stringRules != nil {
+				t.MaxLength = int(stringRules.GetMaxLen())
+				t.MinLength = int(stringRules.GetMinLen())
+				if pattern := stringRules.GetPattern(); pattern != "" {
+					t.Format = "regex"
+					t.Pattern = pattern
+				}
+			}
+		}
+	}
+
+	// Field options from protovalidate:
+	if opt := proto.GetExtension(desc.GetOptions(), protovalidate_pb.E_Field); opt != nil {
+		if fieldOptions, ok := opt.(*protovalidate_pb.FieldConstraints); ok {
+			if _, ok := fieldOptions.GetType().(*protovalidate_pb.FieldConstraints_String_); ok {
+				constraints := fieldOptions.GetString_()
+				t.MinLength = int(constraints.GetMinLen())
+				t.MaxLength = int(constraints.GetMaxLen())
+				if pattern := constraints.GetPattern(); pattern != "" {
+					t.Format = "regex"
+					t.Pattern = pattern
+				}
+				if wellKnown := constraints.GetWellKnown(); wellKnown != nil {
+					switch wellKnown.(type) {
+					case *protovalidate_pb.StringRules_Email:
+						t.Format = "email"
+					case *protovalidate_pb.StringRules_Uuid:
+						t.Format = "uuid"
+					case *protovalidate_pb.StringRules_Uri:
+						t.Format = "uri"
+					case *protovalidate_pb.StringRules_Hostname:
+						t.Format = "hostname"
+					case *protovalidate_pb.StringRules_Ipv4:
+						t.Format = "ipv4"
+					case *protovalidate_pb.StringRules_Ipv6:
+						t.Format = "ipv6"
+					default:
+						// Not Handled:
+						// StringRules_Ip
+						// StringRules_UriRef
+						// StringRules_Address
+						// StringRules_IpWithPrefixlen
+						// StringRules_Ipv4WithPrefixlen
+						// StringRules_Ipv6WithPrefixlen
+						// StringRules_IpPrefix
+						// StringRules_Ipv4Prefix
+						// StringRules_Ipv6Prefix
+						// StringRules_WellKnownRegex
+					}
+				}
+			}
+		}
+	}
+}
+
+func addFloatFieldConstraints(t *jsonschema.Type, desc *descriptor.FieldDescriptorProto) {
+	// Field options from protovalidate:
+	if opt := proto.GetExtension(desc.GetOptions(), protovalidate_pb.E_Field); opt != nil {
+		if fieldOptions, ok := opt.(*protovalidate_pb.FieldConstraints); ok {
+			if _, ok := fieldOptions.GetType().(*protovalidate_pb.FieldConstraints_Float); ok {
+				constraints := fieldOptions.GetFloat()
+				if constraint, ok := constraints.GetGreaterThan().(*protovalidate_pb.FloatRules_Gte); ok {
+					t.Minimum = int(constraint.Gte)
+				}
+				if constraint, ok := constraints.GetLessThan().(*protovalidate_pb.FloatRules_Lte); ok {
+					t.Maximum = int(constraint.Lte)
+				}
+				if constraint, ok := constraints.GetGreaterThan().(*protovalidate_pb.FloatRules_Gt); ok {
+					t.Minimum = int(constraint.Gt)
+					t.ExclusiveMinimum = true
+				}
+				if constraint, ok := constraints.GetLessThan().(*protovalidate_pb.FloatRules_Lt); ok {
+					t.Maximum = int(constraint.Lt)
+					t.ExclusiveMaximum = true
+				}
+			}
+		}
+	}
+}
+
+func addInt64FieldConstraints(t *jsonschema.Type, desc *descriptor.FieldDescriptorProto) {
+	// Custom field options from protoc-gen-validate:
+	if opt := proto.GetExtension(desc.GetOptions(), protoc_gen_validate.E_Rules); opt != nil {
+		if fieldRules, ok := opt.(*protoc_gen_validate.FieldRules); fieldRules != nil && ok {
+			if constraints := fieldRules.GetInt64(); constraints != nil {
+				t.Minimum = int(constraints.GetGte())
+				t.Maximum = int(constraints.GetLte())
+			}
+		}
+	}
+
+	// Field options from protovalidate:
+	if opt := proto.GetExtension(desc.GetOptions(), protovalidate_pb.E_Field); opt != nil {
+		if fieldOptions, ok := opt.(*protovalidate_pb.FieldConstraints); ok {
+			// int64
+			if _, ok := fieldOptions.GetType().(*protovalidate_pb.FieldConstraints_Int64); ok {
+				constraints := fieldOptions.GetInt64()
+				if constraint, ok := constraints.GetGreaterThan().(*protovalidate_pb.Int64Rules_Gte); ok {
+					t.Minimum = int(constraint.Gte)
+				}
+				if constraint, ok := constraints.GetLessThan().(*protovalidate_pb.Int64Rules_Lte); ok {
+					t.Maximum = int(constraint.Lte)
+				}
+				if constraint, ok := constraints.GetGreaterThan().(*protovalidate_pb.Int64Rules_Gt); ok {
+					t.Minimum = int(constraint.Gt)
+					t.ExclusiveMinimum = true
+				}
+				if constraint, ok := constraints.GetLessThan().(*protovalidate_pb.Int64Rules_Lt); ok {
+					t.Maximum = int(constraint.Lt)
+					t.ExclusiveMaximum = true
+				}
+			}
+
+			// uint64
+			if _, ok := fieldOptions.GetType().(*protovalidate_pb.FieldConstraints_Uint64); ok {
+				constraints := fieldOptions.GetUint64()
+				if constraint, ok := constraints.GetGreaterThan().(*protovalidate_pb.UInt64Rules_Gte); ok {
+					t.Minimum = int(constraint.Gte)
+				}
+				if constraint, ok := constraints.GetLessThan().(*protovalidate_pb.UInt64Rules_Lte); ok {
+					t.Maximum = int(constraint.Lte)
+				}
+				if constraint, ok := constraints.GetGreaterThan().(*protovalidate_pb.UInt64Rules_Gt); ok {
+					t.Minimum = int(constraint.Gt)
+					t.ExclusiveMinimum = true
+				}
+				if constraint, ok := constraints.GetLessThan().(*protovalidate_pb.UInt64Rules_Lt); ok {
+					t.Maximum = int(constraint.Lt)
+					t.ExclusiveMaximum = true
+				}
+			}
+		}
+	}
+}
+
+func addInt32FieldConstraints(t *jsonschema.Type, desc *descriptor.FieldDescriptorProto) {
+	// Custom field options from protoc-gen-validate:
+	if opt := proto.GetExtension(desc.GetOptions(), protoc_gen_validate.E_Rules); opt != nil {
+		if fieldRules, ok := opt.(*protoc_gen_validate.FieldRules); fieldRules != nil && ok {
+			if constraints := fieldRules.GetInt32(); constraints != nil {
+				t.Minimum = int(constraints.GetGte())
+				t.Maximum = int(constraints.GetLte())
+			}
+		}
+	}
+
+	// Field options from protovalidate:
+	if opt := proto.GetExtension(desc.GetOptions(), protovalidate_pb.E_Field); opt != nil {
+		if fieldOptions, ok := opt.(*protovalidate_pb.FieldConstraints); ok {
+			// int32
+			if _, ok := fieldOptions.GetType().(*protovalidate_pb.FieldConstraints_Int32); ok {
+				constraints := fieldOptions.GetInt32()
+				if constraint, ok := constraints.GetGreaterThan().(*protovalidate_pb.Int32Rules_Gte); ok {
+					t.Minimum = int(constraint.Gte)
+				}
+				if constraint, ok := constraints.GetLessThan().(*protovalidate_pb.Int32Rules_Lte); ok {
+					t.Maximum = int(constraint.Lte)
+				}
+				if constraint, ok := constraints.GetGreaterThan().(*protovalidate_pb.Int32Rules_Gt); ok {
+					t.Minimum = int(constraint.Gt)
+					t.ExclusiveMinimum = true
+				}
+				if constraint, ok := constraints.GetLessThan().(*protovalidate_pb.Int32Rules_Lt); ok {
+					t.Maximum = int(constraint.Lt)
+					t.ExclusiveMaximum = true
+				}
+			}
+			// uint32
+			if _, ok := fieldOptions.GetType().(*protovalidate_pb.FieldConstraints_Uint32); ok {
+				constraints := fieldOptions.GetUint32()
+				if constraint, ok := constraints.GetGreaterThan().(*protovalidate_pb.UInt32Rules_Gte); ok {
+					t.Minimum = int(constraint.Gte)
+				}
+				if constraint, ok := constraints.GetLessThan().(*protovalidate_pb.UInt32Rules_Lte); ok {
+					t.Maximum = int(constraint.Lte)
+				}
+				if constraint, ok := constraints.GetGreaterThan().(*protovalidate_pb.UInt32Rules_Gt); ok {
+					t.Minimum = int(constraint.Gt)
+					t.ExclusiveMinimum = true
+				}
+				if constraint, ok := constraints.GetLessThan().(*protovalidate_pb.UInt32Rules_Lt); ok {
+					t.Maximum = int(constraint.Lt)
+					t.ExclusiveMaximum = true
+				}
+			}
+		}
+	}
 }

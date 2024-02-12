@@ -11,7 +11,8 @@ const OptionPattern = `{
             "properties": {
                 "query": {
                     "pattern": "^(\\([0-9]{3}\\))?[0-9]{3}-[0-9]{4}$",
-                    "type": "string"
+                    "type": "string",
+                    "format": "regex"
                 },
                 "result_per_page": {
                     "type": "integer"
