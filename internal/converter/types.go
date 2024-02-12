@@ -405,14 +405,20 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msgDesc *descriptor
 
 	// Build up a list of JSONSchema type definitions for every message:
 	definitions := jsonschema.Definitions{}
-	for refmsgDesc, name := range duplicatedMessages {
+	for refmsgDesc, nameWithPackage := range duplicatedMessages {
+		var typeName string
+		if c.Flags.TypeNamesWithNoPackage {
+			typeName = refmsgDesc.GetName();
+		} else {
+			typeName = nameWithPackage;
+		}
 		refType, err := c.recursiveConvertMessageType(curPkg, refmsgDesc, "", duplicatedMessages, true)
 		if err != nil {
 			return nil, err
 		}
 
 		// Add the schema to our definitions:
-		definitions[name] = refType
+		definitions[typeName] = refType
 	}
 
 	// Put together a JSON schema with our discovered definitions, and a $ref for the root type:
@@ -568,9 +574,15 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 	jsonSchemaType.Properties = orderedmap.New()
 
 	// Look up references:
-	if refName, ok := duplicatedMessages[msgDesc]; ok && !ignoreDuplicatedMessages {
+	if nameWithPackage, ok := duplicatedMessages[msgDesc]; ok && !ignoreDuplicatedMessages {
+		var typeName string
+		if c.Flags.TypeNamesWithNoPackage {
+			typeName = msgDesc.GetName();
+		} else {
+			typeName = nameWithPackage;
+		}
 		return &jsonschema.Type{
-			Ref: fmt.Sprintf("%s%s", c.refPrefix, refName),
+			Ref: fmt.Sprintf("%s%s", c.refPrefix, typeName),
 		}, nil
 	}
 
