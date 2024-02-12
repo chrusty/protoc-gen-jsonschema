@@ -1,0 +1,62 @@
+syntax = "proto3";
+package samples;
+import "buf/validate/validate.proto";
+
+message ProtoValidateOptions {
+    // strings @exclude
+    string stringWithLengthConstraints       = 1 [(buf.validate.field).string = {min_len: 5, max_len: 10}];
+    string requiredString                    = 2 [(buf.validate.field).required = true];
+    string stringRegex                       = 3 [(buf.validate.field).string.pattern = "gr(a|e)y"];
+
+    // int32 @exclude
+    int32 int32Range       = 4 [(buf.validate.field).int32 = {gt: 10, lt: 20}];
+    int32 int32RangeInc    = 5 [(buf.validate.field).int32 = {gte: 1, lte: 5}];
+    int32 int32Gt          = 6 [(buf.validate.field).int32.gt = 5];
+    int32 int32Lt          = 7 [(buf.validate.field).int32.lt = 6];
+    int32 int32Gte         = 8 [(buf.validate.field).int32.gte = 7];
+    int32 int32Lte         = 9 [(buf.validate.field).int32.lte = 8];
+
+    // int64 @exclude
+    int64 int64Range       = 10 [(buf.validate.field).int64 = {gt: 10, lt: 20}];
+    int64 int64RangeInc    = 11 [(buf.validate.field).int64 = {gte: 3, lte: 8}];
+    int64 int64Gt          = 12 [(buf.validate.field).int64.gt = 10];
+    int64 int64Lt          = 13 [(buf.validate.field).int64.lt = 11];
+    int64 int64Gte         = 14 [(buf.validate.field).int64.gte = 12];
+    int64 int64Lte         = 15 [(buf.validate.field).int64.lte = 13];
+
+    // float @exclude
+    float floatRange       = 16 [(buf.validate.field).float = {gt: 10, lt: 20}];
+    float floatRangeInc    = 17 [(buf.validate.field).float = {gte: 3, lte: 8}];
+    float floatGt          = 18 [(buf.validate.field).float.gt = 10];
+    float floatLt          = 19 [(buf.validate.field).float.lt = 11];
+    float floatGte         = 20 [(buf.validate.field).float.gte = 12];
+    float floatLte         = 21 [(buf.validate.field).float.lte = 13];
+
+    // repeated @exclude
+    repeated string someStringsButNotTooMany   = 22 [(buf.validate.field).repeated = {min_items: 2, max_items: 6}];
+    repeated int32 someIntsButNotTooMany       = 23 [(buf.validate.field).repeated = {min_items: 4, max_items: 21}];
+
+    // well-known strings @exclude
+    string email     = 24 [(buf.validate.field).string.email = true];
+    string uuid      = 25 [(buf.validate.field).string.uuid = true];
+    string uri       = 26 [(buf.validate.field).string.uri = true];
+    string hostname  = 27 [(buf.validate.field).string.hostname = true];
+    string ipv4      = 28 [(buf.validate.field).string.ipv4 = true];
+    string ipv6      = 29 [(buf.validate.field).string.ipv6 = true];
+
+    // uint32 @exclude
+    uint32 uint32Range       = 30 [(buf.validate.field).uint32 = {gt: 10, lt: 20}];
+    uint32 uint32RangeInc    = 31 [(buf.validate.field).uint32 = {gte: 1, lte: 5}];
+    uint32 uint32Gt          = 32 [(buf.validate.field).uint32.gt = 5];
+    uint32 uint32Lt          = 33 [(buf.validate.field).uint32.lt = 6];
+    uint32 uint32Gte         = 34 [(buf.validate.field).uint32.gte = 7];
+    uint32 uint32Lte         = 35 [(buf.validate.field).uint32.lte = 8];
+
+    // uint64 @exclude
+    uint64 uint64Range       = 36 [(buf.validate.field).uint64 = {gt: 10, lt: 20}];
+    uint64 uint64RangeInc    = 37 [(buf.validate.field).uint64 = {gte: 3, lte: 8}];
+    uint64 uint64Gt          = 38 [(buf.validate.field).uint64.gt = 10];
+    uint64 uint64Lt          = 39 [(buf.validate.field).uint64.lt = 11];
+    uint64 uint64Gte         = 40 [(buf.validate.field).uint64.gte = 12];
+    uint64 uint64Lte         = 41 [(buf.validate.field).uint64.lte = 13];
+}

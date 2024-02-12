@@ -501,6 +501,13 @@ func configureSampleProtos() map[string]sampleProto {
 			ObjectsToValidateFail: []string{testdata.ValidationOptionsFail},
 			ObjectsToValidatePass: []string{testdata.ValidationOptionsPass},
 		},
+		"ProtoValidateOptions": {
+			ExpectedJSONSchema:    []string{testdata.ProtoValidateOptions},
+			FilesToGenerate:       []string{"ProtoValidateOptions.proto"},
+			ProtoFileName:         "ProtoValidateOptions.proto",
+			ObjectsToValidateFail: []string{testdata.ProtoValidateOptionsFail},
+			ObjectsToValidatePass: []string{testdata.ProtoValidateOptionsPass},
+		},
 		"WellKnown": {
 			ExpectedJSONSchema:    []string{testdata.WellKnown},
 			FilesToGenerate:       []string{"WellKnown.proto"},
@@ -525,6 +532,8 @@ func mustReadProtoFiles(t *testing.T, includePath string, filenames ...string) *
 	args = append(args, "--include_source_info")
 	args = append(args, "--include_imports")
 	args = append(args, "-I../../")
+	args = append(args, "-I../../protovalidate/proto/protovalidate")
+	args = append(args, "-I../../protoc-gen-validate")
 	args = append(args, "--proto_path="+includePath)
 	args = append(args, filenames...)
 	cmd := exec.Command(protocBinary, args...)

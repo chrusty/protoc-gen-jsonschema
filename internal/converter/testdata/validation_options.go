@@ -5,6 +5,9 @@ const ValidationOptions = `{
     "$ref": "#/definitions/ValidationOptions",
     "definitions": {
         "ValidationOptions": {
+            "required": [
+                "requiredString"
+            ],
             "properties": {
                 "stringWithLengthConstraints": {
                     "maxLength": 10,
@@ -18,6 +21,14 @@ const ValidationOptions = `{
                     "maxItems": 6,
                     "minItems": 2,
                     "type": "array"
+                },
+                "requiredString": {
+                    "type": "string"
+                },
+                "stringRegex": {
+                    "pattern": "^[^[0-9]A-Za-z]+( [^[0-9]A-Za-z]+)*$",
+                    "type": "string",
+                    "format": "regex"
                 }
             },
             "additionalProperties": true,
@@ -34,5 +45,6 @@ const ValidationOptionsFail = `{
 
 const ValidationOptionsPass = `{
 	"stringWithLengthConstraints": "thisisok",
-	"luckyNumbersWithArrayConstraints": [1,2,3,4]
+	"luckyNumbersWithArrayConstraints": [1,2,3,4],
+    "requiredString": "I am set!"
 }`
