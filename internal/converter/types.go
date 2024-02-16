@@ -405,14 +405,20 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msgDesc *descriptor
 
 	// Build up a list of JSONSchema type definitions for every message:
 	definitions := jsonschema.Definitions{}
-	for refmsgDesc, name := range duplicatedMessages {
+	for refmsgDesc, nameWithPackage := range duplicatedMessages {
+		var typeName string
+		if c.Flags.TypeNamesWithNoPackage {
+			typeName = refmsgDesc.GetName();
+		} else {
+			typeName = nameWithPackage;
+		}
 		refType, err := c.recursiveConvertMessageType(curPkg, refmsgDesc, "", duplicatedMessages, true)
 		if err != nil {
 			return nil, err
 		}
 
 		// Add the schema to our definitions:
-		definitions[name] = refType
+		definitions[typeName] = refType
 	}
 
 	// Put together a JSON schema with our discovered definitions, and a $ref for the root type:
@@ -568,9 +574,15 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 	jsonSchemaType.Properties = orderedmap.New()
 
 	// Look up references:
-	if refName, ok := duplicatedMessages[msgDesc]; ok && !ignoreDuplicatedMessages {
+	if nameWithPackage, ok := duplicatedMessages[msgDesc]; ok && !ignoreDuplicatedMessages {
+		var typeName string
+		if c.Flags.TypeNamesWithNoPackage {
+			typeName = msgDesc.GetName();
+		} else {
+			typeName = nameWithPackage;
+		}
 		return &jsonschema.Type{
-			Ref: fmt.Sprintf("%s%s", c.refPrefix, refName),
+			Ref: fmt.Sprintf("%s%s", c.refPrefix, typeName),
 		}, nil
 	}
 
@@ -625,13 +637,21 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 		c.logger.WithField("field_name", fieldDesc.GetName()).WithField("type", recursedJSONSchemaType.Type).Trace("Converted field")
 
 		// If this field is part of a OneOf declaration then build that here:
-		if c.Flags.EnforceOneOf && fieldDesc.OneofIndex != nil {
-			if c.Flags.UseJSONFieldnamesOnly {
-				jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Required: []string{fieldDesc.GetJsonName()}})
-			} else {
-				jsonSchemaType.OneOf = append(jsonSchemaType.OneOf, &jsonschema.Type{Required: []string{fieldDesc.GetName()}})
+		if c.Flags.EnforceOneOf && fieldDesc.OneofIndex != nil && !fieldDesc.GetProto3Optional() {
+			for {
+				if *fieldDesc.OneofIndex < int32(len(jsonSchemaType.AllOf)) {
+					break
+				}
+				var notAnyOf = &jsonschema.Type{Not: &jsonschema.Type{AnyOf: []*jsonschema.Type{}}}
+				jsonSchemaType.AllOf = append(jsonSchemaType.AllOf, &jsonschema.Type{OneOf: []*jsonschema.Type{notAnyOf}})
 			}
-
+			if c.Flags.UseJSONFieldnamesOnly {
+				jsonSchemaType.AllOf[*fieldDesc.OneofIndex].OneOf = append(jsonSchemaType.AllOf[*fieldDesc.OneofIndex].OneOf, &jsonschema.Type{Required: []string{fieldDesc.GetJsonName()}})
+				jsonSchemaType.AllOf[*fieldDesc.OneofIndex].OneOf[0].Not.AnyOf = append(jsonSchemaType.AllOf[*fieldDesc.OneofIndex].OneOf[0].Not.AnyOf, &jsonschema.Type{Required: []string{fieldDesc.GetJsonName()}})
+			} else {
+				jsonSchemaType.AllOf[*fieldDesc.OneofIndex].OneOf = append(jsonSchemaType.AllOf[*fieldDesc.OneofIndex].OneOf, &jsonschema.Type{Required: []string{fieldDesc.GetName()}})
+				jsonSchemaType.AllOf[*fieldDesc.OneofIndex].OneOf[0].Not.AnyOf = append(jsonSchemaType.AllOf[*fieldDesc.OneofIndex].OneOf[0].Not.AnyOf, &jsonschema.Type{Required: []string{fieldDesc.GetName()}})
+			}
 		}
 
 		// Figure out which field names we want to use:
@@ -646,9 +666,13 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 		}
 
 		// Enforce all_fields_required:
-		if messageFlags.AllFieldsRequired && len(jsonSchemaType.OneOf) == 0 && jsonSchemaType.Properties != nil {
-			for _, property := range jsonSchemaType.Properties.Keys() {
-				jsonSchemaType.Required = append(jsonSchemaType.Required, property)
+		if messageFlags.AllFieldsRequired {
+			if fieldDesc.OneofIndex == nil && !fieldDesc.GetProto3Optional() {
+				if c.Flags.UseJSONFieldnamesOnly {
+					jsonSchemaType.Required = append(jsonSchemaType.Required, fieldDesc.GetJsonName())
+				} else {
+					jsonSchemaType.Required = append(jsonSchemaType.Required, fieldDesc.GetName())
+				}
 			}
 		}
 

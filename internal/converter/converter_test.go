@@ -144,6 +144,14 @@ func configureSampleProtos() map[string]sampleProto {
 			ObjectsToValidateFail: []string{testdata.PayloadMessageFail, testdata.ArrayOfMessagesFail},
 			ObjectsToValidatePass: []string{testdata.PayloadMessagePass, testdata.ArrayOfMessagesPass},
 		},
+		"TypeNamesWithNoPackage": {
+			Flags:                 ConverterFlags{TypeNamesWithNoPackage: true},
+			ExpectedJSONSchema:    []string{testdata.PayloadMessage, testdata.TypeNamesWithNoPackage},
+			FilesToGenerate:       []string{"ArrayOfMessages.proto", "PayloadMessage.proto"},
+			ProtoFileName:         "ArrayOfMessages.proto",
+			ObjectsToValidateFail: []string{testdata.PayloadMessageFail, testdata.TypeNamesWithNoPackageFail},
+			ObjectsToValidatePass: []string{testdata.PayloadMessagePass, testdata.TypeNamesWithNoPackagePass},
+		},
 		"ArrayOfObjects": {
 			Flags:                 ConverterFlags{AllowNullValues: true},
 			ExpectedJSONSchema:    []string{testdata.ArrayOfObjects},

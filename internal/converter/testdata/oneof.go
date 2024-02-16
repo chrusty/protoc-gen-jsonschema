@@ -5,6 +5,9 @@ const OneOf = `{
     "$ref": "#/definitions/OneOf",
     "definitions": {
         "OneOf": {
+            "required": [
+                "something"
+            ],
             "properties": {
                 "bar": {
                     "$ref": "#/definitions/samples.OneOf.Bar",
@@ -20,15 +23,35 @@ const OneOf = `{
             },
             "additionalProperties": true,
             "type": "object",
-            "oneOf": [
+            "allOf": [
                 {
-                    "required": [
-                        "bar"
-                    ]
-                },
-                {
-                    "required": [
-                        "baz"
+                    "oneOf": [
+                        {
+                            "not": {
+                                "anyOf": [
+                                    {
+                                        "required": [
+                                            "bar"
+                                        ]
+                                    },
+                                    {
+                                        "required": [
+                                            "baz"
+                                        ]
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "required": [
+                                "bar"
+                            ]
+                        },
+                        {
+                            "required": [
+                                "baz"
+                            ]
+                        }
                     ]
                 }
             ],
