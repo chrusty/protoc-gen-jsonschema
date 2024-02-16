@@ -119,6 +119,8 @@ func (c *Converter) parseGeneratorParameters(parameters string) {
 			c.Flags.PrefixSchemaFilesWithPackage = true
 		case "proto_and_json_fieldnames":
 			c.Flags.UseProtoAndJSONFieldNames = true
+		case "keep_new_lines_in_description":
+			c.Flags.KeepNewLinesInDescription = true
 		case "type_names_with_no_package":
 			c.Flags.TypeNamesWithNoPackage = true
 		}
