@@ -15,10 +15,12 @@ message PayloadMessage2 {
         ARRAY_OF_MESSAGE = 5;
     }
 
-    string name       = 1;
-    string timestamp  = 2;
-    int32 id          = 3;
-    float rating      = 4;
-    bool complete     = 5;
-    Topology topology = 6;
+    string name            = 1;
+    string timestamp       = 2;
+    int32 id               = 3;
+    float rating           = 4;
+    bool complete          = 5;
+    Topology topology      = 6;
+    repeated int32 array   = 7;
+    optional int32 opt_int = 8;
 }
