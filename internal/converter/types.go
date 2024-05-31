@@ -667,7 +667,8 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 
 		// Enforce all_fields_required:
 		if messageFlags.AllFieldsRequired {
-			if fieldDesc.OneofIndex == nil && !fieldDesc.GetProto3Optional() {
+			if fieldDesc.OneofIndex == nil && !fieldDesc.GetProto3Optional() && fieldDesc.GetLabel() != descriptor.FieldDescriptorProto_LABEL_REPEATED {
+
 				if c.Flags.UseJSONFieldnamesOnly {
 					jsonSchemaType.Required = append(jsonSchemaType.Required, fieldDesc.GetJsonName())
 				} else {
