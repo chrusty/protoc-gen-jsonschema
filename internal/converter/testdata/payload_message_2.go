@@ -53,6 +53,15 @@ const PayloadMessage2 = `{
                         }
                     ],
                     "title": "Topology"
+                },
+                "array": {
+                    "items": {
+                        "type": "integer"
+                    },
+                    "type": "array"
+                },
+                "opt_int": {
+                    "type": "integer"
                 }
             },
             "additionalProperties": true,
