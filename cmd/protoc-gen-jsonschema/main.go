@@ -16,7 +16,7 @@ import (
 	"google.golang.org/protobuf/proto"
 	plugin "google.golang.org/protobuf/types/pluginpb"
 
-	"github.com/chrusty/protoc-gen-jsonschema/internal/converter"
+	"github.com/ikstewa/protoc-gen-jsonschema/internal/converter"
 )
 
 const version = "v1.4.0"

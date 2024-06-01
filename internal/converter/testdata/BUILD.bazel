@@ -60,6 +60,6 @@ go_library(
         "validation_options.go",
         "wellknown.go",
     ],
-    importpath = "github.com/chrusty/protoc-gen-jsonschema/internal/converter/testdata",
+    importpath = "github.com/ikstewa/protoc-gen-jsonschema/internal/converter/testdata",
     visibility = ["//:__subpackages__"],
 )

@@ -9,7 +9,7 @@ go_library(
         "sourcecodeinfo.go",
         "types.go",
     ],
-    importpath = "github.com/chrusty/protoc-gen-jsonschema/internal/converter",
+    importpath = "github.com/ikstewa/protoc-gen-jsonschema/internal/converter",
     visibility = ["//:__subpackages__"],
     deps = [
         "//:protoc-gen-jsonschema",

@@ -11,7 +11,7 @@ import (
 	"google.golang.org/protobuf/proto"
 	descriptor "google.golang.org/protobuf/types/descriptorpb"
 
-	protoc_gen_jsonschema "github.com/chrusty/protoc-gen-jsonschema"
+	protoc_gen_jsonschema "github.com/ikstewa/protoc-gen-jsonschema"
 	protoc_gen_validate "github.com/envoyproxy/protoc-gen-validate/validate"
 )
 
