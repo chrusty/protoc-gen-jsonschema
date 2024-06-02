@@ -21,6 +21,34 @@ const NumericFormat = `{
                 "double_val": {
                     "type": "number",
                     "format": "double"
+                },
+                "int_val_array": {
+                    "items": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "type": "array"
+                },
+                "long_val_array": {
+                    "items": {
+                        "type": "string",
+                        "format": "int64"
+                    },
+                    "type": "array"
+                },
+                "float_val_array": {
+                    "items": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "type": "array"
+                },
+                "double_val_array": {
+                    "items": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "type": "array"
                 }
             },
             "additionalProperties": true,

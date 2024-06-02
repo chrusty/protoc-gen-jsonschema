@@ -344,6 +344,8 @@ func (c *Converter) convertField(curPkg *ProtoPackage, desc *descriptor.FieldDes
 		} else {
 			jsonSchemaType.Items.Type = jsonSchemaType.Type
 			jsonSchemaType.Items.OneOf = jsonSchemaType.OneOf
+			jsonSchemaType.Items.Format = jsonSchemaType.Format
+			jsonSchemaType.Format = ""
 		}
 
 		if messageFlags.AllowNullValues {
