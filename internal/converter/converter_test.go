@@ -311,6 +311,18 @@ func configureSampleProtos() map[string]sampleProto {
 			FilesToGenerate:    []string{},
 			ProtoFileName:      "NoPackage.proto",
 		},
+		"NumericFormat": {
+			Flags:                 ConverterFlags{IncludeNumericFormat: true},
+			ExpectedJSONSchema:    []string{testdata.NumericFormat},
+			FilesToGenerate:       []string{"NumericFormat.proto"},
+			ProtoFileName:         "NumericFormat.proto",
+		},
+		"NumericFormatBigIntAsString": {
+			Flags:                 ConverterFlags{IncludeNumericFormat: true, DisallowBigIntsAsStrings: true},
+			ExpectedJSONSchema:    []string{testdata.NumericFormatBigIntAsString},
+			FilesToGenerate:       []string{"NumericFormat.proto"},
+			ProtoFileName:         "NumericFormat.proto",
+		},
 		"OneOf": {
 			Flags:                 ConverterFlags{AllFieldsRequired: true, EnforceOneOf: true},
 			ExpectedJSONSchema:    []string{testdata.OneOf},

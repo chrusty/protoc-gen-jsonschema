@@ -55,6 +55,7 @@ type ConverterFlags struct {
 	EnumsAsConstants             bool
 	EnumsAsStringsOnly           bool
 	EnumsTrimPrefix              bool
+	IncludeNumericFormat         bool
 	KeepNewLinesInDescription    bool
 	PrefixSchemaFilesWithPackage bool
 	UseJSONFieldnamesOnly        bool
@@ -115,6 +116,8 @@ func (c *Converter) parseGeneratorParameters(parameters string) {
 			c.Flags.EnumsTrimPrefix = true
 		case "json_fieldnames":
 			c.Flags.UseJSONFieldnamesOnly = true
+		case "include_numeric_format":
+			c.Flags.IncludeNumericFormat = true
 		case "prefix_schema_files_with_package":
 			c.Flags.PrefixSchemaFilesWithPackage = true
 		case "proto_and_json_fieldnames":

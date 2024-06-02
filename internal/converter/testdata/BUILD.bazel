@@ -32,6 +32,8 @@ go_library(
         "message_with_comments.go",
         "nested_message.go",
         "nested_object.go",
+        "numeric_format.go",
+        "numeric_format_bigint_as_string.go",
         "oneof.go",
         "option_allow_null_values.go",
         "option_disallow_additional_properties.go",

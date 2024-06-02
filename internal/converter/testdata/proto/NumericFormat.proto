@@ -1,0 +1,9 @@
+syntax = "proto3";
+package samples;
+
+message NumericFormat {
+    int32 int_val     = 1;
+    int64 long_val    = 2;
+    float float_val   = 3;
+    double double_val = 4;
+}
