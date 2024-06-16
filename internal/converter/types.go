@@ -408,9 +408,9 @@ func (c *Converter) convertMessageType(curPkg *ProtoPackage, msgDesc *descriptor
 	for refmsgDesc, nameWithPackage := range duplicatedMessages {
 		var typeName string
 		if c.Flags.TypeNamesWithNoPackage {
-			typeName = refmsgDesc.GetName();
+			typeName = refmsgDesc.GetName()
 		} else {
-			typeName = nameWithPackage;
+			typeName = nameWithPackage
 		}
 		refType, err := c.recursiveConvertMessageType(curPkg, refmsgDesc, "", duplicatedMessages, true)
 		if err != nil {
@@ -577,9 +577,9 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 	if nameWithPackage, ok := duplicatedMessages[msgDesc]; ok && !ignoreDuplicatedMessages {
 		var typeName string
 		if c.Flags.TypeNamesWithNoPackage {
-			typeName = msgDesc.GetName();
+			typeName = msgDesc.GetName()
 		} else {
-			typeName = nameWithPackage;
+			typeName = nameWithPackage
 		}
 		return &jsonschema.Type{
 			Ref: fmt.Sprintf("%s%s", c.refPrefix, typeName),
@@ -606,6 +606,7 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 	c.logger.WithField("message_str", msgDesc.String()).Trace("Converting message")
 	for _, fieldDesc := range msgDesc.GetField() {
 
+		var vendorExtension map[string]interface{}
 		// Custom field options from protoc-gen-jsonschema:
 		if opt := proto.GetExtension(fieldDesc.GetOptions(), protoc_gen_jsonschema.E_FieldOptions); opt != nil {
 			if fieldOptions, ok := opt.(*protoc_gen_jsonschema.FieldOptions); ok {
@@ -625,6 +626,13 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 						jsonSchemaType.Required = append(jsonSchemaType.Required, fieldDesc.GetName())
 					}
 				}
+
+				// "Vendor Extension" is passed to the generated json schema:
+				if fieldOptions.GetVendorExt() != nil {
+					vendorExt := fieldOptions.GetVendorExt()
+					c.logger.WithField("field_name", fieldDesc.GetName()).WithField("message_name", msgDesc.GetName()).Debug("Adding vendor extension: {}", vendorExt)
+					vendorExtension = vendorExtensionToExtras(vendorExt)
+				}
 			}
 		}
 
@@ -634,6 +642,7 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 			c.logger.WithError(err).WithField("field_name", fieldDesc.GetName()).WithField("message_name", msgDesc.GetName()).Error("Failed to convert field")
 			return nil, err
 		}
+		recursedJSONSchemaType.Extras = vendorExtension
 		c.logger.WithField("field_name", fieldDesc.GetName()).WithField("type", recursedJSONSchemaType.Type).Trace("Converted field")
 
 		// If this field is part of a OneOf declaration then build that here:
@@ -695,6 +704,15 @@ func (c *Converter) recursiveConvertMessageType(curPkg *ProtoPackage, msgDesc *d
 	jsonSchemaType.Required = dedupe(jsonSchemaType.Required)
 
 	return jsonSchemaType, nil
+}
+
+func vendorExtensionToExtras(vendorExt *protoc_gen_jsonschema.VendorExtension) map[string]interface{} {
+	if vendorExt == nil {
+		return nil
+	}
+	extras := make(map[string]interface{})
+	extras[vendorExt.GetKey()] = vendorExt.GetValue()
+	return extras
 }
 
 func dedupe(inputStrings []string) []string {

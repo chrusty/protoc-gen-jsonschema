@@ -423,6 +423,11 @@ func configureSampleProtos() map[string]sampleProto {
 			ObjectsToValidateFail: []string{testdata.OptionRequiredMessageFail},
 			ObjectsToValidatePass: []string{testdata.OptionRequiredMessagePass},
 		},
+		"OptionVendorExtension": {
+			ExpectedJSONSchema: []string{testdata.OptionVendorExtension},
+			FilesToGenerate:    []string{"OptionVendorExtension.proto"},
+			ProtoFileName:      "OptionVendorExtension.proto",
+		},
 		"PackagePrefix": {
 			Flags:                 ConverterFlags{PrefixSchemaFilesWithPackage: true},
 			ExpectedJSONSchema:    []string{testdata.Timestamp},

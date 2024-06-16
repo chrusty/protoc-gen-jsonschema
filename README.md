@@ -117,6 +117,7 @@ These apply to specifically marked fields, giving you more finely-grained contro
 
 - [ignore](internal/converter/testdata/proto/OptionIgnoredField.proto): Ignore (omit) a specific field
 - [required](internal/converter/testdata/proto/OptionRequiredField.proto): Mark a specific field as being REQUIRED
+- [vendor_ext](internal/converter/testdata/proto/OptionVendorExtension.proto): Add custom "vendor extension" alongside field definition
 
 ### File Options
 
@@ -150,6 +151,13 @@ At the moment the following are supported (but export more in the future):
     - MaxLength
     - MinLength
     - Pattern
+
+
+Vendor Extensions
+-----------------
+JSON schemas support the addition of user-defined fields, commonly referred to as "vendor extensions." These extensions allow for the inclusion of custom keys that JSON schema processors can handle specifically. This feature is particularly beneficial when used in conjunction with OpenAPI specifications. Tools like the openapi-generator can recognize these vendor extensions and incorporate them into the generated code, depending on the capabilities of the specific code generator.
+
+Currently, the option to include these extensions is supported only at the field level.
 
 
 Examples
