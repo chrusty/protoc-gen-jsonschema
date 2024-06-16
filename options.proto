@@ -8,6 +8,15 @@ import "google/protobuf/descriptor.proto";
 option go_package = "github.com/chrusty/protoc-gen-jsonschema";
 
 
+// Custom VendorExtension definition, e.g., x-go-custom-tag: validate:"required"
+message VendorExtension {
+    // Name of vendor extension key, e.g., x-go-custom-tag
+    string key = 1;
+    // Value of vendor extension, e.g., validate:"required"
+    string value = 2;
+}
+
+
 // Custom FieldOptions
 message FieldOptions {
 
@@ -25,6 +34,9 @@ message FieldOptions {
 
   // Fields tagged with this will constrain strings using the "pattern" keyword in generated schemas
   string pattern = 5;
+
+  // Fields tagged with this will have associated "vendor extension" object in generated schemas
+  VendorExtension vendor_ext = 6;
 }
 
 
